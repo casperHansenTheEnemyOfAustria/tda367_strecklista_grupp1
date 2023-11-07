@@ -30,6 +30,7 @@ public class BackendApplication {
 @Configuration
 class AppConfig {
     @Bean
+	//change pstate to model/application
     public ProgramState programState() {
 		return new ProgramState();
 	}
