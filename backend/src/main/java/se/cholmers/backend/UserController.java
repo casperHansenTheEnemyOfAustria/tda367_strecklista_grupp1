@@ -23,11 +23,11 @@ public class UserController {
         this.ProgramState = ProgramState;
     }
 
-    @RequestMapping(value  = "/getSaldo{userID}/{authToken}", method = RequestMethod.GET)
+    @RequestMapping(value  = "/getSaldo/{sessionID}/{authToken}", method = RequestMethod.GET)
     @ResponseBody
-    public Response<Map<Group, Double>>getSaldo(@PathVariable("userID") String userID, @PathVariable("authToken") String authToken) {
+    public Response<Map<Group, Double>>getSaldo(@PathVariable("sessionID") String sessionID, @PathVariable("authToken") String authToken) {
         try{
-            Response<Map<Group, Double>> saldo = new Response<Map<Group, Double>>(ProgramState.getSaldo(userID, authToken));
+            Response<Map<Group, Double>> saldo = new Response<Map<Group, Double>>(ProgramState.getSaldo(sessionID, authToken));
             return saldo;
         }catch(RequestException e){
             return new Response<Map<Group, Double>>(null, e.getMessage());
@@ -35,7 +35,7 @@ public class UserController {
         
     }
 
-    @RequestMapping(value = "/createUser{userName}/{password}", method = RequestMethod.POST)
+    @RequestMapping(value = "/createUser/{userName}/{password}", method = RequestMethod.POST)
     @ResponseBody
     public Response<String> createUser(@PathVariable("userName") String userName, @PathVariable("password") String password) {
         try{
@@ -47,27 +47,29 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/login{userName}/{password}", method = RequestMethod.GET)
+    @RequestMapping(value = "/login/{userName}/{password}", method = RequestMethod.GET)
     @ResponseBody
-    public Response<String> login(@PathVariable("userName") String userName, @PathVariable("password") String password) {
+    public Response<String[]> login(@PathVariable("userName") String userName, @PathVariable("password") String password) {
         try{
-            Response<String> response = new Response<String> (ProgramState.login(userName, password));
+            Response<String[]> response = new Response<String[]> (ProgramState.login(userName, password));
+            return response;
+        }catch(RequestException e){
+            return new Response<String[]>(null, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/logout/{sessionID}", method = RequestMethod.POST)
+    @ResponseBody
+    public Response<String> logout(@PathVariable("sessionID") String sessionID) {
+        try{
+            Response<String> response = new Response<String> (ProgramState.logout(sessionID));
             return response;
         }catch(RequestException e){
             return new Response<String>(null, e.getMessage());
         }
     }
 
-    @RequestMapping(value = "/logout{userName}", method = RequestMethod.POST)
-    @ResponseBody
-    public Response<String> logout(@PathVariable("userName") String userName) {
-        try{
-            Response<String> response = new Response<String> (ProgramState.logout(userName));
-            return response;
-        }catch(RequestException e){
-            return new Response<String>(null, e.getMessage());
-        }
-    }
+
 
 
 
@@ -76,8 +78,9 @@ public class UserController {
 
 //methods done for testing purposes
 class ProgramState{
-    public String login(String userName, String password) throws RequestException{
-        return "login";
+    public String[] login(String userName, String password) throws RequestException{
+        String[] output = {"login", "authToken"};
+        return output;
     }
     public String logout(String userName) throws RequestException{
         return "logout";
