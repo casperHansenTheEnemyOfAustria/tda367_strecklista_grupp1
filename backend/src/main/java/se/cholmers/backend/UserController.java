@@ -69,6 +69,17 @@ public class UserController {
         }
     }
 
+    @RequestMapping(value = "/getCart/{sessionID}" , method = RequestMethod.GET)
+    @ResponseBody
+    public Response<Map<Product, Integer>> getCart(@PathVariable("sessionID") String sessionID) {
+        try{
+            Response<Map<Product, Integer>> response = new Response<Map<Product, Integer>> (ProgramState.getCart(sessionID));
+            return response;
+        }catch(RequestException e){
+            return new Response<Map<Product, Integer>>(null, e.getMessage());
+        }
+    }
+
 
 
 
