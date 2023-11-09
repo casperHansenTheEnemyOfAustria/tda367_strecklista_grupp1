@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import se.cholmers.backend.Model;
+
+
+
 // import org.springframework.*;
 
 import java.util.Map;
@@ -118,30 +122,5 @@ public class UserController {
 
 }
 
-//methods done for testing purposes
-class ProgramState{
-    public String[] login(String userName, String password) throws RequestException{
-        String[] output = {"login", "authToken"};
-        return output;
-    }
-    public String logout(String userName) throws RequestException{
-        return "logout";
-    }
-    public String createUser(String userName, String password) throws RequestException{
-        return "createUser";
-    }
-    public Map<Group, Double> getSaldo(String userID, String authToken) throws RequestException{
-        return null;
-    }
-}
-
-class Group{
-    public String name;
-    public String id;
-    public Group(String name, String id){
-        this.name = name;
-        this.id = id;
-    }
-}
 
 
