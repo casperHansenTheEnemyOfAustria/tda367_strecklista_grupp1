@@ -79,6 +79,23 @@ public class Model {
         }
     }
 
+    private class Cart {
+        Map<Product, Integer> itemsInCart;
+
+        public Cart() {
+        }
+
+        public void addToCart(Product product) {
+            Integer currentInCart;
+            try {
+                currentInCart = itemsInCart.get(product);
+            } catch (NullPointerException e) {
+                currentInCart = 0;
+            }
+            itemsInCart.put(product, ++currentInCart);
+        }
+    }
+
     private class ProgramState {
         User currentUser;
 
