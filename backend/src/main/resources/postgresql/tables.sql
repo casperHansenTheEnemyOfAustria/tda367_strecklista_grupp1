@@ -1,30 +1,30 @@
 -- ENTITIES
 
 CREATE TABLE User(
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id INT PRIMARY KEY,
     phone_number CHAR(10) NOT NULL,
     user_name TEXT NOT NULL,
     user_nick TEXT NOT NULL
 );
 
 CREATE TABLE UserGroup (
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id INT PRIMARY KEY,
     group_name TEXT NOT NULL,
     year CHAR(2),
     UNIQUE(group_name, year)
 );
 
 CREATE TABLE Product (
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id INT KEY,
     name TEXT NOT NULL UNIQUE,
-    price INT NOT NULL
+    price FLOAT NOT NULL
 );
 
 
 -- RELATIONS
 
 CREATE TABLE Transaction (
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id INT PRIMARY KEY,
     user REFERENCES User(id),
     product REFERENCES Product(id)
     transaction_time TIME NOT NULL,
