@@ -25,6 +25,15 @@ public class Model {
         public void addUserToGroup(UserGroup group) {
             groups.add(group);
         }
+
+        public Float getSaldo(String groupID) {
+            for (UserGroup userGroup : groups) {
+                if (userGroup.name == groupID) {
+                    return saldo.get(userGroup);
+                }
+            }
+            return 0f;
+        }
     }
 
     private class UserGroup {
@@ -68,5 +77,18 @@ public class Model {
             this.products = products;
             this.timeStamp = LocalDateTime.now();
         }
+    }
+
+    private class ProgramState {
+        User currentUser;
+
+        public ProgramState(User user) {
+            this.currentUser = user;
+        }
+
+        public String getSaldo(String groupID) {
+            return currentUser.getSaldo(groupID).toString();
+        }
+
     }
 }
