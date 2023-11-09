@@ -71,16 +71,47 @@ public class UserController {
 
     @RequestMapping(value = "/getCart/{sessionID}" , method = RequestMethod.GET)
     @ResponseBody
-    public Response<Map<Product, Integer>> getCart(@PathVariable("sessionID") String sessionID) {
+    public Response<Cart> getCart(@PathVariable("sessionID") String sessionID) {
         try{
-            Response<Map<Product, Integer>> response = new Response<Map<Product, Integer>> (ProgramState.getCart(sessionID));
+            Response<Cart> response = new Response<Cart> (ProgramState.getCart(sessionID));
             return response;
         }catch(RequestException e){
-            return new Response<Map<Product, Integer>>(null, e.getMessage());
+            return new Response<Cart>(null, e.getMessage());
+        }
+    }
+    
+    @RequestMapping(value = "/addToCart/{sessionID}/{productID}", method = RequestMethod.POST)
+    @ResponseBody
+    public Response<String> addToCart(@PathVariable("sessionID") String sessionID, @PathVariable("productID") String productID) {
+        try{
+            Response<String> response = new Response<String> (ProgramState.addToCart(sessionID, productID));
+            return response;
+        }catch(RequestException e){
+            return new Response<String>(null, e.getMessage());
         }
     }
 
+    @RequestMapping(value = "/removeFromCart/{sessionID}/{productID}", method = RequestMethod.POST)
+    @ResponseBody
+    public Response<String> removeFromCart(@PathVariable("sessionID") String sessionID, @PathVariable("productID") String productID) {
+        try{
+            Response<String> response = new Response<String> (ProgramState.removeFromCart(sessionID, productID));
+            return response;
+        }catch(RequestException e){
+            return new Response<String>(null, e.getMessage());
+        }
+    }
 
+    @RequestMapping(value = "/purchase/{sessionID}", method = RequestMethod.POST)
+    @ResponseBody
+    public Response<String> purchase(@PathVariable("sessionID") String sessionID) {
+        try{
+            Response<String> response = new Response<String> (ProgramState.purchase(sessionID));
+            return response;
+        }catch(RequestException e){
+            return new Response<String>(null, e.getMessage());
+        }
+    }
 
 
 
