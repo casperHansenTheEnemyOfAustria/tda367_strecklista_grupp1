@@ -84,7 +84,7 @@ public class UserController {
     @ResponseBody
     public Response<String> addToCart(@PathVariable("sessionID") String sessionID, @PathVariable("productID") String productID) {
         try{
-            Response<String> response = new Response<String> (ProgramState.addToCart(sessionID, productID));
+            Response<String> response = new Response<String> (ProgramState.addCart(sessionID, productID));
             return response;
         }catch(RequestException e){
             return new Response<String>(null, e.getMessage());
@@ -95,18 +95,18 @@ public class UserController {
     @ResponseBody
     public Response<String> removeFromCart(@PathVariable("sessionID") String sessionID, @PathVariable("productID") String productID) {
         try{
-            Response<String> response = new Response<String> (ProgramState.removeFromCart(sessionID, productID));
+            Response<String> response = new Response<String> (ProgramState.removeCart(sessionID, productID));
             return response;
         }catch(RequestException e){
             return new Response<String>(null, e.getMessage());
         }
     }
 
-    @RequestMapping(value = "/purchase/{sessionID}", method = RequestMethod.POST)
+    @RequestMapping(value = "/completePurchase/{sessionID}", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> purchase(@PathVariable("sessionID") String sessionID) {
+    public Response<String> completePurchase(@PathVariable("sessionID") String sessionID) {
         try{
-            Response<String> response = new Response<String> (ProgramState.purchase(sessionID));
+            Response<String> response = new Response<String> (ProgramState.completePurchase(sessionID));
             return response;
         }catch(RequestException e){
             return new Response<String>(null, e.getMessage());
