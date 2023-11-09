@@ -20,11 +20,11 @@ public class BackendApplication {
 
 	// @Bean
 	// public UserController userController() {
-	// 	return new UserController(programState());
+	// 	return new UserController(StateManager());
 	// }
 	// @Bean
-	// public ProgramState programState() {
-	// 	return new ProgramState();
+	// public StateManager StateManager() {
+	// 	return new StateManager();
 	// }
 }
 
@@ -33,7 +33,7 @@ public class BackendApplication {
 class AppConfig {
     @Bean
 	//change pstate to model/application
-    public ProgramState programState() {
-		return new ProgramState();
+    public StateManager stateManager() {
+		return new stateManager();
 	}
 }

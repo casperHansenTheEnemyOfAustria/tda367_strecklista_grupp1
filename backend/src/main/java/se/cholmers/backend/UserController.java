@@ -22,16 +22,16 @@ import java.util.Map;
 // @RequestMapping("/user")
 public class UserController {
     @Autowired
-    ProgramState ProgramState;
-    public UserController(ProgramState ProgramState) {
-        this.ProgramState = ProgramState;
+    StateManager stateManager;
+    public UserController(StateManager stateManager) {
+        this.StateManager = stateManager;
     }
 
     @RequestMapping(value  = "/getSaldo/{sessionID}/{authToken}", method = RequestMethod.GET)
     @ResponseBody
     public Response<Map<Group, Double>>getSaldo(@PathVariable("sessionID") String sessionID, @PathVariable("authToken") String authToken) {
         try{
-            Response<Map<Group, Double>> saldo = new Response<Map<Group, Double>>(ProgramState.getSaldo(sessionID, authToken));
+            Response<Map<Group, Double>> saldo = new Response<Map<Group, Double>>(stateManager.getSaldo(sessionID, authToken));
             return saldo;
         }catch(RequestException e){
             return new Response<Map<Group, Double>>(null, e.getMessage());
@@ -44,7 +44,7 @@ public class UserController {
     public Response<String> createUser(@PathVariable("userName") String userName, @PathVariable("password") String password) {
         try{
             //possiubly change to factory pattern??
-            Response<String> response = new Response<String> (ProgramState.createUser(userName, password));
+            Response<String> response = new Response<String> (stateManager.createUser(userName, password));
             return response;
         }catch(RequestException e){
             return new Response<String>(null, e.getMessage());
@@ -55,7 +55,7 @@ public class UserController {
     @ResponseBody
     public Response<String[]> login(@PathVariable("userName") String userName, @PathVariable("password") String password) {
         try{
-            Response<String[]> response = new Response<String[]> (ProgramState.login(userName, password));
+            Response<String[]> response = new Response<String[]> (stateManager.login(userName, password));
             return response;
         }catch(RequestException e){
             return new Response<String[]>(null, e.getMessage());
@@ -66,7 +66,7 @@ public class UserController {
     @ResponseBody
     public Response<String> logout(@PathVariable("sessionID") String sessionID) {
         try{
-            Response<String> response = new Response<String> (ProgramState.logout(sessionID));
+            Response<String> response = new Response<String> (stateManager.logout(sessionID));
             return response;
         }catch(RequestException e){
             return new Response<String>(null, e.getMessage());
@@ -77,7 +77,7 @@ public class UserController {
     @ResponseBody
     public Response<Cart> getCart(@PathVariable("sessionID") String sessionID) {
         try{
-            Response<Cart> response = new Response<Cart> (ProgramState.getCart(sessionID));
+            Response<Cart> response = new Response<Cart> (stateManager.getCart(sessionID));
             return response;
         }catch(RequestException e){
             return new Response<Cart>(null, e.getMessage());
@@ -88,7 +88,7 @@ public class UserController {
     @ResponseBody
     public Response<String> addToCart(@PathVariable("sessionID") String sessionID, @PathVariable("productID") String productID) {
         try{
-            Response<String> response = new Response<String> (ProgramState.addCart(sessionID, productID));
+            Response<String> response = new Response<String> (stateManager.addCart(sessionID, productID));
             return response;
         }catch(RequestException e){
             return new Response<String>(null, e.getMessage());
@@ -99,7 +99,7 @@ public class UserController {
     @ResponseBody
     public Response<String> removeFromCart(@PathVariable("sessionID") String sessionID, @PathVariable("productID") String productID) {
         try{
-            Response<String> response = new Response<String> (ProgramState.removeCart(sessionID, productID));
+            Response<String> response = new Response<String> (stateManager.removeCart(sessionID, productID));
             return response;
         }catch(RequestException e){
             return new Response<String>(null, e.getMessage());
@@ -110,7 +110,7 @@ public class UserController {
     @ResponseBody
     public Response<String> completePurchase(@PathVariable("sessionID") String sessionID) {
         try{
-            Response<String> response = new Response<String> (ProgramState.completePurchase(sessionID));
+            Response<String> response = new Response<String> (stateManager.completePurchase(sessionID));
             return response;
         }catch(RequestException e){
             return new Response<String>(null, e.getMessage());
