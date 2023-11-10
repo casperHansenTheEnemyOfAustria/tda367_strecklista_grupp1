@@ -21,7 +21,6 @@ class HomeScreen extends StatelessWidget {
         colorScheme: const ColorScheme.highContrastDark().copyWith(
           secondary: HexColor("#09cdda")
         )
-        
       ),
       title: 'StecklistIT',
       home: Scaffold(
@@ -29,7 +28,6 @@ class HomeScreen extends StatelessWidget {
           backgroundColor: const Color.fromARGB(255, 63, 63, 63),
           actionsIconTheme: const IconThemeData(
           size: 30.0,
-          color: Colors.white,
           opacity: 10.0
   ),
           title: Container(child: titleSection)
@@ -50,13 +48,13 @@ Widget titleSection = Container(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             /*2*/
-            Text( /* TODO: Write listener code here */
+            Text( /* TODO: Write listener code here, User should be changed according to database */
               'User',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Text( /* TODO: Write listener code here */
+            Text( /* TODO: Write listener code here, saldo should be changed according to database */
               'Saldo: XX',
             )
           ],
