@@ -41,7 +41,7 @@ public class Model {
         }
 
         public Set<Product> getAllProducts() {
-            private Set<Product> allProducts = new HashSet<>();
+            Set<Product> allProducts = new HashSet<>();
             for (UserGroup userGroup : groups) {
                 allProducts.addAll(userGroup.getProducts());
             }
