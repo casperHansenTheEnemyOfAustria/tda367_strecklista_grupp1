@@ -58,9 +58,9 @@ public class Model {
     }
 
     public class UserGroup {
-        Set<Product> products = new HashSet<>();
-        Year year;
-        String name;
+        private Set<Product> products = new HashSet<>();
+        private Year year;
+        private String name;
         private OrderHistory orderHistory;
 
         public Set<Product> getProducts() {
