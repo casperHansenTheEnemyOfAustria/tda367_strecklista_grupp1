@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import se.cholmers.backend.Model;
-
-
+import se.cholmers.backend.Model.UserGroup;
+import se.cholmers.backend.Model.Cart;
 
 // import org.springframework.*;
 
