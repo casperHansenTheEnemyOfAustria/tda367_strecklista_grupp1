@@ -57,7 +57,7 @@ public class Model {
         }
     }
 
-    private class UserGroup {
+    public class UserGroup {
         Set<Product> products = new HashSet<>();
         Year year;
         String name;
@@ -109,7 +109,7 @@ public class Model {
         }
     }
 
-    private class Cart {
+    public class Cart {
         private Map<Product, Integer> itemsInCart;
 
         public Cart() {
