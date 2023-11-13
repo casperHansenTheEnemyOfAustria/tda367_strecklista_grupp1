@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class Model {
     private class User {
@@ -176,6 +177,52 @@ public class Model {
         public void completePurchase() {
             cart.empty();
             return;
+        }
+    }
+    public class StateManager {
+        private Map<String, ProgramState> states = new HashMap<>(); //stateID --> state
+
+        public StateManager() {
+        }
+
+        public String[] login(String userName, String password){
+            User user =new User(userName, password);
+            ProgramState state = new ProgramState(user);
+    
+            String stateID = UUID.randomUUID().toString();
+            states.put(stateID, state);
+            String[] output = {stateID, getAuth(stateID)};
+            return output;
+        }
+        
+        public String logout(String stateID){
+            states.remove(stateID);
+            return "log out successful";
+
+        }
+
+        public String getSaldo(String stateID, String groupID){
+            return states.get(stateID).getSaldo(groupID);
+        }
+
+        public void addToCart(String stateID, String productID){
+            states.get(stateID).addToCart(productID);
+        }
+
+        public void removeFromCart(String stateID, String productID){
+            states.get(stateID).removeFromCart(productID);
+        }
+
+        public Cart getCart(String stateID){
+            return states.get(stateID).getCart();
+        }
+
+        public void completePurchase(String stateID){
+            states.get(stateID).completePurchase();
+        }
+
+        private String getAuth(String stateID){
+            return "test";
         }
     }
 }
