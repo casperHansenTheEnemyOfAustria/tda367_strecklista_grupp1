@@ -29,12 +29,12 @@ public class UserController {
 
     @RequestMapping(value  = "/getSaldo/{sessionID}/{authToken}", method = RequestMethod.GET)
     @ResponseBody
-    public Response<Map<Group, Double>>getSaldo(@PathVariable("sessionID") String sessionID, @PathVariable("authToken") String authToken) {
+    public Response<Map<UserGroup, Double>>getSaldo(@PathVariable("sessionID") String sessionID, @PathVariable("authToken") String authToken) {
         try{
-            Response<Map<Group, Double>> saldo = new Response<Map<Group, Double>>(stateManager.getSaldo(sessionID, authToken));
+            Response<Map<UserGroup, Double>> saldo = new Response<Map<UserGroup, Double>>(stateManager.getSaldo(sessionID, authToken));
             return saldo;
         }catch(RequestException e){
-            return new Response<Map<Group, Double>>(null, e.getMessage());
+            return new Response<Map<UserGroup, Double>>(null, e.getMessage());
         }
         
     }
