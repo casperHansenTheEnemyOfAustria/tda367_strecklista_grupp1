@@ -154,6 +154,7 @@ public class Model {
 
         public ProgramState(User user) {
             this.currentUser = user;
+            this.cart = new Cart();
         }
 
         public String getSaldo(String groupID) {
