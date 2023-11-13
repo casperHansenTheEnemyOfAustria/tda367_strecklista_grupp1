@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import se.cholmers.backend.Model;
 import se.cholmers.backend.Model.UserGroup;
 import se.cholmers.backend.Model.Cart;
+import se.cholmers.backend.Model.StateManager;
 
 // import org.springframework.*;
 
@@ -24,32 +25,35 @@ public class UserController {
     @Autowired
     StateManager stateManager;
     public UserController(StateManager stateManager) {
-        this.StateManager = stateManager;
+        this.stateManager = stateManager;
     }
 
     @RequestMapping(value  = "/getSaldo/{sessionID}/{authToken}", method = RequestMethod.GET)
     @ResponseBody
-    public Response<Map<UserGroup, Double>>getSaldo(@PathVariable("sessionID") String sessionID, @PathVariable("authToken") String authToken) {
+    public Response<String>getSaldo(@PathVariable("sessionID") String sessionID, @PathVariable("authToken") String authToken) {
         try{
-            Response<Map<UserGroup, Double>> saldo = new Response<Map<UserGroup, Double>>(stateManager.getSaldo(sessionID, authToken));
+            Response<String> saldo = new Response<String>(stateManager.getSaldo(sessionID, authToken));
+     
             return saldo;
-        }catch(RequestException e){
-            return new Response<Map<UserGroup, Double>>(null, e.getMessage());
+        // }catch(RequestException e){
+        //     return new Response<String>(null, e.getMessage());
+        }finally{
+
         }
         
     }
 
-    @RequestMapping(value = "/createUser/{userName}/{password}", method = RequestMethod.POST)
-    @ResponseBody
-    public Response<String> createUser(@PathVariable("userName") String userName, @PathVariable("password") String password) {
-        try{
-            //possiubly change to factory pattern??
-            Response<String> response = new Response<String> (stateManager.createUser(userName, password));
-            return response;
-        }catch(RequestException e){
-            return new Response<String>(null, e.getMessage());
-        }
-    }
+    // @RequestMapping(value = "/createUser/{userName}/{password}", method = RequestMethod.POST)
+    // @ResponseBody
+    // public Response<String> createUser(@PathVariable("userName") String userName, @PathVariable("password") String password) {
+    //     try{
+    //         //possiubly change to factory pattern??
+    //         Response<String> response = new Response<String> (stateManager.createUser(userName, password));
+    //         return response;
+    //     }catch(RequestException e){
+    //         return new Response<String>(null, e.getMessage());
+    //     }
+    // }
 
     @RequestMapping(value = "/login/{userName}/{password}", method = RequestMethod.GET)
     @ResponseBody
@@ -57,9 +61,13 @@ public class UserController {
         try{
             Response<String[]> response = new Response<String[]> (stateManager.login(userName, password));
             return response;
-        }catch(RequestException e){
-            return new Response<String[]>(null, e.getMessage());
+        // }catch(RequestException e){
+        //     return new Response<String[]>(null, e.getMessage());
+        }finally{
+
         }
+        
+        
     }
 
     @RequestMapping(value = "/logout/{sessionID}", method = RequestMethod.POST)
@@ -68,8 +76,10 @@ public class UserController {
         try{
             Response<String> response = new Response<String> (stateManager.logout(sessionID));
             return response;
-        }catch(RequestException e){
-            return new Response<String>(null, e.getMessage());
+        // }catch(RequestException e){
+        //     return new Response<String>(null, e.getMessage());
+        }finally{
+
         }
     }
 
@@ -79,8 +89,10 @@ public class UserController {
         try{
             Response<Cart> response = new Response<Cart> (stateManager.getCart(sessionID));
             return response;
-        }catch(RequestException e){
-            return new Response<Cart>(null, e.getMessage());
+        // }catch(RequestException e){
+        //     return new Response<Cart>(null, e.getMessage());
+        }finally{
+
         }
     }
     
@@ -88,10 +100,13 @@ public class UserController {
     @ResponseBody
     public Response<String> addToCart(@PathVariable("sessionID") String sessionID, @PathVariable("productID") String productID) {
         try{
-            Response<String> response = new Response<String> (stateManager.addCart(sessionID, productID));
+            stateManager.addToCart(sessionID, productID);
+            Response<String> response = new Response<String> ("added to cart");
             return response;
-        }catch(RequestException e){
-            return new Response<String>(null, e.getMessage());
+        // }catch(RequestException e){
+        //     return new Response<String>(null, e.getMessage());
+        }finally{
+
         }
     }
 
@@ -99,10 +114,13 @@ public class UserController {
     @ResponseBody
     public Response<String> removeFromCart(@PathVariable("sessionID") String sessionID, @PathVariable("productID") String productID) {
         try{
-            Response<String> response = new Response<String> (stateManager.removeCart(sessionID, productID));
+            stateManager.removeFromCart(sessionID, productID);
+            Response<String> response = new Response<String> ("Removed from Cart");
             return response;
-        }catch(RequestException e){
-            return new Response<String>(null, e.getMessage());
+        // }catch(RequestException e){
+        //     return new Response<String>(null, e.getMessage());
+        }finally{
+
         }
     }
 
@@ -110,10 +128,13 @@ public class UserController {
     @ResponseBody
     public Response<String> completePurchase(@PathVariable("sessionID") String sessionID) {
         try{
-            Response<String> response = new Response<String> (stateManager.completePurchase(sessionID));
+            stateManager.completePurchase(sessionID);
+            Response<String> response = new Response<String> ("Purchase completed");
             return response;
-        }catch(RequestException e){
-            return new Response<String>(null, e.getMessage());
+        // }catch(RequestException e){
+        //     return new Response<String>(null, e.getMessage());
+        }finally{
+
         }
     }
 

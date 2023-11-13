@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import se.cholmers.backend.Model;
+import se.cholmers.backend.Model.UserGroup;
+import se.cholmers.backend.Model.Cart;
+import se.cholmers.backend.Model.StateManager;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +37,6 @@ class AppConfig {
     @Bean
 	//change pstate to model/application
     public StateManager stateManager() {
-		return new stateManager();
+		return new StateManager();
 	}
 }
