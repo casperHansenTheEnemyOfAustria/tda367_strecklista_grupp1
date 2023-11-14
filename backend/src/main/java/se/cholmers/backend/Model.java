@@ -11,6 +11,9 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Model {
+    /**
+     * This class represents a user in the system. It contains information about the user such as their name, nickname and phone number
+     */
     private class User {
         private String name;
         private String nick;
@@ -22,15 +25,32 @@ public class Model {
 
         }
 
+        /**
+         * 
+         * @param name
+         * @param nick
+         * this is the constructor
+         * it should be called when a new user is created and also add the user's group to it read from the database
+         */
         public User(String name, String nick) {
             this.name = name;
             this.nick = nick;
+
+            //logic to add the user to the group
         }
 
         public void addUserToGroup(UserGroup group) {
             groups.add(group);
         }
 
+        /**
+         * 
+         * @param groupID
+         * @return the saldo of the user in the context of its groupID
+         * 
+         * @throws IllegalArgumentException if the user is not a member of the group
+         * @throws NullPointerException     if the user is not a member of any group
+         */
         public Float getSaldo(String groupID) {
             for (UserGroup userGroup : groups) {
                 if (userGroup.name == groupID) {
@@ -40,6 +60,11 @@ public class Model {
             return 0f;
         }
 
+        /**
+         * 
+         * @return returns a set of all products the user has access to in all its usergorups
+         * @throws NullPointerException if the user is not a member of any group
+         */
         public Set<Product> getAllProducts() {
             Set<Product> allProducts = new HashSet<>();
             for (UserGroup userGroup : groups) {
@@ -48,6 +73,12 @@ public class Model {
             return allProducts;
         }
 
+        /**
+         * 
+         * @param productID
+         * @return the product with the given productID logged in its usergroup's database
+         * @throws NullPointerException if the user is not a member of any group
+         */
         public Product getProduct(String productID) {
             for (Product product : getAllProducts()) {
                 if (product.getID() == productID) {
@@ -69,6 +100,12 @@ public class Model {
             this.year = year;
             //code that initializes the object fdrom the database
         }
+
+
+        /**
+         * 
+         * @return the set of products in the usergroup
+         */
 
         public Set<Product> getProducts() {
             return products;
