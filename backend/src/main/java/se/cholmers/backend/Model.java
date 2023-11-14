@@ -12,10 +12,10 @@ import java.util.UUID;
 
 public class Model {
     private class User {
-        String name;
-        String nick;
-        String phoneNumber;
-        Map<UserGroup, Float> saldo = new HashMap<>();
+        private String name;
+        private String nick;
+        private String phoneNumber;
+        private Map<UserGroup, Float> saldo = new HashMap<>();
         private Set<UserGroup> groups = new HashSet<>();
 
         public User(String userID) {
@@ -70,9 +70,9 @@ public class Model {
     }
 
     private class Product {
-        String name;
-        String productID;
-        Float cost;
+        private String name;
+        private String productID;
+        private Float cost;
 
         public String getID() {
             return productID;
@@ -95,8 +95,8 @@ public class Model {
     }
 
     private class Order {
-        LocalDateTime timeStamp;
-        List<Product> products;
+        private LocalDateTime timeStamp;
+        private List<Product> products;
 
         /**
          * Takes a list of products and creates an order based with the current time as
@@ -149,8 +149,8 @@ public class Model {
     }
 
     private class ProgramState {
-        User currentUser;
-        Cart cart;
+        private User currentUser;
+        private Cart cart;
 
         public ProgramState(User user) {
             this.currentUser = user;
