@@ -25,9 +25,18 @@ public class Model {
 
         }
 
+        /**
+         * 
+         * @param name
+         * @param nick
+         * this is the constructor
+         * it should be called when a new user is created and also add the user's group to it read from the database
+         */
         public User(String name, String nick) {
             this.name = name;
             this.nick = nick;
+
+            //logic to add the user to the group
         }
 
         public void addUserToGroup(UserGroup group) {
@@ -64,6 +73,12 @@ public class Model {
             return allProducts;
         }
 
+        /**
+         * 
+         * @param productID
+         * @return the product with the given productID logged in its usergroup's database
+         * @throws NullPointerException if the user is not a member of any group
+         */
         public Product getProduct(String productID) {
             for (Product product : getAllProducts()) {
                 if (product.getID() == productID) {
@@ -80,6 +95,10 @@ public class Model {
         private String name;
         private OrderHistory orderHistory;
 
+        /**
+         * 
+         * @return the set of products in the usergroup
+         */
         public Set<Product> getProducts() {
             return products;
         }
