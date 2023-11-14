@@ -95,10 +95,18 @@ public class Model {
         private String name;
         private OrderHistory orderHistory;
 
+        public UserGroup(String name, Year year) {
+            this.name = name;
+            this.year = year;
+            //code that initializes the object fdrom the database
+        }
+
+
         /**
          * 
          * @return the set of products in the usergroup
          */
+
         public Set<Product> getProducts() {
             return products;
         }
