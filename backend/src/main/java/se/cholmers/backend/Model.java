@@ -95,6 +95,13 @@ public class Model {
         private String name;
         private OrderHistory orderHistory;
 
+        /**
+         * 
+         * @param name
+         * @param year
+         * 
+         * this is the constructor for the user group it should add all the associated products from the database when created
+         */
         public UserGroup(String name, Year year) {
             this.name = name;
             this.year = year;
@@ -106,7 +113,6 @@ public class Model {
          * 
          * @return the set of products in the usergroup
          */
-
         public Set<Product> getProducts() {
             return products;
         }
