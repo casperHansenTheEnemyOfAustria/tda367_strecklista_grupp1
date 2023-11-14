@@ -11,6 +11,9 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Model {
+    /**
+     * This class represents a user in the system. It contains information about the user such as their name, nickname and phone number
+     */
     private class User {
         private String name;
         private String nick;
@@ -31,6 +34,14 @@ public class Model {
             groups.add(group);
         }
 
+        /**
+         * 
+         * @param groupID
+         * @return the saldo of the user in the context of its groupID
+         * 
+         * @throws IllegalArgumentException if the user is not a member of the group
+         * @throws NullPointerException     if the user is not a member of any group
+         */
         public Float getSaldo(String groupID) {
             for (UserGroup userGroup : groups) {
                 if (userGroup.name == groupID) {
@@ -40,6 +51,11 @@ public class Model {
             return 0f;
         }
 
+        /**
+         * 
+         * @return returns a set of all products the user has access to in all its usergorups
+         * @throws NullPointerException if the user is not a member of any group
+         */
         public Set<Product> getAllProducts() {
             Set<Product> allProducts = new HashSet<>();
             for (UserGroup userGroup : groups) {
