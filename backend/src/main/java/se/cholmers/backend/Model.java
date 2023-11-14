@@ -89,6 +89,9 @@ public class Model {
         }
     }
 
+    /**
+     * ths is agrous of users that should keep track of what that group has in terms of product stocks and such. It can be instantiated for each user where objects can have the same attributes and be updated from the database as needed
+     */
     public class UserGroup {
         private Set<Product> products = new HashSet<>();
         private Year year;
@@ -111,7 +114,7 @@ public class Model {
 
         /**
          * 
-         * @return the set of products in the usergroup
+         * @return the set of products in the usergroup up to date with the database
          */
         public Set<Product> getProducts() {
             return products;
