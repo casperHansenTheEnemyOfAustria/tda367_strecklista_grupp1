@@ -45,4 +45,9 @@ class AppConfig {
 		Model model = model();
 		return model.new StateManager();
 	}
+
+	@Bean
+	public DatabaseInterface databaseInterface() {
+		return DatabaseInterface.getInstance();
+	}
 }
