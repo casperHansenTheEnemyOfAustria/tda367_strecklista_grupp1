@@ -12,7 +12,8 @@ import java.util.UUID;
 
 public class Model {
     /**
-     * This class represents a user in the system. It contains information about the user such as their name, nickname and phone number
+     * This class represents a user in the system. It contains information about the
+     * user such as their name, nickname and phone number
      */
     private class User {
         private String name;
@@ -29,14 +30,15 @@ public class Model {
          * 
          * @param name
          * @param nick
-         * this is the constructor
-         * it should be called when a new user is created and also add the user's group to it read from the database
+         *             this is the constructor
+         *             it should be called when a new user is created and also add the
+         *             user's group to it read from the database
          */
         public User(String name, String nick) {
             this.name = name;
             this.nick = nick;
 
-            //logic to add the user to the group
+            // logic to add the user to the group
         }
 
         public void addUserToGroup(UserGroup group) {
@@ -62,7 +64,8 @@ public class Model {
 
         /**
          * 
-         * @return returns a set of all products the user has access to in all its usergorups
+         * @return returns a set of all products the user has access to in all its
+         *         usergorups
          * @throws NullPointerException if the user is not a member of any group
          */
         public Set<Product> getAllProducts() {
@@ -76,7 +79,8 @@ public class Model {
         /**
          * 
          * @param productID
-         * @return the product with the given productID logged in its usergroup's database
+         * @return the product with the given productID logged in its usergroup's
+         *         database
          * @throws NullPointerException if the user is not a member of any group
          */
         public Product getProduct(String productID) {
@@ -90,7 +94,9 @@ public class Model {
     }
 
     /**
-     * ths is agrous of users that should keep track of what that group has in terms of product stocks and such. It can be instantiated for each user where objects can have the same attributes and be updated from the database as needed
+     * This is a group to which users can be assigned.
+     * Different groups have different sets of products, names, orderHistories and
+     * the user's saldo is different,
      */
     public class UserGroup {
         private Set<Product> products = new HashSet<>();
@@ -103,14 +109,14 @@ public class Model {
          * @param name
          * @param year
          * 
-         * this is the constructor for the user group it should add all the associated products from the database when created
+         *             this is the constructor for the user group it should add all the
+         *             associated products from the database when created
          */
         public UserGroup(String name, Year year) {
             this.name = name;
             this.year = year;
-            //code that initializes the object fdrom the database
+            // code that initializes the object fdrom the database
         }
-
 
         /**
          * 
@@ -232,49 +238,50 @@ public class Model {
             return;
         }
     }
+
     public class StateManager {
-        private Map<String, ProgramState> states = new HashMap<>(); //stateID --> state
+        private Map<String, ProgramState> states = new HashMap<>(); // stateID --> state
 
         public StateManager() {
         }
 
-        public String[] login(String userName, String password){
-            User user =new User(userName, password);
+        public String[] login(String userName, String password) {
+            User user = new User(userName, password);
             ProgramState state = new ProgramState(user);
-    
+
             String stateID = UUID.randomUUID().toString();
             states.put(stateID, state);
-            String[] output = {stateID, getAuth(stateID)};
+            String[] output = { stateID, getAuth(stateID) };
             return output;
         }
-        
-        public String logout(String stateID){
+
+        public String logout(String stateID) {
             states.remove(stateID);
             return "log out successful";
 
         }
 
-        public String getSaldo(String stateID, String groupID){
+        public String getSaldo(String stateID, String groupID) {
             return states.get(stateID).getSaldo(groupID);
         }
 
-        public void addToCart(String stateID, String productID){
+        public void addToCart(String stateID, String productID) {
             states.get(stateID).addToCart(productID);
         }
 
-        public void removeFromCart(String stateID, String productID){
+        public void removeFromCart(String stateID, String productID) {
             states.get(stateID).removeFromCart(productID);
         }
 
-        public Cart getCart(String stateID){
+        public Cart getCart(String stateID) {
             return states.get(stateID).getCart();
         }
 
-        public void completePurchase(String stateID){
+        public void completePurchase(String stateID) {
             states.get(stateID).completePurchase();
         }
 
-        private String getAuth(String stateID){
+        private String getAuth(String stateID) {
             return "test";
         }
     }
