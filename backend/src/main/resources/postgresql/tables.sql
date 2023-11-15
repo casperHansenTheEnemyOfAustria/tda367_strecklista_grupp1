@@ -7,7 +7,7 @@ CREATE TABLE User(
     user_nick TEXT NOT NULL
 );
 
-CREATE TABLE UserGroup (
+CREATE TABLE Committee (
     id INT PRIMARY KEY,
     group_name TEXT NOT NULL,
     year CHAR(2),
@@ -31,14 +31,14 @@ CREATE TABLE Transaction (
     transaction_date DATE NOT NULL
 );
 
-CREATE TABLE UserInGroup (
+CREATE TABLE UserInCommittee (
     user REFERENCES User(id),
     userGroup REFERENCES UserGroup(id),
     saldo INT NOT NULL,
     PRIMARY KEY(user, userGroup)
 );
 
-CREATE TABLE ProductInUserGroup (
+CREATE TABLE ProductInCommmittee (
     userGroup REFERENCES UserGroup(),
     product REFERENCES Product(id),
     PRIMARY KEY(userGroup, product),
