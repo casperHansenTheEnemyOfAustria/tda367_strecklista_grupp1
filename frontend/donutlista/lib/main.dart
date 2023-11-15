@@ -1,4 +1,5 @@
 import 'package:donutlista/appbar.dart';
+import 'package:donutlista/mainpage.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
@@ -35,8 +36,9 @@ class HomeScreen extends StatelessWidget {
           size: 30.0,
           opacity: 10.0
   ),
-          title: Container(child: titleSection)
+          title: Container(child: titleSection),
           ),
+        body: Center(child: Container(child: mainPage))
 
 //TODO: Add page switch as homescreen body
 

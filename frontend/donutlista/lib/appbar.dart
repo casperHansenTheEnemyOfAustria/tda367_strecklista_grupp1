@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Appbar for all pages 
+/* Menu and information always present at the top of the app */
 
 Widget titleSection = Container(
   padding: const EdgeInsets.all(32),
@@ -40,6 +40,9 @@ class DropdownMenuMain extends StatefulWidget {
   @override
   State<DropdownMenuMain> createState() => _DropdownMenuMainState();
 }
+
+
+/* Dropdown menu to showcase different pages on the site */
 
 class _DropdownMenuMainState extends State<DropdownMenuMain> {
   String dropdownValue = list.first;
