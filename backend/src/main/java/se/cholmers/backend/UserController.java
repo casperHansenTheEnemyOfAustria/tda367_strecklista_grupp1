@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * UserController this controlls user😎 features such as login, logout and getsaldo🤑 etc it has access to the session manager to fetch its given session from different users
+ * UserController this controls user😎 features such as login, logout and getsaldo🤑 etc it has access to the session manager to fetch its given session from different users
  */
 @RestController
 // @RequestMapping("/user")
