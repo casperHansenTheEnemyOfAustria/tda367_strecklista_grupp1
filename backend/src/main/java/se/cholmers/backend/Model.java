@@ -156,9 +156,10 @@ public class Model {
     }
 
     private class OrderHistory {
-        List<Order> orders = new ArrayList<>();
+        List<Order> orders;
 
         public OrderHistory() {
+            orders = new ArrayList<>();
         }
 
         public void addOrderToHistory(Order order) {
