@@ -16,6 +16,8 @@ import se.cholmers.backend.Model.UserGroup;
 import se.cholmers.backend.Model.Cart;
 import se.cholmers.backend.Model.StateManager;
 
+import java.util.HashMap;
+
 // import org.springframework.*;
 
 import java.util.Map;
@@ -138,6 +140,18 @@ public class UserController {
         }
     }
 
+    @RequestMapping(value = "/getProducts/{sessionID}", method = RequestMethod.GET)
+    @ResponseBody
+    public Response<Map<String, String>> getProducts(@PathVariable("sessionID") String sessionID) {
+        try{
+            Response<Map<String, String>> response = new Response<Map<String, String>>(new HashMap<String, String>());
+            return response;
+        // }catch(RequestException e){
+        //     return new Response<Map<String, String>>(null, e.getMessage());
+        }finally{
+
+        }
+    }
 
 
 
