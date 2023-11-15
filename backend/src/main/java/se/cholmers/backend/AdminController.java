@@ -23,11 +23,13 @@ public class AdminController {
     public Response<String> createUser(@PathVariable("userName") String userName, @PathVariable("password") String password) {
         try{
             //possiubly change to factory pattern??
-            stateManager.createUser(userName, password);
+            // stateManager.createUser(userName, password);
             Response<String> response = new Response<String> ("user created");
             return response;
-        }catch(RequestException e){
-            return new Response<String>(null, e.getMessage());
+        // }catch(RequestException e){
+        //     return new Response<String>(null, e.getMessage());
+        }finally{
+
         }
     }
 
@@ -36,12 +38,21 @@ public class AdminController {
     public Response<String> createProduct(@PathVariable("productName") String productName, @PathVariable("price") String price) {
         try{
             //possiubly change to factory pattern??
-            dbi.createProduct(productName, price);
+            // dbi.createProduct(productName, price);
             Response<String> response = new Response<String> ("Product created");
             return response;
-        }catch(RequestException e){
-            return new Response<String>(null, e.getMessage());
+        // }catch(RequestException e){
+        //     return new Response<String>(null, e.getMessage());
+        }finally{
+
         }
     }
 
 }
+
+//temporary interface
+class DatabaseInterface{
+    public static DatabaseInterface getInstance(){
+        return null;
+    }
+}   
