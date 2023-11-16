@@ -18,8 +18,7 @@ public class StateManager {
         return instance;
     }
 
-    private StateManager(Model model) {
-        this.model = model;
+    private StateManager() {
         this.states = new HashMap<>();
     }
 
