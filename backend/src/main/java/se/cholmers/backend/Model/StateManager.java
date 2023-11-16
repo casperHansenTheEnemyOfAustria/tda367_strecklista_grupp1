@@ -18,6 +18,9 @@ public class StateManager {
         return instance;
     }
 
+    /**
+     * Singleton, only to be used once in getInstance.
+     */
     private StateManager() {
         this.states = new HashMap<>();
     }
