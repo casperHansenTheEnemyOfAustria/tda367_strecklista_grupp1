@@ -22,6 +22,11 @@ public class Model {
         private Map<UserGroup, Float> saldo = new HashMap<>();
         private Set<UserGroup> groups = new HashSet<>();
 
+        /**
+         * This is the constructor for when recreating users from the database
+         * 
+         * @param userID
+         */
         public User(String userID) {
 
         }
