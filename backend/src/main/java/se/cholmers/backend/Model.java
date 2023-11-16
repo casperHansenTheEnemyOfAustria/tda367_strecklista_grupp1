@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,18 +27,17 @@ public class Model {
         }
 
         /**
+         * This is the constructor
+         * it should be called when a new user is created and also add the
+         * user's group to it read from the database
          * 
          * @param name
          * @param nick
-         *             this is the constructor
-         *             it should be called when a new user is created and also add the
-         *             user's group to it read from the database
+         * 
          */
         public User(String name, String nick) {
             this.name = name;
             this.nick = nick;
-
-            // logic to add the user to the group
         }
 
         public void addUserToGroup(UserGroup group) {
