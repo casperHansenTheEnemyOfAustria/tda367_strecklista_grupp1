@@ -38,7 +38,8 @@ class HomeScreen extends StatelessWidget {
   ),
           title: Container(child: titleSection),
           ),
-        body: Center(child: Container(child: mainPage))
+        body: MainPageLayout()
+              
 
 //TODO: Add page switch as homescreen body
 /* Find a way to connect which dropdown is selected with a correct change to the body */
