@@ -11,10 +11,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import se.cholmers.backend.Model;
-import se.cholmers.backend.Model.UserGroup;
-import se.cholmers.backend.Model.Cart;
 import se.cholmers.backend.Model.StateManager;
+
+
 
 import java.util.HashMap;
 
@@ -87,9 +86,9 @@ public class UserController {
 
     @RequestMapping(value = "/getCart/{sessionID}" , method = RequestMethod.GET)
     @ResponseBody
-    public Response<Cart> getCart(@PathVariable("sessionID") String sessionID) {
+    public Response<Map<String, String>> getCart(@PathVariable("sessionID") String sessionID) {
         try{
-            Response<Cart> response = new Response<Cart> (stateManager.getCart(sessionID));
+            Response<Map<String, String>> response = new Response<Map<String, String>> (stateManager.getCart(sessionID));
             return response;
         // }catch(RequestException e){
         //     return new Response<Cart>(null, e.getMessage());

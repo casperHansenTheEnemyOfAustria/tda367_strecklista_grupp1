@@ -31,17 +31,11 @@ public class BackendApplication {
 
 @Configuration
 class AppConfig {
-	@Bean
+    @Bean
+	//change pstate to model/application
+    public StateManager stateManager() {
+		return StateManager.getInstance();
 
-	public Model model() {
-		return new Model();
-	}
-
-	@Bean
-	// change pstate to model/application
-	public StateManager stateManager() {
-		Model model = model();
-		return model.new StateManager();
 	}
 
 	@Bean
