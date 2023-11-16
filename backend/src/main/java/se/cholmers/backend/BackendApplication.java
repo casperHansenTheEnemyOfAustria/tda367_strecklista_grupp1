@@ -6,14 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import se.cholmers.backend.Model;
-import se.cholmers.backend.Model.UserGroup;
-import se.cholmers.backend.Model.Cart;
 import se.cholmers.backend.Model.StateManager;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 
 @SpringBootApplication
 public class BackendApplication {
@@ -25,25 +21,25 @@ public class BackendApplication {
 
 	// @Bean
 	// public UserController userController() {
-	// 	return new UserController(StateManager());
+	// return new UserController(StateManager());
 	// }
 	// @Bean
 	// public StateManager StateManager() {
-	// 	return new StateManager();
+	// return new StateManager();
 	// }
 }
 
-
 @Configuration
 class AppConfig {
-	@Bean 
+	@Bean
 
 	public Model model() {
 		return new Model();
 	}
-    @Bean
-	//change pstate to model/application
-    public StateManager stateManager() {
+
+	@Bean
+	// change pstate to model/application
+	public StateManager stateManager() {
 		Model model = model();
 		return model.new StateManager();
 	}
