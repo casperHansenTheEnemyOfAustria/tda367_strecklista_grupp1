@@ -127,12 +127,21 @@ public class Model {
         }
 
         /**
+         * Adds an order to the group's orderhistory
+         * 
+         * @param order
+         */
+        public void addOrderToHistory(Order order) {
+            orderHistory.addOrderToHistory(order);
+        }
+
+        /**
          * First updates the history from the database.
          * 
          * @return the order history for a group
          */
-        public OrderHistory getOrderHistory() {
-            return orderHistory;
+        public List<Order> getOrderHistory() {
+            return orderHistory.getOrderHistory();
         }
     }
 
@@ -153,6 +162,11 @@ public class Model {
             productID = UUID.randomUUID().toString();
         }
 
+        /**
+         * Gets the ID of a product
+         * 
+         * @return the ID of the product
+         */
         public String getID() {
             return productID;
         }
@@ -161,15 +175,27 @@ public class Model {
     private class OrderHistory {
         List<Order> orders;
 
-        public OrderHistory() {
+        /**
+         * Constructor for creating a new orderhistory should never be used outside of
+         * the UserGroup constructor.
+         */
+        OrderHistory() {
             orders = new ArrayList<>();
         }
 
-        public void addOrderToHistory(Order order) {
+        /**
+         * Appends a order to the history.
+         * 
+         * @param order
+         */
+        void addOrderToHistory(Order order) {
             orders.add(order);
         }
 
-        public List<Order> getOrderHistory() {
+        /**
+         * @return a list of orders.
+         */
+        List<Order> getOrderHistory() {
             return orders;
         }
     }
