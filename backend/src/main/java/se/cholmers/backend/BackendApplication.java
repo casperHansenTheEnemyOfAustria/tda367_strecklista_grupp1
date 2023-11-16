@@ -3,7 +3,17 @@ package se.cholmers.backend;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import se.cholmers.backend.Model;
+import se.cholmers.backend.Model.UserGroup;
+import se.cholmers.backend.Model.Cart;
 import se.cholmers.backend.Model.StateManager;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 
 @SpringBootApplication
 public class BackendApplication {
@@ -13,4 +23,33 @@ public class BackendApplication {
 		SpringApplication.run(BackendApplication.class, args);
 	}
 
+	// @Bean
+	// public UserController userController() {
+	// 	return new UserController(StateManager());
+	// }
+	// @Bean
+	// public StateManager StateManager() {
+	// 	return new StateManager();
+	// }
+}
+
+
+@Configuration
+class AppConfig {
+	@Bean 
+
+	public Model model() {
+		return new Model();
+	}
+    @Bean
+	//change pstate to model/application
+    public StateManager stateManager() {
+		Model model = model();
+		return model.new StateManager();
+	}
+
+	@Bean
+	public DatabaseInterface databaseInterface() {
+		return DatabaseInterface.getInstance();
+	}
 }
