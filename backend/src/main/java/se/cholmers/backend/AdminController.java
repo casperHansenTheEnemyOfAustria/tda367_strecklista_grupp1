@@ -72,6 +72,6 @@ public class AdminController {
 //temporary interface
 class DatabaseInterface{
     public static DatabaseInterface getInstance(){
-        return null;
+        return new DatabaseInterface();
     }
 }   
