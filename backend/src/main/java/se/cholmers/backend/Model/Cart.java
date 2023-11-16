@@ -53,6 +53,19 @@ class Cart {
     }
 
     /**
+     * Returns a map of products ans their amount in the cart as a string map.
+     * 
+     * @return map of product name and amount
+     */
+    public HashMap<String, String> toStringMap() {
+        HashMap<String, String> output = new HashMap<String, String>();
+        for(Product p : itemsInCart.keySet()){
+            output.put(p.getName(), itemsInCart.get(p).toString());
+        }
+        return output;
+    }
+
+    /**
      * Clears the cart from all items.
      */
     public void empty() {
