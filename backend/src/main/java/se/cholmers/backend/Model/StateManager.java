@@ -19,7 +19,6 @@ public class StateManager {
     }
 
     /**
-
      * Only to be used for singleton.
      */
     private StateManager() {
