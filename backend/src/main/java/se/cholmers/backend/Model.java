@@ -19,7 +19,7 @@ public class Model {
         private String name;
         private String nick;
         private String phoneNumber;
-        private Map<UserGroup, Float> saldo = new HashMap<>();
+        private Map<String, Float> saldo = new HashMap<>();
         private Set<UserGroup> groups = new HashSet<>();
 
         /**
@@ -59,11 +59,25 @@ public class Model {
          */
         public Float getSaldo(String groupID) {
             for (UserGroup userGroup : groups) {
-                if (userGroup.name == groupID) {
-                    return saldo.get(userGroup);
+                if (userGroup.getID() == groupID) {
+                    return saldo.get(groupID);
                 }
             }
             return 0f;
+        }
+
+        /**
+         * Updates the user saldo based on the price and number of the products it wants
+         * to purchase.
+         * Negative saldo is permitted.
+         * 
+         * @param product
+         * @param numberOfProducts
+         */
+        public void purchaseItem(Product product, Integer numberOfProducts) {
+            Float currentSaldo = saldo.get(product.getGroupID());
+            currentSaldo -= product.getCost() * numberOfProducts;
+            saldo.put(product.getGroupID(), currentSaldo);
         }
 
         /**
@@ -101,20 +115,19 @@ public class Model {
         private Set<Product> products = new HashSet<>();
         private Year year;
         private String name;
+        private String groupID;
         private OrderHistory orderHistory;
 
         public UserGroup(String name, Year year) {
             this.name = name;
             this.year = year;
             this.orderHistory = new OrderHistory();
-            // code that initializes the object fdrom the database
+            this.groupID = UUID.randomUUID().toString();
+            // code that initializes the object from the database
         }
 
-        public UserGroup(String name, Year year, OrderHistory orderHistory) {
-            this.name = name;
-            this.year = year;
-            this.orderHistory = orderHistory;
-            // code that initializes the object fdrom the database
+        public UserGroup(String groupID) {
+            // code that initializes the object from the database
         }
 
         /**
@@ -124,6 +137,17 @@ public class Model {
          */
         public Set<Product> getProducts() {
             return products;
+        }
+
+        /**
+         * Creates a new product and adds to the existing set of products.
+         * Temp solution until we have a working database interface.
+         * 
+         * @param name
+         * @param cost
+         */
+        public void addProduct(String name, Float cost) {
+            products.add(new Product(name, cost, groupID));
         }
 
         /**
@@ -143,12 +167,17 @@ public class Model {
         public List<Order> getOrderHistory() {
             return orderHistory.getOrderHistory();
         }
+
+        public String getID() {
+            return this.groupID;
+        }
     }
 
     private class Product {
         private String name;
         private String productID;
         private Float cost;
+        private String groupID;
 
         /**
          * Creates a new product with a random ID given the parameters.
@@ -156,10 +185,19 @@ public class Model {
          * @param name (the name of the product.)
          * @param cost (the price of the product in SEK.)
          */
-        public Product(String name, Float cost) {
+        public Product(String name, Float cost, String groupID) {
             this.name = name;
             this.cost = cost;
+            this.groupID = groupID;
             productID = UUID.randomUUID().toString();
+        }
+
+        public String getGroupID() {
+            return groupID;
+        }
+
+        public Float getCost() {
+            return cost;
         }
 
         /**
@@ -277,30 +315,65 @@ public class Model {
         private User currentUser;
         private Cart cart;
 
+        /**
+         * Creates a program state given a certain User.
+         * 
+         * @param user
+         */
         public ProgramState(User user) {
             this.currentUser = user;
             this.cart = new Cart();
         }
 
+        /**
+         * Returns the saldo as a string for use in the frontend given a groupID for the
+         * user owning the ProgramState.
+         * 
+         * @param groupID
+         * @return A string of the saldo a user has in a given group.
+         */
         public String getSaldo(String groupID) {
             return currentUser.getSaldo(groupID).toString();
         }
 
+        /**
+         * Adds a product to the cart owned by the user owning the ProgramState given
+         * the productID as a string.
+         * 
+         * @param productID
+         */
         public void addToCart(String productID) {
             Product product = currentUser.getProduct(productID);
             cart.addToCart(product);
         }
 
+        /**
+         * Removes a product from the cart owned by the user owning the ProgramState
+         * given the productID as a string.
+         * 
+         * @param productID
+         */
         public void removeFromCart(String productID) {
             Product product = currentUser.getProduct(productID);
             cart.removeFromCart(product);
         }
 
-        public Cart getCart() {
-            return cart;
+        /**
+         * Returns the contents of the Cart.
+         * 
+         * @return the contents of the Cart.
+         */
+        public Map<Product, Integer> getCart() {
+            return cart.getCart();
         }
 
+        /**
+         * Empties the cart and updates the saldo (saldo update not yet working)
+         */
         public void completePurchase() {
+            for (Product product : getCart().keySet()) {
+                currentUser.purchaseItem(product, getCart().get(product));
+            }
             cart.empty();
             return;
         }
