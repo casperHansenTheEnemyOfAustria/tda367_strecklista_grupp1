@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import se.cholmers.backend.Model.StateManager;
 
+ /**
+  * AdminController this controlls admin features such as creating users and products and assignings these to groups
+  * It talks directly to the database interface
+  */
 @RestController
 public class AdminController {
     @Autowired
@@ -16,8 +20,17 @@ public class AdminController {
     DatabaseInterface dbi;
     public AdminController(StateManager stateManager, DatabaseInterface dbi) {
         this.stateManager = stateManager;
+        this.dbi = dbi;
     }
 
+  
+/**
+ * createUser creates a user in the database
+ * @param userName (the users name)
+ * @param password (the users wanted password)
+ * @return response (a response with the correct code and a success message if the user was created. Otherwise it should havea an error code)
+ * 
+ */
     @RequestMapping(value = "/createUser/{userName}/{password}", method = RequestMethod.POST)
     @ResponseBody
     public Response<String> createUser(@PathVariable("userName") String userName, @PathVariable("password") String password) {
@@ -33,6 +46,12 @@ public class AdminController {
         }
     }
 
+    /**
+     * createProduct creates a product in the database
+     * @param productName 
+     * @param price
+     * @return response (a response with the correct code and a success message if the product was created. Otherwise it should havea an error code)
+     */
     @RequestMapping(value = "/createProduct/{productName}/{price}", method = RequestMethod.POST)
     @ResponseBody
     public Response<String> createProduct(@PathVariable("productName") String productName, @PathVariable("price") String price) {
