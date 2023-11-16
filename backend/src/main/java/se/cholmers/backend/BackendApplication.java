@@ -11,7 +11,6 @@ import se.cholmers.backend.Model.StateManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 @SpringBootApplication
 public class BackendApplication {
 
@@ -22,23 +21,21 @@ public class BackendApplication {
 
 	// @Bean
 	// public UserController userController() {
-	// 	return new UserController(StateManager());
+	// return new UserController(StateManager());
 	// }
 	// @Bean
 	// public StateManager StateManager() {
-	// 	return new StateManager();
+	// return new StateManager();
 	// }
 }
 
-
 @Configuration
 class AppConfig {
-
-
     @Bean
 	//change pstate to model/application
     public StateManager stateManager() {
 		return StateManager.getInstance();
+
 	}
 
 	@Bean
