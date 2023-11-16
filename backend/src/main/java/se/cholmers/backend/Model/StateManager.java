@@ -50,7 +50,7 @@ public class StateManager {
         states.get(stateID).removeFromCart(productID);
     }
 
-    public Map<Product, Integer> getCart(String stateID) {
+    public HashMap<String, String>getCart(String stateID) {
         return states.get(stateID).getCart();
     }
 
