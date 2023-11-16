@@ -3,9 +3,6 @@ package se.cholmers.backend.Model;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.cholmers.backend.Model;
-import se.cholmers.backend.Model.Order;
-
 class OrderHistory {
     List<Order> orders;
 

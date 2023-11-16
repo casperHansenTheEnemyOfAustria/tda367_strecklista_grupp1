@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+public class UserGroup {
     private Set<Product> products = new HashSet<>();
     private Year year;
     private String name;

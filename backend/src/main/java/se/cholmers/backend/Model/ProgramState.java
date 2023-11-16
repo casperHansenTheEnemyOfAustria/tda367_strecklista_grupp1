@@ -1,5 +1,7 @@
 package se.cholmers.backend.Model;
 
+import java.util.Map;
+
 public class ProgramState {
     private User currentUser;
     private Cart cart;

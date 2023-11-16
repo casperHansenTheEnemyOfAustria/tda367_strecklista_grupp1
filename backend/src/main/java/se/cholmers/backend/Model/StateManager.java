@@ -1,15 +1,10 @@
-package se.cholmers.backend;
+package se.cholmers.backend.Model;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import se.cholmers.backend.Model.Product;
-import se.cholmers.backend.Model.ProgramState;
-import se.cholmers.backend.Model.User;
-
 public class StateManager {
-    private Model model;
     private Map<String, ProgramState> states;
     private static StateManager instance;
 
@@ -18,7 +13,7 @@ public class StateManager {
      */
     public static StateManager getInstance() {
         if (StateManager.instance == null) {
-            StateManager.instance = new StateManager(/* TODO FIX THIS UGLY TEMP SOLUTION */ new Model());
+            StateManager.instance = new StateManager();
         }
         return instance;
     }
