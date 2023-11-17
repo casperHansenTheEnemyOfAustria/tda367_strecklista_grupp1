@@ -1,41 +1,46 @@
 package se.cholmers.backend.Model;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CartTests {
     Cart cart;
 
-    @BeforeEach
+    @BeforeAll
     void setup() {
         cart = new Cart();
     }
 
     @Test
-    Cart addProductToCartWorks() {
+    void addProductToCartWorks() {
         Product myProduct = new Product("testName", 0f, "testGroupID");
         cart.addToCart(myProduct);
         assertEquals(cart.getCart().get(myProduct), 1);
         cart.addToCart(myProduct);
         assertEquals(cart.getCart().get(myProduct), 2);
-        cart.addToCart(null);
-        Product nullProduct = new Product(null, null, null);
-        cart.addToCart(nullProduct);
+    }
 
-        return cart;
+    @Test
+    void addNullsToCart() {
+        assertDoesNotThrow(() -> cart.addToCart(null));
+        Product nullProduct = new Product(null, null, null);
+        assertDoesNotThrow(() -> cart.addToCart(nullProduct));
     }
 
     @Test
     void getCartWithNulls() {
-        cart = addProductToCartWorks();
+        addNullsToCart();
         cart.toStringMap();
     }
 
     @Test
     void getCartWithNullsAndEmpty() {
-        cart = addProductToCartWorks();
+        addNullsToCart();
         cart.toStringMap();
         cart.getCart().clear();
         cart.toStringMap();
