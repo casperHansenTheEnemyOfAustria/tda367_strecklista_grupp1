@@ -32,4 +32,26 @@ class CartTests {
         cart = addProductToCartWorks();
         cart.toStringMap();
     }
+
+    @Test
+    void getCartWithNullsAndEmpty() {
+        cart = addProductToCartWorks();
+        cart.toStringMap();
+        cart.getCart().clear();
+        cart.toStringMap();
+    }
+
+    @Test
+    void removeProductFromCart() {
+        cart = new Cart();
+        Product myProduct = new Product("testName", 0f, "testGroupID");
+        cart.addToCart(myProduct);
+        cart.addToCart(myProduct);
+        cart.removeFromCart(myProduct);
+        assertEquals(cart.getCart().get(myProduct), 1);
+        cart.removeFromCart(myProduct);
+        assertEquals(cart.getCart().get(myProduct), 0);
+        cart.removeFromCart(myProduct);
+        assertEquals(cart.getCart().get(myProduct), 0);
+    }
 }

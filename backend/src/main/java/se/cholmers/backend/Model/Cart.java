@@ -43,15 +43,15 @@ class Cart {
      * @param product
      */
     public void removeFromCart(Product product) {
-        Integer currentInCart;
+        Integer currentInCart = itemsInCart.get(product);
         try {
-            currentInCart = itemsInCart.get(product);
+            if (currentInCart > 0) {
+                itemsInCart.put(product, currentInCart - 1);
+            }
         } catch (NullPointerException e) {
-            return;
+            // TODO: handle exception
         }
-        if (currentInCart > 0) {
-            itemsInCart.put(product, --currentInCart);
-        }
+
     }
 
     /**
