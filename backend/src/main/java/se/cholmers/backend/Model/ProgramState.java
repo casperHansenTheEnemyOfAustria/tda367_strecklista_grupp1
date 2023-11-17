@@ -1,5 +1,6 @@
 package se.cholmers.backend.Model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 class ProgramState {
@@ -54,16 +55,16 @@ class ProgramState {
      * 
      * @return the contents of the Cart.
      */
-    public Map<Product, Integer> getCart() {
-        return cart.getCart();
+    public HashMap<String, String> getCart() {
+        return cart.toStringMap();
     }
 
     /**
      * Empties the cart and updates the saldo (saldo update not yet working)
      */
     public void completePurchase() {
-        for (Product product : getCart().keySet()) {
-            currentUser.purchaseItem(product, getCart().get(product));
+        for (Product product : cart.getCart().keySet()) {
+            currentUser.purchaseItem(product, cart.getCart().get(product));
         }
         cart.empty();
         return;

@@ -92,7 +92,7 @@ public class StateManager {
      * @param stateID
      * @return
      */
-    public Map<Product, Integer> getCart(String stateID) {
+    public Map<String, String> getCart(String stateID) {
         return states.get(stateID).getCart();
     }
 

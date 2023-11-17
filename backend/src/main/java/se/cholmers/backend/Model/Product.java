@@ -45,4 +45,8 @@ class Product {
     public String getID() {
         return productID;
     }
+
+    public String getName() {
+        return name;
+    }
 }
