@@ -62,7 +62,11 @@ class Cart {
     public Map<String, String> toStringMap() {
         Map<String, String> output = new HashMap<String, String>();
         for (Product p : itemsInCart.keySet()) {
-            output.put(p.getName(), itemsInCart.get(p).toString());
+            try {
+                output.put(p.getName(), itemsInCart.get(p).toString());
+            } catch (NullPointerException e) {
+                // TODO: handle exception
+            }
         }
         return output;
     }

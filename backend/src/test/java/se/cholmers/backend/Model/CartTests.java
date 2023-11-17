@@ -6,27 +6,30 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class CartTests {
-
     Cart cart;
 
     @BeforeEach
-    void setUp() {
+    void setup() {
         cart = new Cart();
     }
 
     @Test
-    void addProductToCartWorks() {
+    Cart addProductToCartWorks() {
         Product myProduct = new Product("testName", 0f, "testGroupID");
         cart.addToCart(myProduct);
         assertEquals(cart.getCart().get(myProduct), 1);
         cart.addToCart(myProduct);
         assertEquals(cart.getCart().get(myProduct), 2);
         cart.addToCart(null);
+        Product nullProduct = new Product(null, null, null);
+        cart.addToCart(nullProduct);
+
+        return cart;
     }
 
     @Test
-    void cartIsEmptiedOnCheckout() {
-
+    void getCartWithNulls() {
+        cart = addProductToCartWorks();
+        cart.toStringMap();
     }
-
 }
