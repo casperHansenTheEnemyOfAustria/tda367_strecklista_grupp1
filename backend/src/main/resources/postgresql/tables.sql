@@ -1,10 +1,10 @@
 -- ENTITIES
 
-CREATE TABLE User(
+CREATE TABLE Person (
     id INT PRIMARY KEY,
     phone_number CHAR(10) NOT NULL,
-    user_name TEXT NOT NULL,
-    user_nick TEXT NOT NULL
+    person_name TEXT NOT NULL,
+    person_nick TEXT NOT NULL
 );
 
 CREATE TABLE Committee (
@@ -15,7 +15,7 @@ CREATE TABLE Committee (
 );
 
 CREATE TABLE Product (
-    id INT KEY,
+    id INT PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
     price FLOAT NOT NULL
 );
@@ -25,22 +25,22 @@ CREATE TABLE Product (
 
 CREATE TABLE Transaction (
     id INT PRIMARY KEY,
-    user REFERENCES User(id),
-    product REFERENCES Product(id)
+    person_id INT REFERENCES Person(id) NOT NULL,
+    product_id INT REFERENCES Product(id) NOT NULL,
     transaction_time TIME NOT NULL,
     transaction_date DATE NOT NULL
 );
 
-CREATE TABLE UserInCommittee (
-    user REFERENCES User(id),
-    userGroup REFERENCES UserGroup(id),
+CREATE TABLE PersonInCommittee (
+    person_id INT REFERENCES Person(id) NOT NULL,
+    committee_id INT REFERENCES Committee(id) NOT NULL,
     saldo INT NOT NULL,
-    PRIMARY KEY(user, userGroup)
+    PRIMARY KEY(person_id, committee_id)
 );
 
-CREATE TABLE ProductInCommmittee (
-    userGroup REFERENCES UserGroup(),
-    product REFERENCES Product(id),
-    PRIMARY KEY(userGroup, product),
+CREATE TABLE ProductInCommittee (
+    committee_id INT REFERENCES Committee(id) NOT NULL,
+    product_id INT REFERENCES Product(id) NOT NULL,
+    PRIMARY KEY(committee_id, product_id),
     amount INT
 );
