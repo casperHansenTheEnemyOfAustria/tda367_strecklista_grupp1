@@ -15,15 +15,17 @@ class Cart {
 
     /**
      * Adds a given product to the cart
+     * 
+     * @throws NullPointerException
      */
     public void addToCart(Product product) {
         Integer currentInCart;
+        currentInCart = itemsInCart.get(product);
         try {
-            currentInCart = itemsInCart.get(product);
+            itemsInCart.put(product, currentInCart + 1);
         } catch (NullPointerException e) {
-            currentInCart = 0;
+            itemsInCart.put(product, 1);
         }
-        itemsInCart.put(product, ++currentInCart);
     }
 
     /**
