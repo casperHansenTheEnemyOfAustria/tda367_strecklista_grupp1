@@ -33,8 +33,12 @@ class User {
      * @param name
      * @param nick
      * 
+     * @throws NullPointerException if the input is null
      */
     public User(String name, String nick) {
+        if (name == null || nick == null) {
+            throw new NullPointerException();
+        }
         this.name = name;
         this.nick = nick;
     }
