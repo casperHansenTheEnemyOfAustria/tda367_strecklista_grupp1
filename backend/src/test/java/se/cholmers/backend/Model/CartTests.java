@@ -43,7 +43,6 @@ class CartTests {
 
     @Test
     void removeProductFromCart() {
-        cart = new Cart();
         Product myProduct = new Product("testName", 0f, "testGroupID");
         cart.addToCart(myProduct);
         cart.addToCart(myProduct);
