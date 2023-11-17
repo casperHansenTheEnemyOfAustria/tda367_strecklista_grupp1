@@ -59,6 +59,9 @@ class User {
      * @throws NullPointerException if the input is null
      */
     public User(String name, String nick, String password) {
+        if (name == null || nick == null) {
+            throw new NullPointerException();
+        }
         this.name = name;
         this.nick = nick;
         try {
