@@ -57,9 +57,9 @@ class Cart {
      * 
      * @return map of product name and amount
      */
-    public HashMap<String, String> toStringMap() {
-        HashMap<String, String> output = new HashMap<String, String>();
-        for(Product p : itemsInCart.keySet()){
+    public Map<String, String> toStringMap() {
+        Map<String, String> output = new HashMap<String, String>();
+        for (Product p : itemsInCart.keySet()) {
             output.put(p.getName(), itemsInCart.get(p).toString());
         }
         return output;

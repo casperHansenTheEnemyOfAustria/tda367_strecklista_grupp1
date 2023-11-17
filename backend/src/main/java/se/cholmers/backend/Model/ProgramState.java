@@ -55,7 +55,7 @@ class ProgramState {
      * 
      * @return the contents of the Cart.
      */
-    public HashMap<String, String> getCart() {
+    public Map<String, String> getCart() {
         return cart.toStringMap();
     }
 
