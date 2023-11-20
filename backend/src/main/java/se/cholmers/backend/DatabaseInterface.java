@@ -180,8 +180,8 @@ public class DatabaseInterface {
      * @return the price
      * @throws IllegalArgumentException if product does not exist
      */
-    public int getProductPrice(String id) {
-        return Integer.parseInt(getProduct(id).get(2));
+    public Float getProductPrice(String id) {
+        return Float.parseFloat(getProduct(id).get(2));
     }
 
     /**
