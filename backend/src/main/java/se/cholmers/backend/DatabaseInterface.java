@@ -112,7 +112,9 @@ public class DatabaseInterface {
         executeUpdate(sql, params);
     }
 
-    //Custom CREATE
+
+
+    //Custom CREATE methods
     public void createCommittee(String group_name, String year) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("group_name", group_name);
@@ -153,8 +155,192 @@ public class DatabaseInterface {
         
     }
 
-    
 
+    //READS
+
+    //PRODUCT
+
+    /**
+     * Returns a list of attributes of a product
+     * 
+     * @param id product id
+     * @return {id, name, price, amount}
+     * @throws IllegalArgumentException if product does not exist
+     */
+    private List<String> getProduct(String id) {
+        return extractAttributes(getData("Product", Integer.parseInt(id)));
+    }
+
+    /**
+     * Returns the price of a Product
+     * Precondition: product exists
+     * @param id product id
+     * @return the price
+     * @throws IllegalArgumentException if product does not exist
+     */
+    public int getProductPrice(String id) {
+        return Integer.parseInt(getProduct(id).get(2));
+    }
+
+    /**
+     * Returns the amount of a product
+     * precondition: product exists
+     * @param id the product id
+     * @return the amount
+     * @throws IllegalArgumentException if product does not exist
+     */
+    public int getProductAmount(String id) {
+        return Integer.parseInt(getProduct(id).get(3));
+    }
+
+    /**
+     * Returns the name of a product
+     * Precondition: product exists
+     * @param id the product id
+     * @return the name
+     * @throws IllegalArgumentException if product does not exist
+     */
+    public String getProductName(String id) {
+        return getProduct(id).get(1);
+    }
+
+    //USER
+
+    /**
+     * Returns a list of attributes of a user
+     * Precondition: user exists
+     * @param id
+     * @return {id, phone_number, person_name, person_nick}
+     * @throws IllegalArgumentException if user does not exist
+     */
+    private List<String> getUser(String id) {
+        return extractAttributes(getData("Person", Integer.parseInt(id)));
+    }
+
+    /**
+     * Returns the name of a user
+     * Precondition: user exists
+     * @param id the user id
+     * @return the name
+     * @throws IllegalArgumentException if user does not exist
+     */
+    public String getUserName(String id) {
+        return getUser(id).get(2);
+    }
+
+    /**
+     * Returns the nick of a user
+     * Precondition: user exists
+     * @param id the user id
+     * @return the nick
+     * @throws IllegalArgumentException if user does not exist
+     */
+    public String getUserNick(String id) {
+        return getUser(id).get(3);
+    }
+
+    /**
+     * Returns the phone number of a user
+     * Precondition: user exists
+     * @param id the user id
+     * @return the phone number
+     * @throws IllegalArgumentException if user does not exist
+     */
+    public String getUserPhoneNumber(String id) {
+        return getUser(id).get(1);
+    }
+
+    /**
+     * Returns the committees of a user
+     * Precondition: user exists users committees exist
+     * @param id
+     * @return
+     * 
+     * postcondition: returns a list of committee ids
+     */
+    public List<String> getCommitteesOfUser(String id){
+        String sql = "SELECT * FROM PersonInCommittee WHERE person_id = ?";
+        List<Object> params = List.of(id);
+        return extractAttributes(executeQuery(sql, params));
+    }
+    
+    /**
+     * Returns the saldo of a user in a committee
+     * Precondition: user exists, committee exists, user is in committee
+     * @param userID
+     * @param committeeID
+     * @return
+     * @throws IllegalArgumentException if user or the committee does not exist
+     */
+    public int getSaldoFromUserInCommittee(String userID, String committeeID) {
+        String sql = "SELECT saldo FROM PersonInCommittee WHERE person_id = ? AND committee_id = ?";
+        List<Object> params = List.of(userID, committeeID);
+        return Integer.parseInt(extractAttributes(executeQuery(sql, params)).get(0));
+    }
+
+    //COMMITTEE
+    /**
+     * Returns a list of attributes of a committee
+     * Precondition: committee exists
+     * @param id
+     * @return {id, name, year}
+     * @throws IllegalArgumentException if committee does not exist
+     */
+    private List<String> getCommittee(String id) {
+        return extractAttributes(getData("Committee", Integer.parseInt(id)));
+    }
+
+    /**
+     * Returns the name of a committee
+     * @param id the committee id
+     * @return the name
+     * @throws IllegalArgumentException if committee does not exist
+     */
+    public String getCommitteeName(String id) {
+        return getCommittee(id).get(1);
+    }
+
+    /**
+     * Returns the year of a committee
+     * @param id the committee id
+     * @return the year
+     * @throws IllegalArgumentException if committee does not exist
+     */
+    public String getCommitteeYear(String id) {
+        return getCommittee(id).get(2);
+    }
+
+
+
+    /**
+     * Returns a list of all the products in a committee
+     * Precondition: The committee exists and the committee has products that exist
+     * @param committeeID
+     * @return List of productIDs
+     * @throws IllegalArgumentException if committee does not exist
+     * Postcondition: A list of productIDs is returned
+     */
+    public List<String> getProductsInCommittee(String committeeID) {
+        String sql = "SELECT * FROM ProductInCommittee WHERE committee_id = ?";
+        List<Object> params = List.of(committeeID);
+        return extractAttributes(executeQuery(sql, params));
+    }
+
+
+    //UPDATE methods
+
+    /**
+     * Adds an existing user to a committe
+     * 
+     * Precondition: The user and committee exists
+     * 
+     * @param id
+     * @param committeeID
+     * @param saldo
+     * @throws IllegalArgumentException if user or committee does not exist
+     * 
+     * Postcondition: The user is added to the committee
+     */
     public void putUserInCommittee(String id, String committeeID, String saldo) {
         Map<String, Object> parametersPersonInCommittee = new HashMap();
         parametersPersonInCommittee.put("person_id", id);
@@ -163,35 +349,25 @@ public class DatabaseInterface {
         addData("ProductInCommittee", parametersPersonInCommittee);
     }
 
-    
 
-
-    //String getters for Tables
-
-    public List<String> getProduct(String id) {
-        return extractAttributes(getData("Product", Integer.parseInt(id)));
+    /**
+     * Updates the saldo of a user in a committee
+     * Precondition: The user and committee exists
+     * @param id
+     * @param committeeId
+     * @param saldo
+     * @throws IllegalArgumentException if user or committee does not exist
+     * Postcondition: The saldo of the user in the committee is updated
+     */
+    public void updateUserSaldo(String id, String committeeId, String saldo) {
+        String sql = "UPDATE ProductInCommittee SET saldo = ? WHERE person_id = ? AND committee_id = ?";
+        List<Object> params = List.of(saldo, id, committeeId);
+        executeUpdate(sql, params);
     }
 
-    public List<String> getUser(String id) {
-        return extractAttributes(getData("Person", Integer.parseInt(id)));
-    }
+    //SQL generators
 
-    public List<String> getCommittee(String id) {
-        return extractAttributes(getData("Committee", Integer.parseInt(id)));
-    }
-
-    // String getter for which committees (every row in PersonInCommittee with the corresponding ID) a user is in.
-    public List<String> getPersonInCommittee(String id) {
-        return extractAttributes(getData("PersonInCommittee", Integer.parseInt(id)));
-    }
-
-    //Update methods
-
-
-
-
-
-
+    //TODO refactor
     private List<String> extractAttributes(List<Map<String, Object>> attributes) {
          List<String> returnList = new ArrayList<>();
 
