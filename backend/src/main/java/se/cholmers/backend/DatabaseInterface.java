@@ -272,10 +272,10 @@ public class DatabaseInterface {
      * @return
      * @throws IllegalArgumentException if user or the committee does not exist
      */
-    public int getSaldoFromUserInCommittee(String userID, String committeeID) {
+    public Float getSaldoFromUserInCommittee(String userID, String committeeID) {
         String sql = "SELECT saldo FROM PersonInCommittee WHERE person_id = ? AND committee_id = ?";
         List<Object> params = List.of(userID, committeeID);
-        return Integer.parseInt(extractAttributes(executeQuery(sql, params)).get(0));
+        return Float.parseFloat(extractAttributes(executeQuery(sql, params)).get(0));
     }
 
     //COMMITTEE
