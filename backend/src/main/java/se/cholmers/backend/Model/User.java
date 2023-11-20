@@ -63,7 +63,7 @@ class User {
         }
         this.name = name;
         this.nick = nick;
-        dbi.createUser(name, nick, "0", "0", "0");
+        dbi.createUser(name, nick, null, null, "0");
         addGroupsFromDatabase();
     }
 
