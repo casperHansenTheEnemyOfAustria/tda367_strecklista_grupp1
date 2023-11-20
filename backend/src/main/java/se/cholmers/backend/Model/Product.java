@@ -2,7 +2,11 @@ package se.cholmers.backend.Model;
 
 import java.util.UUID;
 
+import se.cholmers.backend.DatabaseInterface;
+
 class Product {
+    private DatabaseInterface dbi = DatabaseInterface.getInstance();
+    private int amount;
     private String name;
     private String productID;
     private Float cost;
@@ -18,7 +22,21 @@ class Product {
         this.name = name;
         this.cost = cost;
         this.groupID = groupID;
-        productID = UUID.randomUUID().toString();
+
+        dbi.createProduct(name, cost.toString(), groupID, "0");
+    }
+
+    /**
+     * Creates a new product with a given ID.
+     * 
+     * @param productID (the ID of the product.)
+     */
+    public Product(String productID, String groupID) {
+        this.productID = productID;
+        this.name = dbi.getProductName(productID);
+        this.cost = dbi.getProductPrice(productID);
+        this.groupID = groupID;
+        this.amount = dbi.getProductAmount(productID);    
     }
 
     /**

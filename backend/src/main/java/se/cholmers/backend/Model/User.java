@@ -59,6 +59,8 @@ class User {
     public User(String name, String nick) {
         this.name = name;
         this.nick = nick;
+        dbi.createUser(name, nick, "0", "0", "0");
+        addGroupsFromDatabase();
     }
 
     public void addUserToGroup(UserGroup group) {
