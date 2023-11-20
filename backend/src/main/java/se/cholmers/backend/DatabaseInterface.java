@@ -229,7 +229,7 @@ public class DatabaseInterface {
         return sqlBuilder.toString();
     }
 
-    private String generateUpdateSQL(String tableName, int id, Map<String, Object> updatedData) {
+    private String generateUpdateSQL(String tableName, int[] ids, Map<String, Object> updatedData) {
         StringBuilder sqlBuilder = new StringBuilder("UPDATE ");
         sqlBuilder.append(tableName).append(" SET ");
 
@@ -242,6 +242,9 @@ public class DatabaseInterface {
         sqlBuilder.setLength(sqlBuilder.length() - 2);
 
         sqlBuilder.append(" WHERE id = ").append(id);
+        if (ids.length > 1) {
+            sqlBuilder.append(" AND ")
+        }
 
         return sqlBuilder.toString();
     }
