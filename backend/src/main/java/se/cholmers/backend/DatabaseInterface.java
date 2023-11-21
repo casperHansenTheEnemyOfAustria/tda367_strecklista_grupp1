@@ -220,7 +220,7 @@ public class DatabaseInterface {
     }
 
 
-    private String getUserIDFromName(String name, String password) {
+    public String getUserIDFromName(String name, String password) {
 
         String sql = "SELECT * FROM Person WHERE person_name = ?";
         List<Object> params = List.of(name);

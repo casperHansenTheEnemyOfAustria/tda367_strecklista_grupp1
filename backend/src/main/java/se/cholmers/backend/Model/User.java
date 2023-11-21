@@ -59,8 +59,9 @@ class User {
     public User(String name, String nick) {
         this.name = name;
         this.nick = nick;
-        dbi.createUser(name, nick, null, null, "0");
+        this.id = dbi.getUserIDFromName(name, nick);
         addGroupsFromDatabase();
+        
     }
 
     public void addUserToGroup(UserGroup group) {
