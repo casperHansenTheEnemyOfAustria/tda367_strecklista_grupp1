@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'appbar.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'mainpage.dart';
+import 'navigation.dart';
+
 
 /*
 Homescreen shows all widgets on the page, 
@@ -13,26 +15,30 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      
+      theme: ThemeData(
+        colorScheme: const ColorScheme.highContrastDark().copyWith(
+          secondary: HexColor("#09cdda")
+        )
+      ),
       title: 'StecklistIT',
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 63, 63, 63),
-          actionsIconTheme: const IconThemeData(
-          size: 30.0,
-          opacity: 10.0
-  ),
-          title: Container(child: titleSection),
+          title: Text('Current Page' //Add current page according to which is displayed
           ),
-        body: MainPage()
-              
+        ),
+        body: Semantics(
+          container: true, 
+          child: Center(
+          ),
+        ),
+        drawer: Drawer(child: NavDrawer(),)
+          ),
 
 //TODO: Add page switch as homescreen body
 /* Find a way to connect which dropdown is selected with a correct change to the body */
 
 
 
-        ),
-    );
+        );
   }
 }

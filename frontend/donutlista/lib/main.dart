@@ -1,5 +1,3 @@
-import 'package:donutlista/appbar.dart';
-import 'package:donutlista/mainpage.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'login.dart';
@@ -9,6 +7,8 @@ import 'login.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

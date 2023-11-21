@@ -1,4 +1,3 @@
-import 'package:donutlista/main.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'homescreen.dart';
@@ -74,7 +73,9 @@ class LoginState extends State<LoginPage> {
               child: TextButton(
                 onPressed: () {
                   Navigator.push(
+                      
                       // TODO: Add if correct login & password. Else: Reload page? 
+
                       context, MaterialPageRoute(builder: (_) => const HomeScreen()));
                 },
                 child: const Text(
