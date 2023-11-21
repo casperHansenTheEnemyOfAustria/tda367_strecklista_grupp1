@@ -36,7 +36,7 @@ public class AdminController {
     public Response<String> createUser(@PathVariable("userName") String userName, @PathVariable("password") String password) {
         try{
             //possiubly change to factory pattern??
-            // stateManager.createUser(userName, password);
+            dbi.createUser(userName, userName, null, null, "0");
             Response<String> response = new Response<String> ("user created");
             return response;
         // }catch(RequestException e){
@@ -52,12 +52,12 @@ public class AdminController {
      * @param price
      * @return response (a response with the correct code and a success message if the product was created. Otherwise it should havea an error code)
      */
-    @RequestMapping(value = "/createProduct/{productName}/{price}", method = RequestMethod.POST)
+    @RequestMapping(value = "/createProduct/{productName}/{price}/{committeeID}/{amount}", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> createProduct(@PathVariable("productName") String productName, @PathVariable("price") String price) {
+    public Response<String> createProduct(@PathVariable("productName") String productName, @PathVariable("price") String price , @PathVariable("committeeID") String committeeID, @PathVariable("amount") String amount) {
         try{
             //possiubly change to factory pattern??
-            // dbi.createProduct(productName, price);
+            dbi.createProduct(productName, price, committeeID, amount);
             Response<String> response = new Response<String> ("Product created");
             return response;
         // }catch(RequestException e){
@@ -69,9 +69,4 @@ public class AdminController {
 
 }
 
-//temporary interface
-class DatabaseInterface{
-    public static DatabaseInterface getInstance(){
-        return null;
-    }
-}   
+
