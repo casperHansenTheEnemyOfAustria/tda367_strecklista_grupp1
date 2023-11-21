@@ -11,9 +11,9 @@ public class DatabaseInterface {
     private static DatabaseInterface instance;
 
     // Replace these with your actual database information
-    private static final String DB_URL = "jdbc:postgresql://your_database_url";
-    private static final String DB_USER = "your_database_user";
-    private static final String DB_PASSWORD = "your_database_password";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String DB_USER = "postgres";
+    private static final String DB_PASSWORD = "";
 
     private Connection connection;
 
@@ -217,6 +217,17 @@ public class DatabaseInterface {
      */
     private List<String> getUser(String id) {
         return extractAttributes(getData("Person", Integer.parseInt(id)));
+    }
+
+    private List<String> getUser(String name, String password) {
+        String sql = "SELECT * FROM Person WHERE person_name = ?";
+        List<Object> params = List.of(name);
+        List<Map<String, Object>> results = executeQuery(sql, params);
+        if (results.size() == 0) {
+            throw new IllegalArgumentException("User does not exist");
+        }
+        List<String> user = extractAttributes(results);
+        return user;
     }
 
     /**
