@@ -17,7 +17,8 @@ CREATE TABLE Committee (
 CREATE TABLE Product (
     id INT PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
-    price FLOAT NOT NULL
+    price FLOAT NOT NULL,
+    amount INT
 );
 
 
@@ -41,6 +42,6 @@ CREATE TABLE PersonInCommittee (
 CREATE TABLE ProductInCommittee (
     committee_id INT REFERENCES Committee(id) NOT NULL,
     product_id INT REFERENCES Product(id) NOT NULL,
-    PRIMARY KEY(committee_id, product_id),
-    amount INT
+    PRIMARY KEY(committee_id, product_id)
+    
 );
