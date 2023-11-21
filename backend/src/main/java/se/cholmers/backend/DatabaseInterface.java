@@ -102,10 +102,10 @@ public class DatabaseInterface {
     }
 
     // UPDATE operation
-    private void updateData(String tableName, int[] ids, Map<String, Object> updatedData) {
+    private void updateData(String tableName, int id, Map<String, Object> updatedData) {
         // Generate SQL for update based on the data
 
-        String sql = generateUpdateSQL(tableName, ids, updatedData);
+        String sql = generateUpdateSQL(tableName, id, updatedData);
         executeUpdate(sql, null);
     }
 
@@ -403,11 +403,10 @@ public class DatabaseInterface {
      *                                  updated
      */
     public void updateProductAmount(int productID, String amount) {
-        int[] productIDs = { productID };
-        Map<String, Object> parametersProduct = new HashMap();
+        Map<String, Object> parametersProduct= new HashMap();
         parametersProduct.put("amount", amount);
 
-        updateData(amount, productIDs, parametersProduct);
+        updateData(amount, productID, parametersProduct);
     }
 
     // SQL generators
