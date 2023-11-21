@@ -99,9 +99,10 @@ public class DatabaseInterface {
     }
 
     // UPDATE operation
-    private void updateData(String tableName, int id, Map<String, Object> updatedData) {
+    private void updateData(String tableName, int[] ids, Map<String, Object> updatedData) {
         // Generate SQL for update based on the data
-        String sql = generateUpdateSQL(tableName, id, updatedData);
+
+        String sql = generateUpdateSQL(tableName, ids, updatedData);
         executeUpdate(sql, null);
     }
 
@@ -130,10 +131,11 @@ public class DatabaseInterface {
         parametersProduct.put("id", id);
         parametersProduct.put("name", productName);
         parametersProduct.put("price", price);
+        parametersProduct.put("amount", amount);
 
         parametersProductInCommittee.put("committee_id", committee);
         parametersProductInCommittee.put("product_id", id);
-        parametersProductInCommittee.put("amount", amount);
+      
         addData("Product", parametersProduct);
         addData("ProductInCommittee", parametersProductInCommittee);
     }
@@ -365,6 +367,24 @@ public class DatabaseInterface {
         executeUpdate(sql, params);
     }
 
+    /**
+     * Updates the database amount of the product
+     * Precondition: The product exists
+     * @param productID
+     * @param amount
+     * @throws IllegalArgumentException if product does not exist
+     * Postcondition: The amount of the product is updated
+     */
+    public void updateProductAmount(int productID, String amount) {
+        int[] productIDs = {productID};
+        Map<String, Object> parametersProduct= new HashMap();
+        parametersProduct.put("amount", amount);
+
+        updateData(amount, productIDs, parametersProduct);
+    }
+
+
+
     //SQL generators
 
     //TODO refactor
@@ -417,9 +437,11 @@ public class DatabaseInterface {
         // Remove the trailing comma and space
         sqlBuilder.setLength(sqlBuilder.length() - 2);
 
-        sqlBuilder.append(" WHERE id = ").append(id);
-        if (ids.length > 1) {
-            sqlBuilder.append(" AND ")
+        for(int id : ids) {
+            sqlBuilder.append(" WHERE id = ").append(id);
+            if (ids.length > 1) {
+                sqlBuilder.append(" AND ");
+            }
         }
 
         return sqlBuilder.toString();
