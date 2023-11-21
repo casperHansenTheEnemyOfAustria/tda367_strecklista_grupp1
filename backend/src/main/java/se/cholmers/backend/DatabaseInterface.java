@@ -99,10 +99,10 @@ public class DatabaseInterface {
     }
 
     // UPDATE operation
-    private void updateData(String tableName, int[] ids, Map<String, Object> updatedData) {
+    private void updateData(String tableName, int id, Map<String, Object> updatedData) {
         // Generate SQL for update based on the data
 
-        String sql = generateUpdateSQL(tableName, ids, updatedData);
+        String sql = generateUpdateSQL(tableName, id, updatedData);
         executeUpdate(sql, null);
     }
 
@@ -393,11 +393,10 @@ public class DatabaseInterface {
      * Postcondition: The amount of the product is updated
      */
     public void updateProductAmount(int productID, String amount) {
-        int[] productIDs = {productID};
         Map<String, Object> parametersProduct= new HashMap();
         parametersProduct.put("amount", amount);
 
-        updateData(amount, productIDs, parametersProduct);
+        updateData(amount, productID, parametersProduct);
     }
 
 
@@ -454,12 +453,7 @@ public class DatabaseInterface {
         // Remove the trailing comma and space
         sqlBuilder.setLength(sqlBuilder.length() - 2);
 
-        for(int id : ids) {
-            sqlBuilder.append(" WHERE id = ").append(id);
-            if (ids.length > 1) {
-                sqlBuilder.append(" AND ");
-            }
-        }
+        sqlBuilder.append(" WHERE id = ").append(id);
 
         return sqlBuilder.toString();
     }
