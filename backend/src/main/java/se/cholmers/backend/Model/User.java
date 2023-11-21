@@ -56,10 +56,10 @@ class User {
      * @param nick
      * 
      */
-    public User(String name, String nick) {
+    public User(String name, String nick, String password) {
         this.name = name;
         this.nick = nick;
-        this.id = dbi.getUserIDFromName(name, nick);
+        this.id = dbi.getUserIDFromName(name, password);
         addGroupsFromDatabase();
         
     }
