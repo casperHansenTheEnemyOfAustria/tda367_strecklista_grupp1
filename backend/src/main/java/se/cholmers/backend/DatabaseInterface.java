@@ -11,9 +11,9 @@ public class DatabaseInterface {
     private static DatabaseInterface instance;
 
     // Replace these with your actual database information
-    private static final String DB_URL = "jdbc:postgresql://your_database_url";
-    private static final String DB_USER = "your_database_user";
-    private static final String DB_PASSWORD = "your_database_password";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String DB_USER = "postgres";
+    private static final String DB_PASSWORD = "";
 
     private Connection connection;
 
@@ -180,8 +180,8 @@ public class DatabaseInterface {
      * @return the price
      * @throws IllegalArgumentException if product does not exist
      */
-    public int getProductPrice(String id) {
-        return Integer.parseInt(getProduct(id).get(2));
+    public Float getProductPrice(String id) {
+        return Float.parseFloat(getProduct(id).get(2));
     }
 
     /**
@@ -219,7 +219,9 @@ public class DatabaseInterface {
         return extractAttributes(getData("Person", Integer.parseInt(id)));
     }
 
+
     private String getUserIDFromName(String name, String password) {
+
         String sql = "SELECT * FROM Person WHERE person_name = ?";
         List<Object> params = List.of(name);
         List<Map<String, Object>> results = executeQuery(sql, params);
@@ -227,8 +229,10 @@ public class DatabaseInterface {
             throw new IllegalArgumentException("User does not exist");
         }
         List<String> user = extractAttributes(results);
+
         String id = user.get(0);
         return id;
+
     }
 
 
@@ -287,10 +291,10 @@ public class DatabaseInterface {
      * @return
      * @throws IllegalArgumentException if user or the committee does not exist
      */
-    public int getSaldoFromUserInCommittee(String userID, String committeeID) {
+    public Float getSaldoFromUserInCommittee(String userID, String committeeID) {
         String sql = "SELECT saldo FROM PersonInCommittee WHERE person_id = ? AND committee_id = ?";
         List<Object> params = List.of(userID, committeeID);
-        return Integer.parseInt(extractAttributes(executeQuery(sql, params)).get(0));
+        return Float.parseFloat(extractAttributes(executeQuery(sql, params)).get(0));
     }
 
     //COMMITTEE
