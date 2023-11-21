@@ -2,19 +2,24 @@ package se.cholmers.backend.Model;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import se.cholmers.backend.DatabaseInterface;
 
 /**
  * This class represents a user in the system. It contains information about the
  * user such as their name, nickname and phone number
  */
 class User {
+    private String id;
     private String name;
     private String nick;
     private String phoneNumber;
     private Map<String, Float> saldo = new HashMap<>();
     private Set<UserGroup> groups = new HashSet<>();
+    private DatabaseInterface dbi = DatabaseInterface.getInstance();
 
     /**
      * This is the constructor for when recreating users from the database
@@ -22,7 +27,24 @@ class User {
      * @param userID
      */
     public User(String userID) {
+        this.id = userID;
+        this.name = dbi.getUserName(userID);
+        this.nick = dbi.getUserNick(userID);
+        this.phoneNumber = dbi.getUserPhoneNumber(userID);
+        addGroupsFromDatabase();
+    }
 
+    /**
+     * This method adds the user's groups to the user from the database
+     * @param userID
+     * 
+     */
+    private void addGroupsFromDatabase() {
+        //TODO add a catch for if there are no groups
+        List<String> comitteeIds = dbi.getCommitteesOfUser(id);
+        for (String param : comitteeIds) {
+            groups.add(new UserGroup(param));
+        }
     }
 
     /**
@@ -37,9 +59,12 @@ class User {
     public User(String name, String nick) {
         this.name = name;
         this.nick = nick;
+        dbi.createUser(name, nick, null, null, "0");
+        addGroupsFromDatabase();
     }
 
     public void addUserToGroup(UserGroup group) {
+        dbi.putUserInCommittee(id, group.getID().toString(), "0");
         groups.add(group);
     }
 
@@ -52,12 +77,9 @@ class User {
      * @throws NullPointerException     if the user is not a member of any group
      */
     public Float getSaldo(String groupID) {
-        for (UserGroup userGroup : groups) {
-            if (userGroup.getID() == groupID) {
-                return saldo.get(groupID);
-            }
-        }
-        return 0f;
+        Float saldoFromDB = dbi.getSaldoFromUserInCommittee(id, groupID);
+        saldo.put(groupID, saldoFromDB);
+        return saldo.get(groupID);
     }
 
     /**
@@ -82,6 +104,7 @@ class User {
      */
     public Set<Product> getAllProducts() {
         Set<Product> allProducts = new HashSet<>();
+        addGroupsFromDatabase();
         for (UserGroup userGroup : groups) {
             allProducts.addAll(userGroup.getProducts());
         }

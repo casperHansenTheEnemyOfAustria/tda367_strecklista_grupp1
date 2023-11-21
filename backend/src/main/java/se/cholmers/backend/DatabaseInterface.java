@@ -11,9 +11,9 @@ public class DatabaseInterface {
     private static DatabaseInterface instance;
 
     // Replace these with your actual database information
-    private static final String DB_URL = "jdbc:postgresql://your_database_url";
-    private static final String DB_USER = "your_database_user";
-    private static final String DB_PASSWORD = "your_database_password";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String DB_USER = "postgres";
+    private static final String DB_PASSWORD = "";
 
     private Connection connection;
 
@@ -99,9 +99,10 @@ public class DatabaseInterface {
     }
 
     // UPDATE operation
-    private void updateData(String tableName, int id, Map<String, Object> updatedData) {
+    private void updateData(String tableName, int[] ids, Map<String, Object> updatedData) {
         // Generate SQL for update based on the data
-        String sql = generateUpdateSQL(tableName, id, updatedData);
+
+        String sql = generateUpdateSQL(tableName, ids, updatedData);
         executeUpdate(sql, null);
     }
 
@@ -130,10 +131,11 @@ public class DatabaseInterface {
         parametersProduct.put("id", id);
         parametersProduct.put("name", productName);
         parametersProduct.put("price", price);
+        parametersProduct.put("amount", amount);
 
         parametersProductInCommittee.put("committee_id", committee);
         parametersProductInCommittee.put("product_id", id);
-        parametersProductInCommittee.put("amount", amount);
+      
         addData("Product", parametersProduct);
         addData("ProductInCommittee", parametersProductInCommittee);
     }
@@ -178,8 +180,8 @@ public class DatabaseInterface {
      * @return the price
      * @throws IllegalArgumentException if product does not exist
      */
-    public int getProductPrice(String id) {
-        return Integer.parseInt(getProduct(id).get(2));
+    public Float getProductPrice(String id) {
+        return Float.parseFloat(getProduct(id).get(2));
     }
 
     /**
@@ -216,6 +218,23 @@ public class DatabaseInterface {
     private List<String> getUser(String id) {
         return extractAttributes(getData("Person", Integer.parseInt(id)));
     }
+
+
+    private String getUserIDFromName(String name, String password) {
+
+        String sql = "SELECT * FROM Person WHERE person_name = ?";
+        List<Object> params = List.of(name);
+        List<Map<String, Object>> results = executeQuery(sql, params);
+        if (results.size() == 0) {
+            throw new IllegalArgumentException("User does not exist");
+        }
+        List<String> user = extractAttributes(results);
+
+        String id = user.get(0);
+        return id;
+
+    }
+
 
     /**
      * Returns the name of a user
@@ -272,10 +291,10 @@ public class DatabaseInterface {
      * @return
      * @throws IllegalArgumentException if user or the committee does not exist
      */
-    public int getSaldoFromUserInCommittee(String userID, String committeeID) {
+    public Float getSaldoFromUserInCommittee(String userID, String committeeID) {
         String sql = "SELECT saldo FROM PersonInCommittee WHERE person_id = ? AND committee_id = ?";
         List<Object> params = List.of(userID, committeeID);
-        return Integer.parseInt(extractAttributes(executeQuery(sql, params)).get(0));
+        return Float.parseFloat(extractAttributes(executeQuery(sql, params)).get(0));
     }
 
     //COMMITTEE
@@ -365,6 +384,24 @@ public class DatabaseInterface {
         executeUpdate(sql, params);
     }
 
+    /**
+     * Updates the database amount of the product
+     * Precondition: The product exists
+     * @param productID
+     * @param amount
+     * @throws IllegalArgumentException if product does not exist
+     * Postcondition: The amount of the product is updated
+     */
+    public void updateProductAmount(int productID, String amount) {
+        int[] productIDs = {productID};
+        Map<String, Object> parametersProduct= new HashMap();
+        parametersProduct.put("amount", amount);
+
+        updateData(amount, productIDs, parametersProduct);
+    }
+
+
+
     //SQL generators
 
     //TODO refactor
@@ -417,7 +454,12 @@ public class DatabaseInterface {
         // Remove the trailing comma and space
         sqlBuilder.setLength(sqlBuilder.length() - 2);
 
-        sqlBuilder.append(" WHERE id = ").append(id);
+        for(int id : ids) {
+            sqlBuilder.append(" WHERE id = ").append(id);
+            if (ids.length > 1) {
+                sqlBuilder.append(" AND ");
+            }
+        }
 
         return sqlBuilder.toString();
     }
