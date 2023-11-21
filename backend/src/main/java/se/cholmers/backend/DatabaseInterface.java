@@ -219,7 +219,9 @@ public class DatabaseInterface {
         return extractAttributes(getData("Person", Integer.parseInt(id)));
     }
 
-    private List<String> getUser(String name, String password) {
+
+    private String getUserIDFromName(String name, String password) {
+
         String sql = "SELECT * FROM Person WHERE person_name = ?";
         List<Object> params = List.of(name);
         List<Map<String, Object>> results = executeQuery(sql, params);
@@ -227,8 +229,12 @@ public class DatabaseInterface {
             throw new IllegalArgumentException("User does not exist");
         }
         List<String> user = extractAttributes(results);
-        return user;
+
+        String id = user.get(0);
+        return id;
+
     }
+
 
     /**
      * Returns the name of a user
