@@ -11,10 +11,10 @@ import 'mainpageWidgets/buyOrCancel.dart';
 /* TODO: <subgoal> Add summary list */
 /* TODO: <subgoal> Add Buy and cancel button */
 
-Widget mainPage = const MainPageLayout(); 
+Widget mainPage = const MainPage(); 
 
-class MainPageLayout extends StatelessWidget{
-  const MainPageLayout({super.key});
+class MainPage extends StatelessWidget{
+  const MainPage({super.key});
   @override
   Widget build(BuildContext context){
       return Column(
