@@ -26,6 +26,8 @@ class UserGroup {
         this.name = name;
         this.year = year;
         this.orderHistory = new OrderHistory();
+
+        //TODO: Remove and handle in DB
         this.groupID = UUID.randomUUID().toString();
         // code that initializes the object from the database
     }
