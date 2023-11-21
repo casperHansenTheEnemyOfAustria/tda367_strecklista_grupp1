@@ -35,7 +35,7 @@ public class StateManager {
      * @return A unique stateID for the programState.
      */
     public String[] login(String userName, String password) {
-        User user = new User(userName, password);
+        User user = new User(userName, userName, password);
         ProgramState state = new ProgramState(user);
 
         String stateID = UUID.randomUUID().toString();

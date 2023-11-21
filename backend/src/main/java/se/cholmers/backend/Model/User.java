@@ -57,13 +57,17 @@ class User {
      * 
      * @throws NullPointerException if the input is null
      */
+<<<<<<< HEAD
     public User(String name, String nick) {
         if (name == null || nick == null) {
             throw new NullPointerException();
         }
+=======
+    public User(String name, String nick, String password) {
+>>>>>>> 7f93eb7 (fix: added passwrod into user creator)
         this.name = name;
         this.nick = nick;
-        this.id = dbi.getUserIDFromName(name, nick);
+        this.id = dbi.getUserIDFromName(name, password);
         addGroupsFromDatabase();
         
     }
