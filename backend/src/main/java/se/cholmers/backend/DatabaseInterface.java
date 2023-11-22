@@ -11,7 +11,7 @@ public class DatabaseInterface {
     private static DatabaseInterface instance;
 
     // Replace these with your actual database information
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/";
     private static final String DB_USER = "postgres";
     private static final String DB_PASSWORD = "";
 
@@ -92,7 +92,7 @@ public class DatabaseInterface {
     }   
 
     // READ operation
-    private List<Map<String, Object>> getData(String tableName, int id) {
+    private List<Map<String, Object>> getData(String tableName, String id) {
         String sql = "SELECT * FROM " + tableName + " WHERE id = ?";
         List<Object> params = List.of(id);
         return executeQuery(sql, params);
@@ -141,12 +141,12 @@ public class DatabaseInterface {
     }
 
     //A committee needs the exists before a user can be inserted into it.
-    public void createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo) {
+    public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo) {
         Map<String, Object> parametersUser = new HashMap();
         
-
         String id = UUID.randomUUID().toString();
-        int idString = Integer.parseInt(id);
+       
+    
         parametersUser.put("id", id);
         parametersUser.put("phone_number", phoneNumber);
         parametersUser.put("person_name", userName);
@@ -154,6 +154,8 @@ public class DatabaseInterface {
 
 
         addData("Person", parametersUser);
+
+        return id;
         
     }
 
@@ -170,7 +172,7 @@ public class DatabaseInterface {
      * @throws IllegalArgumentException if product does not exist
      */
     private List<String> getProduct(String id) {
-        return extractAttributes(getData("Product", Integer.parseInt(id)));
+        return extractAttributes(getData("Product",id));
     }
 
     /**
@@ -216,14 +218,14 @@ public class DatabaseInterface {
      * @throws IllegalArgumentException if user does not exist
      */
     private List<String> getUser(String id) {
-        return extractAttributes(getData("Person", Integer.parseInt(id)));
+        return extractAttributes(getData("Person", id));
     }
 
 
-    private String getUserIDFromName(String name, String password) {
+    public String getUserIDFromName(String nick, String password) {
 
-        String sql = "SELECT * FROM Person WHERE person_name = ?";
-        List<Object> params = List.of(name);
+        String sql = "SELECT * FROM Person WHERE person_nick = ?";
+        List<Object> params = List.of(nick);
         List<Map<String, Object>> results = executeQuery(sql, params);
         if (results.size() == 0) {
             throw new IllegalArgumentException("User does not exist");
@@ -306,7 +308,7 @@ public class DatabaseInterface {
      * @throws IllegalArgumentException if committee does not exist
      */
     private List<String> getCommittee(String id) {
-        return extractAttributes(getData("Committee", Integer.parseInt(id)));
+        return extractAttributes(getData("Committee",id));
     }
 
     /**
