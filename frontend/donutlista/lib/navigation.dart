@@ -1,3 +1,9 @@
+import 'package:donutlista/pageMain.dart';
+import 'package:donutlista/pageInventory.dart';
+import 'package:donutlista/pageTransaction.dart';
+import 'package:donutlista/pageUser.dart';
+
+
 import 'package:flutter/material.dart';
 
 //Inspo: https://gallery.flutter.dev/#/demo/nav_drawer
@@ -26,7 +32,12 @@ class NavDrawer extends StatelessWidget{
           ),
           leading: const Icon(Icons.apps),
           onTap: () {
-            Navigator.pop(context);
+            Navigator.push<void>(
+              context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => MainPage(title: 'Strecklista'),
+                ),
+            );
           },
         ),
         ListTile(
@@ -36,7 +47,12 @@ class NavDrawer extends StatelessWidget{
           ),
           leading: const Icon(Icons.credit_score),
           onTap: () {
-            Navigator.pop(context);
+            Navigator.push<void>(
+              context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => TransactionPage(),
+                ),
+            );
           },
         ),
         ListTile(
@@ -46,7 +62,12 @@ class NavDrawer extends StatelessWidget{
           ),
           leading: const Icon(Icons.analytics),
           onTap: () {
-            Navigator.pop(context);
+            Navigator.push<void>(
+              context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => InventoryPage(),
+                ),
+            );
           },
         ),
         ListTile(
@@ -56,7 +77,12 @@ class NavDrawer extends StatelessWidget{
           ),
           leading: const Icon(Icons.person),
           onTap: () {
-            Navigator.pop(context);
+            Navigator.push<void>(
+              context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => UserPage(),
+                ),
+            );
           },
         ),
 

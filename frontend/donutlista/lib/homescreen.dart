@@ -1,7 +1,6 @@
+import 'package:donutlista/pageMain.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'mainpage.dart';
-import 'navigation.dart';
 
 
 /*
@@ -21,27 +20,7 @@ class HomeScreen extends StatelessWidget {
         )
       ),
       title: 'StecklistIT',
-      home:
-      
-      Scaffold(
-        appBar: AppBar(
-          title: Text('Current Page' //Add current page according to which is displayed
-          ),
-        ),
-        body: Semantics(
-          container: true, 
-          child: Center(
-            child: Padding(
-              padding: EdgeInsets.all(50
-              ),
-              child: Text('Helooo' //Put currentPage here
-              ),
-            ),  
-          ),
-        ),
-        drawer: Drawer(child: NavDrawer(),
-        ),  
-      ), 
+      home: MainPage(title: 'Välkommen tillbaka!',) 
     );
   }
 }

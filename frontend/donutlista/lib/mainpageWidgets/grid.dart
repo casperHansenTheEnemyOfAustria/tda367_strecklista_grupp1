@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'button.dart';
+import 'itemCard.dart';
 
 
 /* Widget: Grid of Counting buttons */
@@ -19,8 +19,7 @@ class MainItemGrid extends StatelessWidget{
     <Widget>[
       Container(
         padding: const EdgeInsets.all(8),
-        child: Text('hkhkjh')
-        //child: ItemButton(),
+        child: ItemButton(),
         ), 
     ],
 );

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 
-/* Counting button */
+/* Counting Card */
 class ItemButton extends StatefulWidget {
   int counter = 0;
 
@@ -18,9 +19,13 @@ class ButtonState extends State<ItemButton> {
   Widget build(BuildContext context) {
 
     return Container(
-              decoration: BoxDecoration(
-              //padding: const EdgeInsets.all(8),
-              color: Colors.teal[100],
+              decoration: 
+              BoxDecoration(
+                /* border: Border.all(
+                color: HexColor('#09CDDA'),
+                width: 1,
+                ), */
+              color: HexColor('#09cdda'),
             ),
             child: 
                 Column(            
