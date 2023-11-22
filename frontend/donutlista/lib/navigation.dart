@@ -14,8 +14,7 @@ class NavDrawer extends StatelessWidget{
     final drawerHeader = UserAccountsDrawerHeader(
       accountName: Text('Username'), //localization.demoNavigationDrawerUserName,
       accountEmail: Text('Email'),   //localization.demoNavigationDrawerUserEmail,
-      //currentAccountPicture: const CircleAvatar(
-        //child: Image.asset('assets/images/smurf.png')),
+      // TODO: Add saldo here
     );
     final drawerItems = ListView(
       children: [

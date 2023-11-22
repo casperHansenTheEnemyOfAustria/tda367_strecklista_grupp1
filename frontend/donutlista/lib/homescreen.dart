@@ -21,7 +21,9 @@ class HomeScreen extends StatelessWidget {
         )
       ),
       title: 'StecklistIT',
-      home: Scaffold(
+      home:
+      
+      Scaffold(
         appBar: AppBar(
           title: Text('Current Page' //Add current page according to which is displayed
           ),
@@ -29,16 +31,17 @@ class HomeScreen extends StatelessWidget {
         body: Semantics(
           container: true, 
           child: Center(
+            child: Padding(
+              padding: EdgeInsets.all(50
+              ),
+              child: Text('Helooo' //Put currentPage here
+              ),
+            ),  
           ),
         ),
-        drawer: Drawer(child: NavDrawer(),)
-          ),
-
-//TODO: Add page switch as homescreen body
-/* Find a way to connect which dropdown is selected with a correct change to the body */
-
-
-
-        );
+        drawer: Drawer(child: NavDrawer(),
+        ),  
+      ), 
+    );
   }
 }
