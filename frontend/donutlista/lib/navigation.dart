@@ -21,7 +21,7 @@ class NavDrawer extends StatelessWidget{
         drawerHeader,
         ListTile(
           title: Text(
-            //localization.demoNavigationDrawerToPageOne,
+            //localization.NavigationDrawerToPageMain,
             'Strecklista'
           ),
           leading: const Icon(Icons.apps),
@@ -31,7 +31,7 @@ class NavDrawer extends StatelessWidget{
         ),
         ListTile(
           title: Text(
-            //localization.demoNavigationDrawerToPageTwo,
+            //localization.NavigationDrawerToPageTransactions,
             'Transaktioner'
           ),
           leading: const Icon(Icons.credit_score),
@@ -41,7 +41,7 @@ class NavDrawer extends StatelessWidget{
         ),
         ListTile(
           title: Text(
-            //localization.demoNavigationDrawerToPageTwo,
+            //localization.NavigationDrawerToPageInventory,
             'Inventarier'
           ),
           leading: const Icon(Icons.analytics),
@@ -51,7 +51,7 @@ class NavDrawer extends StatelessWidget{
         ),
         ListTile(
           title: Text(
-            //localization.demoNavigationDrawerToPageTwo,
+            //localization.NavigationDrawerToPageUser,
             'Användare'
           ),
           leading: const Icon(Icons.person),

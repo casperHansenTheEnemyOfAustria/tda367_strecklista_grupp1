@@ -37,6 +37,7 @@ dependencies:
 
   flutter_localizations:
     sdk: flutter
+  localization: <last-version>
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -91,6 +92,8 @@ flutter:
 
   assets: 
     - assets/images/
+# -- TODO -- Add json files directory
+
 
   generate: true # Enables generation of localized strings from arb files
   deferred-components:
