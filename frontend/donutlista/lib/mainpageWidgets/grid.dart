@@ -19,7 +19,8 @@ class MainItemGrid extends StatelessWidget{
     <Widget>[
       Container(
         padding: const EdgeInsets.all(8),
-        child: ItemButton(),
+        child: Text('hkhkjh')
+        //child: ItemButton(),
         ), 
     ],
 );

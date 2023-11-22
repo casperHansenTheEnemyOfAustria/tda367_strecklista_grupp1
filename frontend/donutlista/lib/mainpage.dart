@@ -10,7 +10,7 @@ class MainPage extends StatelessWidget{
   @override
   Widget build(BuildContext context){
       return Column(
-        children: [MainItemGrid(), SummaryList()
+        children: [MainItemGrid(), SummaryList(),
 
         ],
       );
