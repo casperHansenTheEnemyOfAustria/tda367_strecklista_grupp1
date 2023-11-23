@@ -68,7 +68,7 @@ public class DatabaseInterface {
                 results = ResultSetConverter.convertResultSetToList(resultSet);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
         }
 
         return results;
@@ -172,7 +172,12 @@ public class DatabaseInterface {
      * @throws IllegalArgumentException if product does not exist
      */
     private List<String> getProduct(String id) {
-        return extractAttributes(getData("Product",id));
+        try {
+            return extractAttributes(getData("Product",id));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Product does not exist");
+        }
+        
     }
 
     /**
@@ -218,7 +223,12 @@ public class DatabaseInterface {
      * @throws IllegalArgumentException if user does not exist
      */
     private List<String> getUser(String id) {
-        return extractAttributes(getData("Person", id));
+        try {
+            return extractAttributes(getData("Person",id));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("User does not exist");
+        }
+        
     }
 
 
