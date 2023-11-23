@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import se.cholmers.backend.DatabaseInterface;
+import se.cholmers.backend.RequestException;
 
 /**
  * This class represents a user in the system. It contains information about the
@@ -59,7 +60,12 @@ class User {
     public User(String name, String nick) {
         this.name = name;
         this.nick = nick;
-        dbi.createUser(name, nick, null, null, "0");
+        try {
+            dbi.createUser(name, nick, null, null, "0");
+        } catch (RequestException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         addGroupsFromDatabase();
     }
 
