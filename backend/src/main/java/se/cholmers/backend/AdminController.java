@@ -39,8 +39,8 @@ public class AdminController {
             dbi.createUser(userName, userName, null, null, "0");
             Response<String> response = new Response<String> ("user created");
             return response;
-        // }catch(RequestException e){
-        //     return new Response<String>(null, e.getMessage());
+        }catch(RequestException e){
+            return new Response<String>(null, e.getMessage());
         }finally{
 
         }

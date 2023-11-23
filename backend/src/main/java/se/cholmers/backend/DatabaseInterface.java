@@ -58,7 +58,7 @@ public class DatabaseInterface {
             setParameters(statement, parameters);
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -157,7 +157,7 @@ public class DatabaseInterface {
      * postcondition: A user is created in the database
      * 
      */
-    public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo) {
+    public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo) throws RequestException {
         Map<String, Object> parametersUser = new HashMap();
         
         String id = UUID.randomUUID().toString();
@@ -168,7 +168,11 @@ public class DatabaseInterface {
         parametersUser.put("person_name", userName);
         parametersUser.put("person_nick", userNick);
 
-        addData("Person", parametersUser);
+        try {
+            addData("Person", parametersUser);
+        } catch (IllegalArgumentException e) {
+            throw new RequestException("Username or nick is already taken");
+        }
 
         return id;
         

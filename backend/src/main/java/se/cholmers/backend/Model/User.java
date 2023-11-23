@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import se.cholmers.backend.DatabaseInterface;
+import se.cholmers.backend.RequestException;
 
 /**
  * This class represents a user in the system. It contains information about the
@@ -57,17 +58,15 @@ class User {
      * 
      * @throws NullPointerException if the input is null
      */
-<<<<<<< HEAD
-    public User(String name, String nick) {
-        if (name == null || nick == null) {
-            throw new NullPointerException();
-        }
-=======
     public User(String name, String nick, String password) {
->>>>>>> 7f93eb7 (fix: added passwrod into user creator)
         this.name = name;
         this.nick = nick;
-        this.id = dbi.getUserIDFromName(name, password);
+        try {
+            dbi.createUser(name, nick, null, null, "0");
+        } catch (RequestException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         addGroupsFromDatabase();
         
     }
