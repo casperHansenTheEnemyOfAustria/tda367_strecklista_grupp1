@@ -26,7 +26,7 @@ public class DatabaseInterface implements IDatabaseInterface {
     private static DatabaseInterface instance;
 
     // Replace these with your actual database information
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/strecklista";
+    private static final String DB_URL = "jdbc:postgresql:strecklista";
     private static final String DB_USER = "postgres";
     private static final String DB_PASSWORD = "";
 
