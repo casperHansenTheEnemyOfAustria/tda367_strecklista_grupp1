@@ -9,64 +9,70 @@ import org.springframework.web.bind.annotation.RestController;
 
 import se.cholmers.backend.Model.StateManager;
 
- /**
-  * AdminController this controlls admin features such as creating users and products and assignings these to groups
-  * It talks directly to the database interface
-  */
+/**
+ * AdminController this controlls admin features such as creating users and
+ * products and assignings these to groups
+ * It talks directly to the database interface
+ */
 @RestController
 public class AdminController {
     @Autowired
     StateManager stateManager;
     DatabaseInterface dbi;
+
     public AdminController(StateManager stateManager, DatabaseInterface dbi) {
         this.stateManager = stateManager;
         this.dbi = dbi;
     }
 
-  
-/**
- * createUser creates a user in the database
- * @param userName (the users name)
- * @param password (the users wanted password)
- * @return response (a response with the correct code and a success message if the user was created. Otherwise it should havea an error code)
- * 
- */
+    /**
+     * createUser creates a user in the database
+     * 
+     * @param userName (the users name)
+     * @param password (the users wanted password)
+     * @return response (a response with the correct code and a success message if
+     *         the user was created. Otherwise it should havea an error code)
+     * 
+     */
     @RequestMapping(value = "/createUser/{userName}/{password}", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> createUser(@PathVariable("userName") String userName, @PathVariable("password") String password) {
-        try{
-            //possiubly change to factory pattern??
+    public Response<String> createUser(@PathVariable("userName") String userName,
+            @PathVariable("password") String password) {
+        try {
+            // possiubly change to factory pattern??
             dbi.createUser(userName, userName, null, null, "0");
-            Response<String> response = new Response<String> ("user created");
+            Response<String> response = new Response<String>("user created");
             return response;
-        }catch(RequestException e){
+        } catch (RequestException e) {
             return new Response<String>(null, e.getMessage());
-        }finally{
+        } finally {
 
         }
     }
 
     /**
      * createProduct creates a product in the database
-     * @param productName 
+     * 
+     * @param productName
      * @param price
-     * @return response (a response with the correct code and a success message if the product was created. Otherwise it should havea an error code)
+     * @return response (a response with the correct code and a success message if
+     *         the product was created. Otherwise it should havea an error code)
      */
     @RequestMapping(value = "/createProduct/{productName}/{price}/{committeeID}/{amount}", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> createProduct(@PathVariable("productName") String productName, @PathVariable("price") String price , @PathVariable("committeeID") String committeeID, @PathVariable("amount") String amount) {
-        try{
-            //possiubly change to factory pattern??
+    public Response<String> createProduct(@PathVariable("productName") String productName,
+            @PathVariable("price") String price, @PathVariable("committeeID") String committeeID,
+            @PathVariable("amount") String amount) {
+        try {
+            // possiubly change to factory pattern??
             dbi.createProduct(productName, price, committeeID, amount);
-            Response<String> response = new Response<String> ("Product created");
+            Response<String> response = new Response<String>("Product created");
             return response;
-        }catch(RequestException e){
+        } catch (RequestException e) {
             return new Response<String>(null, e.getMessage());
-        }finally{
+        } finally {
 
         }
     }
 
 }
-
-

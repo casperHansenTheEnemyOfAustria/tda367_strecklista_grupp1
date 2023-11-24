@@ -12,13 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
 public class DatabaseInterface implements IDatabaseInterface {
@@ -70,6 +63,7 @@ public class DatabaseInterface implements IDatabaseInterface {
     public void executeUpdate(String sql, List<Object> parameters) {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             setParameters(statement, parameters);
+            System.out.println(statement.toString());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -542,6 +536,7 @@ public class DatabaseInterface implements IDatabaseInterface {
 
         // Append placeholders for values
         for (int i = 0; i < data.size(); i++) {
+            // TODO FIX THIS
             sqlBuilder.append("?, ");
         }
 
