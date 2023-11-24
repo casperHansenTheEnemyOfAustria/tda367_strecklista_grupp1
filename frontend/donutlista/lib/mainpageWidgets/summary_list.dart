@@ -27,10 +27,10 @@ class SummaryList extends StatelessWidget {
               ListTile(
                 leading: ExcludeSemantics(
                 ),
-                title: Text('Insert item here'),
+                title: Text('Insert item here'), //TODO: add path from itemCard name here
                 subtitle: 
                 //type == ListDemoType.twoLine ? 
-                Text('insert price here')
+                Text('insert price here') //TODO: add path from ItemCard * Price here
                 //: null,
               ,)
           ],
