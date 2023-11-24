@@ -202,7 +202,8 @@ public class DatabaseInterface implements IDatabaseInterface {
      *                          postcondition: A user is created in the database
      * 
      */
-    public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo)
+    public String createUser(String userName, String password, String userNick, String phoneNumber, String committeeID,
+            String saldo)
             throws RequestException {
         Map<String, String> parametersUser = new HashMap();
 
@@ -212,6 +213,7 @@ public class DatabaseInterface implements IDatabaseInterface {
         parametersUser.put("phone_number", phoneNumber);
         parametersUser.put("person_name", userName);
         parametersUser.put("person_nick", userNick);
+        parametersUser.put("password", password);
 
         try {
             addData("Person", parametersUser);

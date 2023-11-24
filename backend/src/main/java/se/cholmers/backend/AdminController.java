@@ -40,7 +40,7 @@ public class AdminController {
             @PathVariable("password") String password) {
         try {
             // possiubly change to factory pattern??
-            dbi.createUser(userName, userName, "0734111337", null, "0");
+            dbi.createUser(userName, password, userName, "0734111337", null, "0");
             Response<String> response = new Response<String>("user created");
             return response;
         } catch (RequestException e) {

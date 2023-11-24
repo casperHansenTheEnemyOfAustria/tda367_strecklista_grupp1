@@ -20,7 +20,8 @@ public interface IDatabaseInterface {
         public void createProduct(String productName, String price, String committee, String amount)
                         throws RequestException;
 
-        public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo)
+        public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo,
+                        String password)
                         throws RequestException;
 
         public Float getProductPrice(String id);

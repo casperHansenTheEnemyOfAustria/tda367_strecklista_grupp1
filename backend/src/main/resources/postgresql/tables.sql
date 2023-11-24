@@ -4,8 +4,10 @@ CREATE TABLE Person (
     id TEXT PRIMARY KEY,
     phone_number CHAR(10) NOT NULL,
     person_name TEXT NOT NULL,
-    person_nick TEXT NOT NULL
+    person_nick TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL
 );
+
 
 CREATE TABLE Committee (
     id TEXT PRIMARY KEY,

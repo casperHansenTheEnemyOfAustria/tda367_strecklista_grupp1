@@ -11,10 +11,11 @@ public class dbTests {
     void testGetUser() {
         String userID = "1";
         String userName = "Test User";
+        String password = "1337";
         String userNick = "Test";
         String userPhoneNumber = "0701234567";
         try {
-            dbi.createUser(userName, userNick, userPhoneNumber, userNick, userPhoneNumber);
+            dbi.createUser(userName, password, userNick, userPhoneNumber, userNick, userPhoneNumber);
         } catch (RequestException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -28,10 +29,11 @@ public class dbTests {
     void testGetUserIDFromNick() {
         String userID = "1";
         String userName = "Test User";
+        String password = "1337";
         String userNick = "Test";
         String userPhoneNumber = "0701234567";
         try {
-            dbi.createUser(userName, userNick, userPhoneNumber, userNick, userPhoneNumber);
+            dbi.createUser(userName, password, userNick, userPhoneNumber, userNick, userPhoneNumber);
         } catch (RequestException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
