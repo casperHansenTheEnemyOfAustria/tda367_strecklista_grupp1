@@ -1,5 +1,17 @@
 package se.cholmers.backend;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +26,7 @@ public class DatabaseInterface implements IDatabaseInterface {
     private static DatabaseInterface instance;
 
     // Replace these with your actual database information
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/";
+    private static final String DB_URL = "jdbc:strecklista://localhost:5432/";
     private static final String DB_USER = "postgres";
     private static final String DB_PASSWORD = "";
 
@@ -292,8 +304,10 @@ public class DatabaseInterface implements IDatabaseInterface {
         }
 
         List<String> user = extractAttributes(results);
+
         String id = user.get(0);
         return id;
+
     }
 
     /**

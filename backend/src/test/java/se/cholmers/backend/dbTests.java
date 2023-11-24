@@ -13,19 +13,29 @@ public class dbTests {
         String userName = "Test User";
         String userNick = "Test";
         String userPhoneNumber = "0701234567";
-        dbi.createUser(userName, userNick, userPhoneNumber, userNick, userPhoneNumber);
+        try {
+            dbi.createUser(userName, userNick, userPhoneNumber, userNick, userPhoneNumber);
+        } catch (RequestException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         assertEquals(userName, dbi.getUserName(userID));
         assertEquals(userNick, dbi.getUserNick(userID));
         assertEquals(userPhoneNumber, dbi.getUserPhoneNumber(userID));
     }
 
     @Test
-    void testGetUserIDFromNick(){
+    void testGetUserIDFromNick() {
         String userID = "1";
         String userName = "Test User";
         String userNick = "Test";
         String userPhoneNumber = "0701234567";
-        dbi.createUser(userName, userNick, userPhoneNumber, userNick, userPhoneNumber);
+        try {
+            dbi.createUser(userName, userNick, userPhoneNumber, userNick, userPhoneNumber);
+        } catch (RequestException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         assertEquals(userID, dbi.getUserIDFromName(userNick, null));
     }
 }
