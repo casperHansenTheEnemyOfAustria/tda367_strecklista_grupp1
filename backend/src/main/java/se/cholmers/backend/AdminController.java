@@ -60,8 +60,8 @@ public class AdminController {
             dbi.createProduct(productName, price, committeeID, amount);
             Response<String> response = new Response<String> ("Product created");
             return response;
-        // }catch(RequestException e){
-        //     return new Response<String>(null, e.getMessage());
+        }catch(RequestException e){
+            return new Response<String>(null, e.getMessage());
         }finally{
 
         }
