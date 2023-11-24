@@ -11,7 +11,7 @@ public class DatabaseInterface {
     private static DatabaseInterface instance;
 
     // Replace these with your actual database information
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/";
     private static final String DB_USER = "postgres";
     private static final String DB_PASSWORD = "";
 
@@ -55,7 +55,7 @@ public class DatabaseInterface {
             setParameters(statement, parameters);
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -68,7 +68,7 @@ public class DatabaseInterface {
                 results = ResultSetConverter.convertResultSetToList(resultSet);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
         }
 
         return results;
@@ -92,7 +92,7 @@ public class DatabaseInterface {
     }   
 
     // READ operation
-    private List<Map<String, Object>> getData(String tableName, int id) {
+    private List<Map<String, Object>> getData(String tableName, String id) {
         String sql = "SELECT * FROM " + tableName + " WHERE id = ?";
         List<Object> params = List.of(id);
         return executeQuery(sql, params);
@@ -124,7 +124,16 @@ public class DatabaseInterface {
         parameters.put("id", id);
     }
 
-    public void createProduct(String productName, String price, String committee, String amount) {
+    /**
+     * Creates a product in the database
+     * precondition: There has to be a database and the product has to not exist already
+     * @param productName
+     * @param price
+     * @param committee
+     * @param amount
+     * @throws RequestException
+     */
+    public void createProduct(String productName, String price, String committee, String amount) throws RequestException {
         Map<String, Object> parametersProduct = new HashMap();
         Map<String, Object> parametersProductInCommittee = new HashMap();
         String id = UUID.randomUUID().toString();
@@ -136,24 +145,53 @@ public class DatabaseInterface {
         parametersProductInCommittee.put("committee_id", committee);
         parametersProductInCommittee.put("product_id", id);
       
-        addData("Product", parametersProduct);
-        addData("ProductInCommittee", parametersProductInCommittee);
+        try {
+                addData("Product", parametersProduct);
+                
+        } catch (IllegalArgumentException e) {
+            throw new RequestException("Product already exists");
+        }try{
+            addData("ProductInCommittee", parametersProductInCommittee);
+        } catch (IllegalArgumentException e) {
+            throw new RequestException("Product already exists in committee");
+        }
+
     }
 
     //A committee needs the exists before a user can be inserted into it.
-    public void createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo) {
+
+    /**
+     * Creates a user in the database
+     * precondition: There has to be a databse
+     * @param userName
+     * @param userNick
+     * @param phoneNumber
+     * @param committeeID
+     * @param saldo
+     * @return
+     * @throws RequestException if the userName or userNick is already taken
+     * 
+     * postcondition: A user is created in the database
+     * 
+     */
+    public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo) throws RequestException {
         Map<String, Object> parametersUser = new HashMap();
         
-
         String id = UUID.randomUUID().toString();
-        int idString = Integer.parseInt(id);
+       
+    
         parametersUser.put("id", id);
         parametersUser.put("phone_number", phoneNumber);
         parametersUser.put("person_name", userName);
         parametersUser.put("person_nick", userNick);
 
+        try {
+            addData("Person", parametersUser);
+        } catch (IllegalArgumentException e) {
+            throw new RequestException("Username or nick is already taken");
+        }
 
-        addData("Person", parametersUser);
+        return id;
         
     }
 
@@ -170,7 +208,12 @@ public class DatabaseInterface {
      * @throws IllegalArgumentException if product does not exist
      */
     private List<String> getProduct(String id) {
-        return extractAttributes(getData("Product", Integer.parseInt(id)));
+        try {
+            return extractAttributes(getData("Product",id));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Product does not exist");
+        }
+        
     }
 
     /**
@@ -216,18 +259,29 @@ public class DatabaseInterface {
      * @throws IllegalArgumentException if user does not exist
      */
     private List<String> getUser(String id) {
-        return extractAttributes(getData("Person", Integer.parseInt(id)));
+        try {
+            return extractAttributes(getData("Person",id));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("User does not exist");
+        }
+        
     }
 
 
-    private String getUserIDFromName(String name, String password) {
+    public String getUserIDFromName(String nick, String password) {
 
-        String sql = "SELECT * FROM Person WHERE person_name = ?";
-        List<Object> params = List.of(name);
+
+        String sql = "SELECT * FROM Person WHERE person_nick = ?";
+        List<Object> params = List.of(nick);
         List<Map<String, Object>> results = executeQuery(sql, params);
-        if (results.size() == 0) {
-            throw new IllegalArgumentException("User does not exist");
+        try{
+            if (results.size() == 0) {
+                throw new IllegalArgumentException("User does not exist");
+            }
+        }catch(NullPointerException e){
+            throw new IllegalArgumentException("table does not exist");
         }
+        
         List<String> user = extractAttributes(results);
 
         String id = user.get(0);
@@ -278,9 +332,14 @@ public class DatabaseInterface {
      * postcondition: returns a list of committee ids
      */
     public List<String> getCommitteesOfUser(String id){
-        String sql = "SELECT * FROM PersonInCommittee WHERE person_id = ?";
-        List<Object> params = List.of(id);
-        return extractAttributes(executeQuery(sql, params));
+        try {
+            String sql = "SELECT * FROM PersonInCommittee WHERE person_id = ?";
+            List<Object> params = List.of(id);
+            return extractAttributes(executeQuery(sql, params));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("User does not exist");
+        }
+        
     }
     //TODO write specific sql for two ids
     /**
@@ -294,7 +353,11 @@ public class DatabaseInterface {
     public Float getSaldoFromUserInCommittee(String userID, String committeeID) {
         String sql = "SELECT saldo FROM PersonInCommittee WHERE person_id = ? AND committee_id = ?";
         List<Object> params = List.of(userID, committeeID);
-        return Float.parseFloat(extractAttributes(executeQuery(sql, params)).get(0));
+        try {
+            return Float.parseFloat(extractAttributes(executeQuery(sql, params)).get(0));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("User or committee does not exist");
+        }
     }
 
     //COMMITTEE
@@ -306,7 +369,11 @@ public class DatabaseInterface {
      * @throws IllegalArgumentException if committee does not exist
      */
     private List<String> getCommittee(String id) {
-        return extractAttributes(getData("Committee", Integer.parseInt(id)));
+        try {
+            return extractAttributes(getData("Committee",id));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Committee does not exist");
+        }
     }
 
     /**
@@ -342,7 +409,11 @@ public class DatabaseInterface {
     public List<String> getProductsInCommittee(String committeeID) {
         String sql = "SELECT * FROM ProductInCommittee WHERE committee_id = ?";
         List<Object> params = List.of(committeeID);
-        return extractAttributes(executeQuery(sql, params));
+        try {
+            return extractAttributes(executeQuery(sql, params));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Committee does not exist");
+        }
     }
 
 
@@ -365,7 +436,11 @@ public class DatabaseInterface {
         parametersPersonInCommittee.put("person_id", id);
         parametersPersonInCommittee.put("committee_id",committeeID);
         parametersPersonInCommittee.put("saldo", saldo);
-        addData("ProductInCommittee", parametersPersonInCommittee);
+        try {
+            addData("PersonInCommittee", parametersPersonInCommittee);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("User or committee relation does not exist");
+        }
     }
 
 
@@ -381,7 +456,11 @@ public class DatabaseInterface {
     public void updateUserSaldo(String id, String committeeId, String saldo) {
         String sql = "UPDATE ProductInCommittee SET saldo = ? WHERE person_id = ? AND committee_id = ?";
         List<Object> params = List.of(saldo, id, committeeId);
-        executeUpdate(sql, params);
+        try {
+            executeUpdate(sql, params);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("User or committee relation does not exist");
+        }
     }
 
     /**
@@ -395,8 +474,11 @@ public class DatabaseInterface {
     public void updateProductAmount(int productID, String amount) {
         Map<String, Object> parametersProduct= new HashMap();
         parametersProduct.put("amount", amount);
-
-        updateData(amount, productID, parametersProduct);
+        try {
+            updateData("Product", productID, parametersProduct);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Product does not exist");
+        }
     }
 
 
