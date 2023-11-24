@@ -63,6 +63,7 @@ class ProgramState {
      * Empties the cart and updates the saldo (saldo update not yet working)
      */
     public void completePurchase() {
+        //TODO: Add logic for changing saldo
         for (Product product : cart.getCart().keySet()) {
             currentUser.purchaseItem(product, cart.getCart().get(product));
         }

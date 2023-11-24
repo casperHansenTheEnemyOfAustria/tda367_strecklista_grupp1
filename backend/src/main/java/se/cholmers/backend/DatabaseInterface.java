@@ -270,6 +270,7 @@ public class DatabaseInterface {
 
     public String getUserIDFromName(String nick, String password) {
 
+
         String sql = "SELECT * FROM Person WHERE person_nick = ?";
         List<Object> params = List.of(nick);
         List<Map<String, Object>> results = executeQuery(sql, params);

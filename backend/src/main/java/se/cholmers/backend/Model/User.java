@@ -57,16 +57,14 @@ class User {
      * @param nick
      * 
      */
-    public User(String name, String nick) {
+    public User(String name, String nick, String password) {
         this.name = name;
         this.nick = nick;
-        try {
-            dbi.createUser(name, nick, null, null, "0");
-        } catch (RequestException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+
+        this.id = dbi.getUserIDFromName(name, password);
+
         addGroupsFromDatabase();
+        
     }
 
     public void addUserToGroup(UserGroup group) {
