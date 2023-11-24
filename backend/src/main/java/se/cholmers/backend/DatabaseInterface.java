@@ -60,7 +60,21 @@ public class DatabaseInterface implements IDatabaseInterface {
         }
     }
 
-    public void executeUpdate(String sql, List<Object> parameters) {
+    public void executeUpdate(String sql, Map<String, String> parameters) {
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            List<String> params = new ArrayList<>();
+            for (String key : parameters.keySet()) {
+                params.add(parameters.get(key));
+            }
+            setParameters(statement, params);
+            System.out.println(statement.toString());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    public void executeUpdate(String sql, List<String> parameters) {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             setParameters(statement, parameters);
             System.out.println(statement.toString());
@@ -70,8 +84,8 @@ public class DatabaseInterface implements IDatabaseInterface {
         }
     }
 
-    public List<Map<String, Object>> executeQuery(String sql, List<Object> parameters) {
-        List<Map<String, Object>> results = null;
+    public List<Map<String, String>> executeQuery(String sql, List<String> parameters) {
+        List<Map<String, String>> results = null;
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             setParameters(statement, parameters);
@@ -85,7 +99,7 @@ public class DatabaseInterface implements IDatabaseInterface {
         return results;
     }
 
-    private void setParameters(PreparedStatement statement, List<Object> parameters) throws SQLException {
+    private void setParameters(PreparedStatement statement, List<String> parameters) throws SQLException {
         if (parameters != null) {
             for (int i = 0; i < parameters.size(); i++) {
                 statement.setObject(i + 1, parameters.get(i));
@@ -96,37 +110,37 @@ public class DatabaseInterface implements IDatabaseInterface {
     // Additional methods for CRUD operations
 
     // CREATE operation
-    private void addData(String tableName, Map<String, Object> data) {
+    private void addData(String tableName, Map<String, String> data) {
         // Generate SQL for insertion based on the data
         String sql = generateInsertSQL(tableName, data);
-        executeUpdate(sql, null);
+        executeUpdate(sql, data);
     }
 
     // READ operation
-    private List<Map<String, Object>> getData(String tableName, String id) {
+    private List<Map<String, String>> getData(String tableName, String id) {
         String sql = "SELECT * FROM " + tableName + " WHERE id = ?";
-        List<Object> params = List.of(id);
+        List<String> params = List.of(id);
         return executeQuery(sql, params);
     }
 
     // UPDATE operation
-    private void updateData(String tableName, int id, Map<String, Object> updatedData) {
+    private void updateData(String tableName, int id, Map<String, String> updatedData) {
         // Generate SQL for update based on the data
 
         String sql = generateUpdateSQL(tableName, id, updatedData);
-        executeUpdate(sql, null);
+        executeUpdate(sql, updatedData);
     }
 
     // DELETE operation
-    private void deleteData(String tableName, int id) {
+    private void deleteData(String tableName, String id) {
         String sql = "DELETE FROM " + tableName + " WHERE id = ?";
-        List<Object> params = List.of(id);
+        List<String> params = List.of(id);
         executeUpdate(sql, params);
     }
 
     // Custom CREATE methods
     public void createCommittee(String group_name, String year) {
-        Map<String, Object> parameters = new HashMap<>();
+        Map<String, String> parameters = new HashMap<>();
         parameters.put("group_name", group_name);
         parameters.put("year", year);
         String id = UUID.randomUUID().toString();
@@ -146,8 +160,8 @@ public class DatabaseInterface implements IDatabaseInterface {
      */
     public void createProduct(String productName, String price, String committee, String amount)
             throws RequestException {
-        Map<String, Object> parametersProduct = new HashMap();
-        Map<String, Object> parametersProductInCommittee = new HashMap();
+        Map<String, String> parametersProduct = new HashMap();
+        Map<String, String> parametersProductInCommittee = new HashMap();
         String id = UUID.randomUUID().toString();
         parametersProduct.put("id", id);
         parametersProduct.put("name", productName);
@@ -190,7 +204,7 @@ public class DatabaseInterface implements IDatabaseInterface {
      */
     public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo)
             throws RequestException {
-        Map<String, Object> parametersUser = new HashMap();
+        Map<String, String> parametersUser = new HashMap();
 
         String id = UUID.randomUUID().toString();
 
@@ -287,8 +301,8 @@ public class DatabaseInterface implements IDatabaseInterface {
     public String getUserIDFromName(String nick, String password) {
 
         String sql = "SELECT * FROM Person WHERE person_nick = ?";
-        List<Object> params = List.of(nick);
-        List<Map<String, Object>> results = executeQuery(sql, params);
+        List<String> params = List.of(nick);
+        List<Map<String, String>> results = executeQuery(sql, params);
         try {
             if (results.size() == 0) {
                 throw new IllegalArgumentException("User does not exist");
@@ -352,7 +366,7 @@ public class DatabaseInterface implements IDatabaseInterface {
     public List<String> getCommitteesOfUser(String id) {
         try {
             String sql = "SELECT * FROM PersonInCommittee WHERE person_id = ?";
-            List<Object> params = List.of(id);
+            List<String> params = List.of(id);
             return extractAttributes(executeQuery(sql, params));
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("User does not exist");
@@ -372,7 +386,7 @@ public class DatabaseInterface implements IDatabaseInterface {
      */
     public Float getSaldoFromUserInCommittee(String userID, String committeeID) {
         String sql = "SELECT saldo FROM PersonInCommittee WHERE person_id = ? AND committee_id = ?";
-        List<Object> params = List.of(userID, committeeID);
+        List<String> params = List.of(userID, committeeID);
         try {
             return Float.parseFloat(extractAttributes(executeQuery(sql, params)).get(0));
         } catch (IllegalArgumentException e) {
@@ -431,7 +445,7 @@ public class DatabaseInterface implements IDatabaseInterface {
      */
     public List<String> getProductsInCommittee(String committeeID) {
         String sql = "SELECT * FROM ProductInCommittee WHERE committee_id = ?";
-        List<Object> params = List.of(committeeID);
+        List<String> params = List.of(committeeID);
         try {
             return extractAttributes(executeQuery(sql, params));
         } catch (IllegalArgumentException e) {
@@ -455,7 +469,7 @@ public class DatabaseInterface implements IDatabaseInterface {
      *                                  committee
      */
     public void putUserInCommittee(String id, String committeeID, String saldo) {
-        Map<String, Object> parametersPersonInCommittee = new HashMap();
+        Map<String, String> parametersPersonInCommittee = new HashMap();
         parametersPersonInCommittee.put("person_id", id);
         parametersPersonInCommittee.put("committee_id", committeeID);
         parametersPersonInCommittee.put("saldo", saldo);
@@ -479,7 +493,7 @@ public class DatabaseInterface implements IDatabaseInterface {
      */
     public void updateUserSaldo(String id, String committeeId, String saldo) {
         String sql = "UPDATE ProductInCommittee SET saldo = ? WHERE person_id = ? AND committee_id = ?";
-        List<Object> params = List.of(saldo, id, committeeId);
+        List<String> params = List.of(saldo, id, committeeId);
         try {
             executeUpdate(sql, params);
         } catch (IllegalArgumentException e) {
@@ -498,7 +512,7 @@ public class DatabaseInterface implements IDatabaseInterface {
      *                                  updated
      */
     public void updateProductAmount(int productID, String amount) {
-        Map<String, Object> parametersProduct = new HashMap();
+        Map<String, String> parametersProduct = new HashMap();
         parametersProduct.put("amount", amount);
         try {
             updateData("Product", productID, parametersProduct);
@@ -510,17 +524,17 @@ public class DatabaseInterface implements IDatabaseInterface {
     // SQL generators
 
     // TODO refactor
-    private List<String> extractAttributes(List<Map<String, Object>> attributes) {
+    private List<String> extractAttributes(List<Map<String, String>> attributes) {
         List<String> returnList = new ArrayList<>();
 
-        Map<String, Object> attributesObject = attributes.get(0);
-        for (Map.Entry<String, Object> obj : attributesObject.entrySet()) {
+        Map<String, String> attributesObject = attributes.get(0);
+        for (Map.Entry<String, String> obj : attributesObject.entrySet()) {
             returnList.add(obj.getValue().toString());
         }
         return returnList;
     }
 
-    private String generateInsertSQL(String tableName, Map<String, Object> data) {
+    private String generateInsertSQL(String tableName, Map<String, String> data) {
         StringBuilder sqlBuilder = new StringBuilder("INSERT INTO ");
         sqlBuilder.append(tableName).append(" (");
 
@@ -548,7 +562,7 @@ public class DatabaseInterface implements IDatabaseInterface {
         return sqlBuilder.toString();
     }
 
-    private String generateUpdateSQL(String tableName, int id, Map<String, Object> updatedData) {
+    private String generateUpdateSQL(String tableName, int id, Map<String, String> updatedData) {
         StringBuilder sqlBuilder = new StringBuilder("UPDATE ");
         sqlBuilder.append(tableName).append(" SET ");
 
@@ -567,17 +581,17 @@ public class DatabaseInterface implements IDatabaseInterface {
 
     private class ResultSetConverter {
 
-        private static List<Map<String, Object>> convertResultSetToList(ResultSet resultSet) throws SQLException {
-            List<Map<String, Object>> resultList = new ArrayList<>();
+        private static List<Map<String, String>> convertResultSetToList(ResultSet resultSet) throws SQLException {
+            List<Map<String, String>> resultList = new ArrayList<>();
 
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
 
             while (resultSet.next()) {
-                Map<String, Object> row = new HashMap<>();
+                Map<String, String> row = new HashMap<>();
                 for (int i = 1; i <= columnCount; i++) {
                     String columnName = metaData.getColumnName(i);
-                    Object columnValue = resultSet.getObject(i);
+                    String columnValue = resultSet.getString(i);
                     row.put(columnName, columnValue);
                 }
                 resultList.add(row);
