@@ -1,5 +1,10 @@
 package se.cholmers.backend;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +16,7 @@ public class DatabaseInterface {
     private static DatabaseInterface instance;
 
     // Replace these with your actual database information
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/";
+    private static final String DB_URL = "jdbc:strecklista://localhost:5432/";
     private static final String DB_USER = "postgres";
     private static final String DB_PASSWORD = "";
 
