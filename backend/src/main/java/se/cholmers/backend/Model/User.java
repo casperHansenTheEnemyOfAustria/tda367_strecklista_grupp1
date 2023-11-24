@@ -37,11 +37,12 @@ class User {
 
     /**
      * This method adds the user's groups to the user from the database
+     * 
      * @param userID
      * 
      */
     private void addGroupsFromDatabase() {
-        //TODO add a catch for if there are no groups
+        // TODO add a catch for if there are no groups
         List<String> comitteeIds = dbi.getCommitteesOfUser(id);
         for (String param : comitteeIds) {
             groups.add(new UserGroup(param));
@@ -63,9 +64,10 @@ class User {
         this.nick = nick;
 
         this.id = dbi.getUserIDFromName(name, password);
+        System.out.println("User id: " + id);
 
         addGroupsFromDatabase();
-        
+
     }
 
     public void addUserToGroup(UserGroup group) {

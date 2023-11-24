@@ -90,6 +90,7 @@ public class DatabaseInterface implements IDatabaseInterface {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             setParameters(statement, parameters);
             try (ResultSet resultSet = statement.executeQuery()) {
+                System.out.println("Resultset" + resultSet.toString());
                 results = ResultSetConverter.convertResultSetToList(resultSet);
             }
         } catch (SQLException e) {
@@ -300,6 +301,7 @@ public class DatabaseInterface implements IDatabaseInterface {
 
     }
 
+    // This has to return the ID not the nick
     public String getUserIDFromName(String nick, String password) {
 
         String sql = "SELECT * FROM Person WHERE person_nick = ?";
@@ -314,8 +316,10 @@ public class DatabaseInterface implements IDatabaseInterface {
         }
 
         List<String> user = extractAttributes(results);
+        System.out.println(user.toString());
 
-        String id = user.get(0);
+        // HARDCODED VALUE
+        String id = user.get(4);
         return id;
 
     }
@@ -369,6 +373,7 @@ public class DatabaseInterface implements IDatabaseInterface {
         try {
             String sql = "SELECT * FROM PersonInCommittee WHERE person_id = ?";
             List<String> params = List.of(id);
+            System.out.println("getCommitteesOfUser" + id);
             return extractAttributes(executeQuery(sql, params));
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("User does not exist");
@@ -421,7 +426,8 @@ public class DatabaseInterface implements IDatabaseInterface {
      * @throws IllegalArgumentException if committee does not exist
      */
     public String getCommitteeName(String id) {
-        return getCommittee(id).get(1);
+        System.out.println("getCommitteeName " + id);
+        return getCommittee(id).get(0);
     }
 
     /**
@@ -589,6 +595,7 @@ public class DatabaseInterface implements IDatabaseInterface {
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
 
+            System.out.println(columnCount);
             while (resultSet.next()) {
                 Map<String, String> row = new HashMap<>();
                 for (int i = 1; i <= columnCount; i++) {
