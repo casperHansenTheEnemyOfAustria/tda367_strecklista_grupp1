@@ -3,6 +3,7 @@ package se.cholmers.backend.Model;
 import java.util.UUID;
 
 import se.cholmers.backend.DatabaseInterface;
+import se.cholmers.backend.RequestException;
 
 class Product {
     private DatabaseInterface dbi = DatabaseInterface.getInstance();
@@ -22,8 +23,15 @@ class Product {
         this.name = name;
         this.cost = cost;
         this.groupID = groupID;
+        this.amount = 0;
 
-        dbi.createProduct(name, cost.toString(), groupID, "0");
+        //catches the already exists error and does nothing since its already been created
+        try {
+            dbi.createProduct(name, cost.toString(), groupID, "0");
+        } catch (RequestException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /**
