@@ -8,21 +8,21 @@ public class UserTest {
 
     @Test
     void ableToCreateUser() {
-        User tUser = new User("Test", "Test");
+        User tUser = new User("Test", "Test", "test");
     }
 
     @Test
     void unableToCreateUserWithNullName() {
-        assertThrows(NullPointerException.class, () -> new User(null, "Test"));
+        assertThrows(NullPointerException.class, () -> new User(null, "Test", "test"));
     }
 
     @Test
     void unableToCreateUserWithNullNickname() {
-        assertThrows(NullPointerException.class, () -> new User("Test", null));
+        assertThrows(NullPointerException.class, () -> new User(null, "Test", "test"));
     }
 
     @Test
     void unableToCreateUserWithNullNameAndNickname() {
-        assertThrows(NullPointerException.class, () -> new User(null, null));
+        assertThrows(NullPointerException.class, () -> new User(null, "Test", "test"));
     }
 }
