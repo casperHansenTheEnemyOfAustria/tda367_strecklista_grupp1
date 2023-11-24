@@ -26,8 +26,8 @@ CREATE TABLE Product (
 
 CREATE TABLE Transaction (
     id TEXT PRIMARY KEY,
-    person_id INT REFERENCES Person(id) NOT NULL,
-    product_id INT REFERENCES Product(id) NOT NULL,
+    person_id TEXT REFERENCES Person(id) NOT NULL,
+    product_id TEXT REFERENCES Product(id) NOT NULL,
     transaction_time TIME NOT NULL,
     transaction_date DATE NOT NULL
 );
