@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class DatabaseInterface {
+import se.cholmers.backend.Interface.IDatabaseInterface;
+
+public class DatabaseInterface implements IDatabaseInterface {
 
     private static DatabaseInterface instance;
 
@@ -127,14 +129,17 @@ public class DatabaseInterface {
 
     /**
      * Creates a product in the database
-     * precondition: There has to be a database and the product has to not exist already
+     * precondition: There has to be a database and the product has to not exist
+     * already
+     * 
      * @param productName
      * @param price
      * @param committee
      * @param amount
      * @throws RequestException
      */
-    public void createProduct(String productName, String price, String committee, String amount) throws RequestException {
+    public void createProduct(String productName, String price, String committee, String amount)
+            throws RequestException {
         Map<String, Object> parametersProduct = new HashMap();
         Map<String, Object> parametersProductInCommittee = new HashMap();
         String id = UUID.randomUUID().toString();
@@ -145,13 +150,14 @@ public class DatabaseInterface {
 
         parametersProductInCommittee.put("committee_id", committee);
         parametersProductInCommittee.put("product_id", id);
-      
+
         try {
-                addData("Product", parametersProduct);
-                
+            addData("Product", parametersProduct);
+
         } catch (IllegalArgumentException e) {
             throw new RequestException("Product already exists");
-        }try{
+        }
+        try {
             addData("ProductInCommittee", parametersProductInCommittee);
         } catch (IllegalArgumentException e) {
             throw new RequestException("Product already exists in committee");
@@ -159,11 +165,12 @@ public class DatabaseInterface {
 
     }
 
-    //A committee needs the exists before a user can be inserted into it.
+    // A committee needs the exists before a user can be inserted into it.
 
     /**
      * Creates a user in the database
      * precondition: There has to be a databse
+     * 
      * @param userName
      * @param userNick
      * @param phoneNumber
@@ -172,15 +179,15 @@ public class DatabaseInterface {
      * @return
      * @throws RequestException if the userName or userNick is already taken
      * 
-     * postcondition: A user is created in the database
+     *                          postcondition: A user is created in the database
      * 
      */
-    public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo) throws RequestException {
+    public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo)
+            throws RequestException {
         Map<String, Object> parametersUser = new HashMap();
-        
+
         String id = UUID.randomUUID().toString();
-       
-    
+
         parametersUser.put("id", id);
         parametersUser.put("phone_number", phoneNumber);
         parametersUser.put("person_name", userName);
@@ -193,7 +200,7 @@ public class DatabaseInterface {
         }
 
         return id;
-        
+
     }
 
     // READS
@@ -209,11 +216,11 @@ public class DatabaseInterface {
      */
     private List<String> getProduct(String id) {
         try {
-            return extractAttributes(getData("Product",id));
+            return extractAttributes(getData("Product", id));
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Product does not exist");
         }
-        
+
     }
 
     /**
@@ -264,27 +271,26 @@ public class DatabaseInterface {
      */
     private List<String> getUser(String id) {
         try {
-            return extractAttributes(getData("Person",id));
+            return extractAttributes(getData("Person", id));
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("User does not exist");
         }
-        
-    }
 
+    }
 
     public String getUserIDFromName(String nick, String password) {
 
         String sql = "SELECT * FROM Person WHERE person_nick = ?";
         List<Object> params = List.of(nick);
         List<Map<String, Object>> results = executeQuery(sql, params);
-        try{
+        try {
             if (results.size() == 0) {
                 throw new IllegalArgumentException("User does not exist");
             }
-        }catch(NullPointerException e){
+        } catch (NullPointerException e) {
             throw new IllegalArgumentException("table does not exist");
         }
-        
+
         List<String> user = extractAttributes(results);
         String id = user.get(0);
         return id;
@@ -335,7 +341,7 @@ public class DatabaseInterface {
      * 
      *         postcondition: returns a list of committee ids
      */
-    public List<String> getCommitteesOfUser(String id){
+    public List<String> getCommitteesOfUser(String id) {
         try {
             String sql = "SELECT * FROM PersonInCommittee WHERE person_id = ?";
             List<Object> params = List.of(id);
@@ -343,7 +349,7 @@ public class DatabaseInterface {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("User does not exist");
         }
-        
+
     }
 
     // TODO write specific sql for two ids
@@ -377,7 +383,7 @@ public class DatabaseInterface {
      */
     private List<String> getCommittee(String id) {
         try {
-            return extractAttributes(getData("Committee",id));
+            return extractAttributes(getData("Committee", id));
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Committee does not exist");
         }
@@ -484,7 +490,7 @@ public class DatabaseInterface {
      *                                  updated
      */
     public void updateProductAmount(int productID, String amount) {
-        Map<String, Object> parametersProduct= new HashMap();
+        Map<String, Object> parametersProduct = new HashMap();
         parametersProduct.put("amount", amount);
         try {
             updateData("Product", productID, parametersProduct);
