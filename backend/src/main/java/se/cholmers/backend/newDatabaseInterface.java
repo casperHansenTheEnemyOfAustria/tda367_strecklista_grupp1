@@ -1,6 +1,7 @@
 package se.cholmers.backend;
 
-import ch.qos.logback.core.joran.sanity.Pair;
+import javafx.util.Pair;
+import se.cholmers.backend.Interface.IDatabaseInterface;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class newDatabaseInterface {
+public class newDatabaseInterface implements IDatabaseInterface {
 
   private static newDatabaseInterface instance;
 
@@ -40,6 +41,94 @@ public class newDatabaseInterface {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+  }
+
+  /**
+   * Creates a new committee using the CRUD operations.
+   * @param group_name The name of the committee.
+   * @param year The year of the committee.
+   */
+  public void createCommittee(String group_name, String year) {
+    insert("committees", new Pair<>("group_name", group_name));
+    insert("committees", new Pair<>("year", year));
+  }
+
+  /**
+   * Creates a new product using the CRUD operations.
+   * @param name The name of the product.
+   * @param price The price of the product.
+   * @param committee The committee of the product.
+   * @param amount The amount of the product.
+   */
+  public void createProduct(String name, Float price, String committee, Integer amount) {
+    insert("products", new Pair<>("name", name));
+    insert("products", new Pair<>("price", price));
+    insert("products", new Pair<>("amount", amount));
+
+  }
+
+  public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo, String password) throws RequestException {
+    return null;
+  }
+
+  public Float getProductPrice(String id) {
+    return null;
+  }
+
+  public int getProductAmount(String id) {
+    return 0;
+  }
+
+  public String getProductName(String id) {
+    return null;
+  }
+
+  public String getUserIDFromName(String nick, String password) {
+    return null;
+  }
+
+  public String getUserName(String id) {
+    return null;
+  }
+
+  public String getUserNick(String id) {
+    return null;
+  }
+
+  public String getUserPhoneNumber(String id) {
+    return null;
+  }
+
+  public List<String> getCommitteesOfUser(String id) {
+    return null;
+  }
+
+  public Float getSaldoFromUserInCommittee(String userID, String committeeID) {
+    return null;
+  }
+
+  public String getCommitteeName(String id) {
+    return null;
+  }
+
+  public String getCommitteeYear(String id) {
+    return null;
+  }
+
+  public List<String> getProductsInCommittee(String committeeID) {
+    return null;
+  }
+
+  public void putUserInCommittee(String id, String committeeID, String saldo) {
+
+  }
+
+  public void updateUserSaldo(String id, String committeeId, String saldo) {
+
+  }
+
+  public void updateProductAmount(int productID, String amount) {
+
   }
 
   /**
@@ -78,15 +167,21 @@ public class newDatabaseInterface {
    * @param tableName The name of the table to insert into.
    * @param columnValuePair A pair with column name as first and value as second.
    */
-  public void insert(String tableName, Pair<String, String> columnValuePair) {
+  public <V> void insert(String tableName, Pair<String, V> columnValuePair) {
     try {
       PreparedStatement preparedStatement;
       preparedStatement = connection.prepareStatement(
           "INSERT INTO ?(?) VALUES (?)"
       );
       preparedStatement.setString(1, tableName);
-      preparedStatement.setString(2, columnValuePair.first);
-      preparedStatement.setString(3, columnValuePair.second);
+      preparedStatement.setString(2, columnValuePair.getKey());
+      if (columnValuePair.getValue() instanceof String) {
+        preparedStatement.setString(3, (String) columnValuePair.getValue());
+      } else if (columnValuePair.getValue() instanceof Integer) {
+        preparedStatement.setInt(3, (Integer) columnValuePair.getValue());
+      } else if (columnValuePair.getValue() instanceof Float) {
+        preparedStatement.setFloat(3, (Float) columnValuePair.getValue());
+      }
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -147,10 +242,10 @@ public class newDatabaseInterface {
           "UPDATE ? SET ? = ? WHERE ? = ?"
       );
       preparedStatement.setString(1, tableName);
-      preparedStatement.setString(2, updatedColumnValuePair.first);
-      preparedStatement.setString(3, updatedColumnValuePair.second);
-      preparedStatement.setString(4, columnValuePair.first);
-      preparedStatement.setString(5, columnValuePair.second);
+      preparedStatement.setString(2, updatedColumnValuePair.getKey());
+      preparedStatement.setString(3, updatedColumnValuePair.getValue());
+      preparedStatement.setString(4, columnValuePair.getKey());
+      preparedStatement.setString(5, columnValuePair.getValue());
       preparedStatement.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -169,8 +264,8 @@ public class newDatabaseInterface {
           "DELETE FROM ? WHERE ? = ?"
       );
       preparedStatement.setString(1, tableName);
-      preparedStatement.setString(2, columnValuePair.first);
-      preparedStatement.setString(3, columnValuePair.second);
+      preparedStatement.setString(2, columnValuePair.getKey());
+      preparedStatement.setString(3, columnValuePair.getValue());
       preparedStatement.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
