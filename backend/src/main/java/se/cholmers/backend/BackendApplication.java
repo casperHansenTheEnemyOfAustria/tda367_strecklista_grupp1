@@ -31,9 +31,9 @@ public class BackendApplication {
 
 @Configuration
 class AppConfig {
-    @Bean
+	@Bean
 	//change pstate to model/application
-    public StateManager stateManager() {
+	public StateManager stateManager() {
 		return StateManager.getInstance();
 
 	}
