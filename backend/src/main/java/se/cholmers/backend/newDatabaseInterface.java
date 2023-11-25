@@ -1,5 +1,7 @@
 package se.cholmers.backend;
 
+import ch.qos.logback.core.joran.sanity.Pair;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +28,7 @@ public class newDatabaseInterface {
   }
 
   public static newDatabaseInterface getInstance() {
-    if (instance == null){
+    if (instance == null) {
       instance = new newDatabaseInterface();
     }
     return instance;
@@ -46,6 +48,7 @@ public class newDatabaseInterface {
   private static class ResultSetConverter {
     /**
      * Converts a ResultSet to a map with column names as keys and lists of values as values.
+     *
      * @param resultSet The ResultSet to convert.
      * @return A map with column names as keys and lists of values as values.
      * @throws SQLException If the ResultSet is invalid.
@@ -67,156 +70,110 @@ public class newDatabaseInterface {
       return columnsWithValues;
     }
   }
-
+  // CRUD operations
+  // Create
   /**
-   * Executes an update query.
-   * @param query The query to execute.
+   * Inserts a new row into the table.
+   * To avoid SQL injection, use prepared statements.
+   * @param tableName The name of the table to insert into.
+   * @param columnValuePair A pair with column name as first and value as second.
    */
-  public void executeUpdate(String query) {
-    try (PreparedStatement statement = connection.prepareStatement(query)) {
-      statement.executeUpdate();
+  public void insert(String tableName, Pair<String, String> columnValuePair) {
+    try {
+      PreparedStatement preparedStatement;
+      preparedStatement = connection.prepareStatement(
+          "INSERT INTO ?(?) VALUES (?)"
+      );
+      preparedStatement.setString(1, tableName);
+      preparedStatement.setString(2, columnValuePair.first);
+      preparedStatement.setString(3, columnValuePair.second);
     } catch (SQLException e) {
       e.printStackTrace();
     }
   }
 
+  // Read
   /**
-   * Executes a query and returns a map with column names as keys and lists of values as values.
-   * @param query The query to execute.
-   * @param params The parameters to the query.
+   * Selects all rows from the table.
+   * @param tableName The name of the table to select from.
    * @return A map with column names as keys and lists of values as values.
    */
-  public Map<String, List<String>> executeQuery(String query, List<String> params) {
-    Map<String, List<String>> columnsWithValues = new HashMap<>();
-    try (PreparedStatement statement = connection.prepareStatement(query)) {
-      // Add parameters to query
-      for (int i = 0; i < params.size(); i++) {
-        statement.setString(i + 1, params.get(i));
-      }
-      try (ResultSet resultSet = statement.executeQuery()) {
-        // Convert ResultSet to map
-        columnsWithValues = ResultSetConverter.convert(resultSet);
-      }
+  public Map<String, List<String>> selectAll(String tableName) {
+    try {
+      Statement statement = connection.createStatement();
+      ResultSet resultSet = statement.executeQuery("SELECT * FROM " + tableName);
+      return ResultSetConverter.convert(resultSet);
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return columnsWithValues;
+    return null;
   }
 
   /**
-   * Inserts data into a table using executeUpdate.
-   * @param tableName The name of the table to insert data into.
-   * @param columnsWithData A map with column names as keys and lists of values as values.
-   */
-  private String generateInsertSQL(String tableName, Map<String, List<String>> columnsWithData) {
-    StringBuilder sql = new StringBuilder("INSERT INTO " + tableName + " (");
-    // Add column names
-    for (String columnName : columnsWithData.keySet()) {
-      sql.append(columnName).append(", ");
-    }
-    // After the last column name, remove the last comma and space
-    sql.delete(sql.length() - 2, sql.length());
-    sql.append(") VALUES (");
-    // Add values in the correct order
-    for (int i = 0; i < columnsWithData.values().iterator().next().size(); i++) {
-      for (List<String> columnValues : columnsWithData.values()) {
-        sql.append(columnValues.get(i)).append(", ");
-      }
-      // After the last value, remove the last comma and space
-      sql.delete(sql.length() - 2, sql.length());
-      sql.append("), (");
-    }
-    // After inserting the values for the last row, remove the last comma and space
-    sql.delete(sql.length() - 3, sql.length());
-    sql.append(";");
-    return sql.toString();
-  }
-
-  /**
-   * Updates data in a table.
-   * @param tableName The name of the table to update data in.
-   * @param columnsWithData A map with column names as keys and lists of values as values.
-   */
-  private String generateUpdateSQL(String tableName, Map<String, List<String>> columnsWithData) {
-    StringBuilder sql = new StringBuilder("UPDATE " + tableName + " SET ");
-    // Add column names and values
-    for (String columnName : columnsWithData.keySet()) {
-      sql.append(columnName).append(" = ").append(columnsWithData.get(columnName).get(0)).append(", ");
-    }
-    // After the last column name and value, remove the last comma and space
-    sql.delete(sql.length() - 2, sql.length());
-    sql.append(" WHERE ");
-    // Add column names and values for the WHERE clause
-    for (String columnName : columnsWithData.keySet()) {
-      sql.append(columnName).append(" = ").append(columnsWithData.get(columnName).get(1)).append(" AND ");
-    }
-    // After the last column name and value for the WHERE clause, remove the last AND
-    sql.delete(sql.length() - 5, sql.length());
-    sql.append(";");
-    return sql.toString();
-  }
-
-  // CRUD OPERATIONS
-  // CREATE
-  /**
-   * Inserts data into a table.
-   * @param tableName The name of the table to insert data into.
-   * @param columnsWithData A map with column names as keys and lists of values as values.
-   */
-  private void insert(String tableName, Map<String, List<String>> columnsWithData) {
-    String sql = generateInsertSQL(tableName, columnsWithData);
-    executeUpdate(sql);
-  }
-
-  // READ
-  /**
-   * Selects data from a table.
-   * @param tableName The name of the table to select data from.
-   * @param columns The columns to select.
-   * @param whereClause The WHERE clause.
+   * Selects all rows from the table where the column has the specified value.
+   * @param tableName The name of the table to select from.
+   * @param columnName The name of the column to select from.
+   * @param value The value to select.
    * @return A map with column names as keys and lists of values as values.
    */
-  private Map<String, List<String>> select(String tableName, List<String> columns, String whereClause) {
-    StringBuilder sql = new StringBuilder("SELECT ");
-    // Add columns
-    for (String column : columns) {
-      sql.append(column).append(", ");
+  public Map<String, List<String>> selectWhere(String tableName, String columnName, String value) {
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(
+          "SELECT * FROM ? WHERE ? = ?"
+      );
+      preparedStatement.setString(1, tableName);
+      preparedStatement.setString(2, columnName);
+      preparedStatement.setString(3, value);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      return ResultSetConverter.convert(resultSet);
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
-    // After the last column, remove the last comma and space
-    sql.delete(sql.length() - 2, sql.length());
-    sql.append(" FROM ").append(tableName);
-    // Add WHERE clause
-    if (whereClause != null) {
-      sql.append(" WHERE ").append(whereClause);
-    }
-    sql.append(";");
-    return executeQuery(sql.toString(), new ArrayList<>());
+    return null;
   }
 
-  // UPDATE
+  // Update
   /**
-   * Updates data in a table.
-   * @param tableName The name of the table to update data in.
-   * @param columnsWithData A map with column names as keys and lists of values as values.
+   * Updates a row in the table.
+   * @param tableName The name of the table to update.
+   * @param updatedColumnValuePair A pair with column name as first and value as second.
+   *                        This contains the column to update and the new value.
+    * @param columnValuePair A pair with column name as first and value as second.
+   *                        This contains the data to select the row to update.
    */
-  private void update(String tableName, Map<String, List<String>> columnsWithData) {
-    String sql = generateUpdateSQL(tableName, columnsWithData);
-    executeUpdate(sql);
+  public void update(String tableName, Pair<String, String> updatedColumnValuePair, Pair<String, String> columnValuePair) {
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(
+          "UPDATE ? SET ? = ? WHERE ? = ?"
+      );
+      preparedStatement.setString(1, tableName);
+      preparedStatement.setString(2, updatedColumnValuePair.first);
+      preparedStatement.setString(3, updatedColumnValuePair.second);
+      preparedStatement.setString(4, columnValuePair.first);
+      preparedStatement.setString(5, columnValuePair.second);
+      preparedStatement.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 
-  // DELETE
+  // Delete
   /**
-   * Deletes data from a table.
-   * @param tableName The name of the table to delete data from.
-   * @param whereClause The WHERE clause.
+   * Deletes a row from the table.
+   * @param tableName The name of the table to delete from.
+   * @param columnValuePair A pair with column name as first and value as second.
    */
-  private void delete(String tableName, String whereClause) {
-    StringBuilder sql = new StringBuilder("DELETE FROM ").append(tableName);
-    // Add WHERE clause
-    if (whereClause != null) {
-      sql.append(" WHERE ").append(whereClause);
+  public void delete(String tableName, Pair<String, String> columnValuePair) {
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(
+          "DELETE FROM ? WHERE ? = ?"
+      );
+      preparedStatement.setString(1, tableName);
+      preparedStatement.setString(2, columnValuePair.first);
+      preparedStatement.setString(3, columnValuePair.second);
+      preparedStatement.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
-    sql.append(";");
-    executeUpdate(sql.toString());
   }
 }
