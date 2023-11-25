@@ -49,58 +49,69 @@ public class newDatabaseInterface implements IDatabaseInterface {
    * @param year The year of the committee.
    */
   public void createCommittee(String group_name, String year) {
-    insert("committees", new Pair<>("group_name", group_name));
-    insert("committees", new Pair<>("year", year));
+    insert("committees", new HashMap<>(Map.of(
+        "group_name", group_name,
+        "year", year
+    )));
   }
 
   /**
    * Creates a new product using the CRUD operations.
    * @param name The name of the product.
    * @param price The price of the product.
-   * @param committee The committee of the product.
    * @param amount The amount of the product.
    */
-  public void createProduct(String name, Float price, String committee, Integer amount) {
-    insert("products", new Pair<>("name", name));
-    insert("products", new Pair<>("price", price));
-    insert("products", new Pair<>("amount", amount));
-
+  public void createProduct(String name, Float price, Integer amount) {
+    insert("products", new HashMap<>(Map.of(
+        "name", name,
+        "price", price,
+        "amount", amount
+    )));
   }
 
-  public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo, String password) throws RequestException {
-    return null;
+  public void createPerson(String personName, String personNick, String phoneNumber, String password) throws RequestException {
+    insert("users", new HashMap<>(Map.of(
+        "name", personName,
+        "nick", personNick,
+        "phone_number", phoneNumber,
+        "password", password
+    )));
   }
 
   public Float getProductPrice(String id) {
-    return null;
+    return Float.parseFloat(selectSingleValue("products", "price", new Pair<>("id", id)));
   }
 
   public int getProductAmount(String id) {
-    return 0;
+    return Integer.parseInt(selectSingleValue("products", "amount", new Pair<>("id", id)));
   }
 
   public String getProductName(String id) {
-    return null;
+    return selectSingleValue("products", "name", new Pair<>("id", id));
   }
 
   public String getUserIDFromName(String nick, String password) {
-    return null;
+    if (password.equals(selectSingleValue("person", "password", new Pair<>("person_nick", nick)))) {
+      return selectSingleValue("person", "id", new Pair<>("person_nick", nick));
+    } else {
+      throw new RequestException("Wrong password");
+    }
   }
 
   public String getUserName(String id) {
-    return null;
+    return selectSingleValue("person", "person_name", new Pair<>("id", id));
   }
 
   public String getUserNick(String id) {
-    return null;
+    return selectSingleValue("person", "person_nick", new Pair<>("id", id));
   }
 
   public String getUserPhoneNumber(String id) {
-    return null;
+    return selectSingleValue("person", "phone_number", new Pair<>("id", id));
   }
 
   public List<String> getCommitteesOfUser(String id) {
-    return null;
+    return selectWhere("PersonInCommittee", "person_id", id).get("committee_id");
   }
 
   public Float getSaldoFromUserInCommittee(String userID, String committeeID) {
@@ -165,23 +176,33 @@ public class newDatabaseInterface implements IDatabaseInterface {
    * Inserts a new row into the table.
    * To avoid SQL injection, use prepared statements.
    * @param tableName The name of the table to insert into.
-   * @param columnValuePair A pair with column name as first and value as second.
+   * @param columnValueMap A pair with column name as first and value as second.
    */
-  public <V> void insert(String tableName, Pair<String, V> columnValuePair) {
+  public <V> void insert(String tableName, Map<String, V> columnValueMap) {
     try {
       PreparedStatement preparedStatement;
       preparedStatement = connection.prepareStatement(
           "INSERT INTO ?(?) VALUES (?)"
       );
       preparedStatement.setString(1, tableName);
-      preparedStatement.setString(2, columnValuePair.getKey());
-      if (columnValuePair.getValue() instanceof String) {
-        preparedStatement.setString(3, (String) columnValuePair.getValue());
-      } else if (columnValuePair.getValue() instanceof Integer) {
-        preparedStatement.setInt(3, (Integer) columnValuePair.getValue());
-      } else if (columnValuePair.getValue() instanceof Float) {
-        preparedStatement.setFloat(3, (Float) columnValuePair.getValue());
+      StringBuilder columns = new StringBuilder();
+      for (String column : columnValueMap.keySet()) {
+        columns.append(column).append(", ");
       }
+      columns.delete(columns.length() - 2, columns.length() - 1);
+      preparedStatement.setString(2, columns.toString());
+      StringBuilder values = new StringBuilder();
+      if (columnValueMap.values().iterator().next() instanceof String) {
+        for (String value : (List<String>) columnValueMap.values()) {
+          values.append("'").append(value).append("', ");
+        }
+      } else {
+        for (V value : columnValueMap.values()) {
+          values.append(value).append(", ");
+        }
+      }
+
+
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -221,6 +242,29 @@ public class newDatabaseInterface implements IDatabaseInterface {
       preparedStatement.setString(3, value);
       ResultSet resultSet = preparedStatement.executeQuery();
       return ResultSetConverter.convert(resultSet);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  /**
+   * Selects a single value from a cell in the table.
+   * @param tableName The name of the table to select from.
+   * @param columnName The name of the column to select from.
+   * @param columnValuePair A pair with column name as first and value as second.
+   */
+  public String selectSingleValue(String tableName, String columnName, Pair<String, String> columnValuePair) {
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(
+          "SELECT ? FROM ? WHERE ? = ?"
+      );
+      preparedStatement.setString(1, columnName);
+      preparedStatement.setString(2, tableName);
+      preparedStatement.setString(3, columnValuePair.getKey());
+      preparedStatement.setString(4, columnValuePair.getValue());
+      ResultSet resultSet = preparedStatement.executeQuery();
+      return resultSet.getString(1);
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -267,6 +311,21 @@ public class newDatabaseInterface implements IDatabaseInterface {
       preparedStatement.setString(2, columnValuePair.getKey());
       preparedStatement.setString(3, columnValuePair.getValue());
       preparedStatement.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  // Clear the entire database
+  public void clearDatabase() {
+    try {
+      Statement statement = connection.createStatement();
+      statement.executeUpdate("DELETE FROM Person");
+      statement.executeUpdate("DELETE FROM committee");
+      statement.executeUpdate("DELETE FROM product");
+      statement.executeUpdate("DELETE FROM PersonInCommittee");
+      statement.executeUpdate("DELETE FROM productincommittee");
+      statement.executeUpdate("DELETE FROM transaction");
     } catch (SQLException e) {
       e.printStackTrace();
     }
