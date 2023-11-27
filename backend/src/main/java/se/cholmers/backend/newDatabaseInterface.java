@@ -328,9 +328,9 @@ public class newDatabaseInterface implements IDatabaseInterface{
   public void clearDatabase() {
     try {
       Statement statement = connection.createStatement();
-      statement.executeUpdate("DELETE FROM user");
-      statement.executeUpdate("DELETE FROM committee");
-      statement.executeUpdate("DELETE FROM product");
+      statement.executeUpdate("DELETE FROM users");
+      statement.executeUpdate("DELETE FROM committees");
+      statement.executeUpdate("DELETE FROM products");
       statement.executeUpdate("DELETE FROM userInCommittee");
       statement.executeUpdate("DELETE FROM productincommittee");
       statement.executeUpdate("DELETE FROM transaction");
