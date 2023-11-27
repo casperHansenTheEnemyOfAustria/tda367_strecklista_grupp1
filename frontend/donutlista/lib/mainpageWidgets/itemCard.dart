@@ -37,14 +37,19 @@ class ButtonState extends State<ItemButton> {
                   children: [
                     GestureDetector(
                       onTap: () => setState(() {
-                              widget.counter == 0 ? print('counter at 0') : widget.counter--;
+                              if (widget.counter == 0)
+                                widget.counter = 0;
+                              else 
+                                widget.counter--; 
+                              print(widget.counter);
                             }),
                         child: Icon(Icons.remove)),
                     Text('${widget.counter}'),
                     GestureDetector(
                       onTap: () {setState(() {
-                        print('set');
                                 widget.counter++;
+                                print(widget.counter);
+
                             });},
                         child: Icon(Icons.add)),
                   
@@ -52,7 +57,9 @@ class ButtonState extends State<ItemButton> {
             ),
             GestureDetector(
                       onTap: () => setState(() {
-                              widget.counter == 0 ? print('counter at 0') : widget.counter = 0;
+                              widget.counter = 0;
+                              print(widget.counter);
+
                             }),
                         child: Icon(Icons.delete)),
             ]
