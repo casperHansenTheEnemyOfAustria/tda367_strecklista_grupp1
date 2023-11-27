@@ -30,7 +30,7 @@ public interface IDatabaseInterface {
 
         public String getProductName(String id);
 
-        public String getUserIDFromName(String nick, String password);
+        public String getUserIDFromName(String nick, String password) throws RequestException;
 
         public String getUserName(String id);
 

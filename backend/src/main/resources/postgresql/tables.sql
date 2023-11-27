@@ -1,22 +1,22 @@
 -- ENTITIES
 
-CREATE TABLE Person (
+CREATE TABLE Users (
     id TEXT PRIMARY KEY,
     phone_number CHAR(10) NOT NULL,
-    person_name TEXT NOT NULL,
-    person_nick TEXT NOT NULL UNIQUE,
+    user_name TEXT NOT NULL,
+    user_nick TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL
 );
 
 
-CREATE TABLE Committee (
+CREATE TABLE Committees (
     id TEXT PRIMARY KEY,
     group_name TEXT NOT NULL,
     year CHAR(2),
     UNIQUE(group_name, year)
 );
 
-CREATE TABLE Product (
+CREATE TABLE Products (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
     price FLOAT NOT NULL,
@@ -28,17 +28,17 @@ CREATE TABLE Product (
 
 CREATE TABLE Transaction (
     id TEXT PRIMARY KEY,
-    person_id TEXT REFERENCES Person(id) NOT NULL,
+    user_id TEXT REFERENCES Users(id) NOT NULL,
     product_id TEXT REFERENCES Product(id) NOT NULL,
     transaction_time TIME NOT NULL,
     transaction_date DATE NOT NULL
 );
 
-CREATE TABLE PersonInCommittee (
-    person_id TEXT REFERENCES Person(id) NOT NULL,
+CREATE TABLE UserInCommittee (
+    user_id TEXT REFERENCES User(id) NOT NULL,
     committee_id TEXT REFERENCES Committee(id) NOT NULL,
     saldo INT NOT NULL,
-    PRIMARY KEY(person_id, committee_id)
+    PRIMARY KEY(user_id, committee_id)
 );
 
 CREATE TABLE ProductInCommittee (

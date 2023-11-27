@@ -9,7 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class newDatabaseInterface implements IDatabaseInterface {
+//todo: implement IDatabaseInterface
+
+public class newDatabaseInterface {
 
   private static newDatabaseInterface instance;
 
@@ -68,8 +70,8 @@ public class newDatabaseInterface implements IDatabaseInterface {
         "amount", amount
     )));
   }
-
-  public void createPerson(String personName, String personNick, String phoneNumber, String password) throws RequestException {
+  //Creates user and puts them in a committee with a saldo. Throws RequestException if user already exists or if the committee does not exist. initializes saldo to 0.
+  public void createUser(String personName, String personNick, String phoneNumber, String password, String committeeId) throws RequestException {
     insert("users", new HashMap<>(Map.of(
         "name", personName,
         "nick", personNick,
@@ -90,7 +92,7 @@ public class newDatabaseInterface implements IDatabaseInterface {
     return selectSingleValue("products", "name", new Pair<>("id", id));
   }
 
-  public String getUserIDFromName(String nick, String password) {
+  public String getUserIDFromName(String nick, String password) throws RequestException {
     if (password.equals(selectSingleValue("person", "password", new Pair<>("person_nick", nick)))) {
       return selectSingleValue("person", "id", new Pair<>("person_nick", nick));
     } else {
