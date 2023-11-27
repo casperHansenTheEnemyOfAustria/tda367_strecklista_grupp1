@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 import 'itemCard.dart';
 
@@ -32,58 +33,71 @@ class ItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color color = Colors.primaries[itemNo % Colors.primaries.length];
+    
+    /*
+    leading: FlutterLogo(size: 72.0),
+    title: Text('Three-line ListTile'),
+    subtitle:
+      Text('A sufficiently long subtitle warrants three lines.'),
+    trailing: Icon(Icons.more_vert),
+    isThreeLine: true,
+    */
+    
     return Padding(
       padding: const EdgeInsets.all(8.5),
-      child: ListTile(
-        tileColor: color.withOpacity(0.3),
-        //onTap: () {},
-        leading: 
-          Container(
-          width: 100,
-          //height: 20,
-          color: color.withOpacity(0.5),
-          child:
-            Column(            
-            children: [
-              Text(
+      //TODO: Center
+      child: Container(
+              decoration: 
+              BoxDecoration(
+                /* border: Border.all(
+                color: HexColor('#09CDDA'),
+                width: 1,
+                ), */
+              color: HexColor('#09cdda'),
+            ),
+            child: 
+                Column(            
+                children: [
+                Text(
                   itemList[itemNo],
                   key: Key('text_$itemNo'),
-                  ),
-            Row(
-              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                
-                GestureDetector(
-                  onTap: () {
-                          if (this.counter == 0)
-                            this.counter = 0;
-                          else 
-                            this.counter--; 
-                          print(this.counter);
-                        },
-                    child: Icon(Icons.remove)),
-                Text('${this.counter}'),
-                GestureDetector(
-                  onTap: () {
-                            this.counter++;
-                            print(this.counter);
-
-                        },
-                    child: Icon(Icons.add)),
-              
-              ],
-        ),
-        GestureDetector(
-                  onTap: () {
-                          this.counter = 0;
-                          print(this.counter);
-
-                        },
-                    child: Icon(Icons.delete)),
-        ]
+                ),
+                Text(
+                  'PRIS'
+                  //itemList[itemNo],
+                  //key: Key('text_$itemNo'),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                              if (counter == 0)
+                                counter = 0;
+                              else 
+                                counter--; 
+                              print(counter);
+                            },
+                      child: Icon(Icons.remove)),
+                    Text('${counter.toString()}'),
+                    GestureDetector(
+                      onTap: () {
+                                counter++;
+                                print(counter);
+                                },
+                      child: Icon(Icons.add)),
+                                  ]
+            ),
+          GestureDetector(
+            onTap: () {
+                    counter = 0;
+                    //print(counter);
+                  },
+            child: Icon(Icons.delete)
+            ),
+          ],
         )
-        ),
-      ),
+      )
     );
   }
 }
