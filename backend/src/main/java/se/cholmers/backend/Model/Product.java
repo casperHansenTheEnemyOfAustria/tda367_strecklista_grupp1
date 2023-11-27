@@ -2,11 +2,15 @@ package se.cholmers.backend.Model;
 
 import java.util.UUID;
 
+import org.yaml.snakeyaml.events.Event.ID;
+
 import se.cholmers.backend.DatabaseInterface;
 import se.cholmers.backend.RequestException;
+import se.cholmers.backend.newDatabaseInterface;
+import se.cholmers.backend.Interface.IDatabaseInterface;
 
 class Product {
-    private DatabaseInterface dbi = DatabaseInterface.getInstance();
+    private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
     private int amount;
     private String name;
     private String productID;

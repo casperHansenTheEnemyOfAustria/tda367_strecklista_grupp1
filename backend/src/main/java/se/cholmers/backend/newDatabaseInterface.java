@@ -8,10 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 //todo: implement IDatabaseInterface
 
-public class newDatabaseInterface {
+public class newDatabaseInterface implements IDatabaseInterface{
 
   private static newDatabaseInterface instance;
 
@@ -71,13 +72,18 @@ public class newDatabaseInterface {
     )));
   }
   //Creates user and puts them in a committee with a saldo. Throws RequestException if user already exists or if the committee does not exist. initializes saldo to 0.
-  public void createUser(String personName, String personNick, String phoneNumber, String password, String committeeId) throws RequestException {
-    insert("users", new HashMap<>(Map.of(
-        "name", personName,
-        "nick", personNick,
+  public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo,
+      String password) throws RequestException {
+    UUID user_id = UUID.randomUUID();
+    insert("Users", new HashMap<>(Map.of(
+        "id", user_id,
+        "user_name", userName,
+        "user_nick", userNick,
         "phone_number", phoneNumber,
         "password", password
     )));
+
+    return user_id.toString();
   }
 
   public Float getProductPrice(String id) {
@@ -93,27 +99,27 @@ public class newDatabaseInterface {
   }
 
   public String getUserIDFromName(String nick, String password) throws RequestException {
-    if (password.equals(selectSingleValue("person", "password", new Pair<>("person_nick", nick)))) {
-      return selectSingleValue("person", "id", new Pair<>("person_nick", nick));
+    if (password.equals(selectSingleValue("user", "password", new Pair<>("user_nick", nick)))) {
+      return selectSingleValue("user", "id", new Pair<>("user_nick", nick));
     } else {
       throw new RequestException("Wrong password");
     }
   }
 
   public String getUserName(String id) {
-    return selectSingleValue("person", "person_name", new Pair<>("id", id));
+    return selectSingleValue("Users", "user_name", new Pair<>("id", id));
   }
 
   public String getUserNick(String id) {
-    return selectSingleValue("person", "person_nick", new Pair<>("id", id));
+    return selectSingleValue("Users", "user_nick", new Pair<>("id", id));
   }
 
   public String getUserPhoneNumber(String id) {
-    return selectSingleValue("person", "phone_number", new Pair<>("id", id));
+    return selectSingleValue("Users", "phone_number", new Pair<>("id", id));
   }
 
   public List<String> getCommitteesOfUser(String id) {
-    return selectWhere("PersonInCommittee", "person_id", id).get("committee_id");
+    return selectWhere("userInCommittee", "user_id", id).get("committee_id");
   }
 
   public Float getSaldoFromUserInCommittee(String userID, String committeeID) {
@@ -322,14 +328,40 @@ public class newDatabaseInterface {
   public void clearDatabase() {
     try {
       Statement statement = connection.createStatement();
-      statement.executeUpdate("DELETE FROM Person");
+      statement.executeUpdate("DELETE FROM user");
       statement.executeUpdate("DELETE FROM committee");
       statement.executeUpdate("DELETE FROM product");
-      statement.executeUpdate("DELETE FROM PersonInCommittee");
+      statement.executeUpdate("DELETE FROM userInCommittee");
       statement.executeUpdate("DELETE FROM productincommittee");
       statement.executeUpdate("DELETE FROM transaction");
     } catch (SQLException e) {
       e.printStackTrace();
     }
   }
+
+  @Override
+  public void executeUpdate(String query, Map<String, String> params) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'executeUpdate'");
+  }
+
+  @Override
+  public void executeUpdate(String query, List<String> params) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'executeUpdate'");
+  }
+
+  @Override
+  public List<Map<String, String>> executeQuery(String sql, List<String> parameters) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'executeQuery'");
+  }
+
+  @Override
+  public void createProduct(String productName, String price, String committee, String amount) throws RequestException {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'createProduct'");
+  }
+
+  
 }
