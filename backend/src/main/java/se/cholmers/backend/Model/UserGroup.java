@@ -41,7 +41,7 @@ class UserGroup {
      */
     public UserGroup(String groupID) {
         String name = dbi.getCommitteeName(groupID);
-        Year year = Year.parse(dbi.getCommitteeYear(groupID));
+        Year year = Year.parse("20" + dbi.getCommitteeYear(groupID));
         
         this.name = name;
         this.year = year;

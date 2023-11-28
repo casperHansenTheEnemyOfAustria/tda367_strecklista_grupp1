@@ -15,7 +15,7 @@ public interface IDatabaseInterface {
      * @return committeeID
      * @throws RequestException if the committee already exists
      */
-    public String createCommittee(String group_name, String year);
+    public String createCommittee(String group_name, String year) throws RequestException;
 
     /**
      * Creates a product in the database
@@ -183,7 +183,7 @@ public interface IDatabaseInterface {
      * @throws NullPointerException if a user with the given id does not exist or
      *                              the committee does not exist
      */
-    public void putUserInCommittee(String id, String committeeID, String saldo);
+    public void putUserInCommittee(String username, String committeeID, Float saldo) throws RequestException;
 
     /**
      * Updates the saldo of a user in a committee

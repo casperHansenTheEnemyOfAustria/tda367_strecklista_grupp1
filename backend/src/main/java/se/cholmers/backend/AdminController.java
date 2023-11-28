@@ -52,6 +52,55 @@ public class AdminController {
     }
 
     /**
+     * createCommittee creates a committee in the database
+     *
+     * @param name (the name of the committee)
+     * @param year (the year of the committee)
+     * @return response (a response with the correct code and a success message if
+     *         the committee was created. Otherwise it should havea an error code)
+     */
+    @RequestMapping(value = "/createCommittee/{name}/{year}", method = RequestMethod.POST)
+    @ResponseBody
+    public Response<String> createCommittee(@PathVariable("name") String name,
+                                       @PathVariable("year") String year) {
+        try {
+            // possiubly change to factory pattern??
+            dbi.createCommittee(name, year);
+            Response<String> response = new Response<String>("Committee created");
+            return response;
+        } catch (RequestException e) {
+            return new Response<String>(null, e.getMessage());
+        } finally {
+
+        }
+    }
+
+    /**
+     * addUserToGroup adds a user to a group
+     *
+     * @param userNick
+     * @param committeeID
+     * @return response (a response with the correct code and a success message if
+     *        the user was added to the group. Otherwise it should havea an error
+     *        code)
+     */
+    @RequestMapping(value = "/addUserToGroup/{userNick}/{committeeID}", method = RequestMethod.POST)
+    @ResponseBody
+    public Response<String> addUserToGroup(@PathVariable("userNick") String userNick,
+            @PathVariable("committeeID") String committeeID) {
+        try {
+            // possiubly change to factory pattern??
+            dbi.putUserInCommittee(userNick, committeeID, 0f);
+            Response<String> response = new Response<String>("User added to group");
+            return response;
+        } catch (RequestException e) {
+            return new Response<String>(null, e.getMessage());
+        } finally {
+
+        }
+    }
+
+    /**
      * createProduct creates a product in the database
      * 
      * @param productName

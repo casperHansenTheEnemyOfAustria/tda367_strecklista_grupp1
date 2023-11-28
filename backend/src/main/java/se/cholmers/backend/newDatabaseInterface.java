@@ -55,14 +55,22 @@ public class newDatabaseInterface implements IDatabaseInterface {
      */
     public String createProduct(String name, Float price, String committeeid, Integer amount) {
         String id = UUID.randomUUID().toString();
-        insert("products", new HashMap<>(Map.of(
-                "id", id,
-                "name", name,
-                "price", price,
-                "amount", amount)));
-        insert("productInCommittee", new HashMap<>(Map.of(
-                "product_id", id,
-                "committee_id", committeeid)));
+        try {
+            insert("products", new HashMap<>(Map.of(
+                    "id", id,
+                    "name", name,
+                    "price", price,
+                    "amount", amount)));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            insert("productInCommittee", new HashMap<>(Map.of(
+                    "product_id", id,
+                    "committee_id", committeeid)));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return id;
     }
 
@@ -90,19 +98,33 @@ public class newDatabaseInterface implements IDatabaseInterface {
         }
     }
 
+    private String getUseridFromNick(String nick) throws RequestException {
+        Map<String, List<Object>> map = selectWhere("users", "user_nick", nick);
+        if (map.get("user_nick").isEmpty()) {
+            throw new RequestException("User does not exist");
+        }
+        return (String) map.get("id").get(0);
+    }
+
     /**
      * Creates a new committee using the CRUD operations.
      *
      * @param group_name The name of the committee.
      * @param year       The year of the committee.
-     * @return
+     * @return the id of the committee
+     * @throws RequestException if the committee already exists
      */
-    public String createCommittee(String group_name, String year) {
+    public String createCommittee(String group_name, String year) throws RequestException {
         String id = UUID.randomUUID().toString();
-        insert("committees", new HashMap<>(Map.of(
-                "id", id,
-                "group_name", group_name,
-                "year", year)));
+        try{
+            insert("committees", new HashMap<>(Map.of(
+                    "id", id,
+                    "group_name", group_name,
+                    "year", year)));
+        }
+        catch (SQLException e){
+            throw new RequestException("Committee already exists or something went wrong");
+        }
         return id;
     }
 
@@ -112,12 +134,16 @@ public class newDatabaseInterface implements IDatabaseInterface {
     public String createUser(String userName, String phoneNumber, String userNick,
                              String password) throws RequestException {
         String user_id = UUID.randomUUID().toString();
-        insert("Users", new HashMap<>(Map.of(
-                "id", user_id,
-                "user_name", userName,
-                "user_nick", userNick,
-                "phone_number", phoneNumber,
-                "password", password)));
+        try {
+            insert("Users", new HashMap<>(Map.of(
+                    "id", user_id,
+                    "user_name", userName,
+                    "user_nick", userNick,
+                    "phone_number", phoneNumber,
+                    "password", password)));
+        } catch (SQLException e) {
+            throw new RequestException("User already exists or something idk");
+        }
 
         return user_id;
     }
@@ -164,11 +190,17 @@ public class newDatabaseInterface implements IDatabaseInterface {
         return rv;
     }
 
-    public void putUserInCommittee(String id, String committeeID, String saldo) {
-        insert("userInCommittee", new HashMap<>(Map.of(
-                "user_id", id,
-                "committee_id", committeeID,
-                "saldo", saldo)));
+    public void putUserInCommittee(String username, String committeeID, Float saldo) throws RequestException {
+        String userid = getUseridFromNick(username);
+        try{
+            insert("userInCommittee", new HashMap<>(Map.of(
+                    "user_id", userid,
+                    "committee_id", committeeID,
+                    "saldo", saldo)));
+        }
+        catch (SQLException e){
+            throw new RequestException(e.getMessage());
+        }
     }
 
     public void updateUserSaldo(String userid, String committeeID, String saldo) {
@@ -220,29 +252,36 @@ public class newDatabaseInterface implements IDatabaseInterface {
      * @param tableName      The name of the table to insert into.
      * @param columnValueMap A pair with column name as first and value as second.
      */
-    public void insert(String tableName, Map<String, Object> columnValueMap) {
-        try {
-            StringBuilder columns = new StringBuilder();
-            for (String column : columnValueMap.keySet()) {
-                columns.append(column).append(", ");
-            }
-            columns.delete(columns.length() - 2, columns.length() - 1);
-            PreparedStatement preparedStatement;
-            preparedStatement = connection.prepareStatement(
-                    // Format string to have the correct number of question marks
-                    // This is based on the size of columnValueMap
-                    "INSERT INTO %s(%s)".formatted(tableName, columns.toString()) + "VALUES (" + "?,".repeat(columnValueMap.size() - 1) + "?)");
-            int i = 1;
-            for (Object value : columnValueMap.values()) {
-                preparedStatement.setObject(i, value);
-                i++;
-            }
-            System.out.println(preparedStatement.toString());
-            preparedStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public void insert(String tableName, Map<String, Object> columnValueMap) throws SQLException {
+        StringBuilder columns = new StringBuilder();
+        for (String column : columnValueMap.keySet()) {
+            columns.append(column).append(", ");
         }
+        columns.delete(columns.length() - 2, columns.length() - 1);
+        PreparedStatement preparedStatement;
+        preparedStatement = connection.prepareStatement(
+                // Format string to have the correct number of question marks
+                // This is based on the size of columnValueMap
+                "INSERT INTO %s(%s)".formatted(tableName, columns.toString()) + "VALUES (" + "?,".repeat(columnValueMap.size() - 1) + "?)");
+        int i = 1;
+        for (Object value : columnValueMap.values()) {
+            if (value instanceof String) {
+                preparedStatement.setObject(i, value);
+            }
+            if (value instanceof Integer) {
+                preparedStatement.setInt(i, (Integer) value);
+            }
+            if (value instanceof Float) {
+                preparedStatement.setFloat(i, (Float) value);
+            }
+            i++;
+        }
+        System.out.println(preparedStatement.toString());
+        int numExecutes = preparedStatement.executeUpdate();
+        if (numExecutes == 0) {
+            throw new SQLException("Insert failed, no rows affected.");
+        }
+
     }
 
     // Read
@@ -296,9 +335,8 @@ public class newDatabaseInterface implements IDatabaseInterface {
     public String selectSingleValue(String tableName, String columnName, Pair<String, String> columnValuePair) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT %s FROM %s WHERE ? = ?".formatted(columnName, tableName));
-            preparedStatement.setString(1, columnValuePair.getKey());
-            preparedStatement.setString(2, columnValuePair.getValue());
+                    "SELECT %s FROM %s WHERE %s = ?".formatted(columnName, tableName, columnValuePair.getKey()));
+            preparedStatement.setString(1, columnValuePair.getValue());
             String rv = null;
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -337,7 +375,10 @@ public class newDatabaseInterface implements IDatabaseInterface {
             preparedStatement.setString(3, updatedColumnValuePair.getValue());
             preparedStatement.setString(4, columnValuePair.getKey());
             preparedStatement.setString(5, columnValuePair.getValue());
-            preparedStatement.executeUpdate();
+            int numExecutes = preparedStatement.executeUpdate();
+            if (numExecutes == 0) {
+                throw new SQLException("Update failed, no rows affected.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -358,7 +399,10 @@ public class newDatabaseInterface implements IDatabaseInterface {
             preparedStatement.setString(1, tableName);
             preparedStatement.setString(2, columnValuePair.getKey());
             preparedStatement.setString(3, columnValuePair.getValue());
-            preparedStatement.executeUpdate();
+            int numExecutes = preparedStatement.executeUpdate();
+            if (numExecutes == 0) {
+                throw new SQLException("Delete failed, no rows affected.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

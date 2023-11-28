@@ -75,7 +75,11 @@ class User {
     }
 
     public void addUserToGroup(UserGroup group) {
-        dbi.putUserInCommittee(id, group.getID().toString(), "0");
+        try{
+            dbi.putUserInCommittee(id, group.getID().toString(), 0f);
+        } catch (RequestException e) {
+            System.out.println(e.getMessage());
+        }
         groups.add(group);
     }
 
