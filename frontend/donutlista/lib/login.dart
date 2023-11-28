@@ -27,8 +27,8 @@ class LoginState extends State<LoginPage> {
     var response = await http.post(apiUrl as Uri,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
-          "title": usernameController.text,
-          "body": passwordController.text,
+          "username": usernameController.text,
+          "password": passwordController.text,
           "userId": 1,
         }));
 
