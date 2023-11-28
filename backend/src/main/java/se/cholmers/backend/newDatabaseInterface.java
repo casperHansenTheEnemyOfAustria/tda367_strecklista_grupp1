@@ -48,7 +48,7 @@ public class newDatabaseInterface implements IDatabaseInterface {
 
     /**
      * Creates a new product using the CRUD operations.
-     * 
+     *
      * @param name   The name of the product.
      * @param price  The price of the product.
      * @param amount The amount of the product.
@@ -106,7 +106,7 @@ public class newDatabaseInterface implements IDatabaseInterface {
     // RequestException if user already exists or if the committee does not exist.
     // initializes saldo to 0.
     public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo,
-            String password) throws RequestException {
+                             String password) throws RequestException {
         String user_id = UUID.randomUUID().toString();
         insert("Users", new HashMap<>(Map.of(
                 "id", user_id,
@@ -315,7 +315,7 @@ public class newDatabaseInterface implements IDatabaseInterface {
      *                               update.
      */
     private void update(String tableName, Pair<String, String> updatedColumnValuePair,
-            Pair<String, String> columnValuePair) {
+                        Pair<String, String> columnValuePair) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "UPDATE ? SET ? = ? WHERE ? = ?");
