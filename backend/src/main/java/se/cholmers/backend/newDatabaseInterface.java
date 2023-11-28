@@ -98,7 +98,7 @@ public class newDatabaseInterface implements IDatabaseInterface{
     return selectSingleValue("products", "name", new Pair<>("id", id));
   }
 
-  public String getUserIDFromName(String nick, String password) throws RequestException {
+  public String getUseridFromName(String nick, String password) throws RequestException {
     if (password.equals(selectSingleValue("user", "password", new Pair<>("user_nick", nick)))) {
       return selectSingleValue("user", "id", new Pair<>("user_nick", nick));
     } else {
@@ -122,32 +122,37 @@ public class newDatabaseInterface implements IDatabaseInterface{
     return selectWhere("userInCommittee", "user_id", id).get("committee_id");
   }
 
-  public Float getSaldoFromUserInCommittee(String userID, String committeeID) {
-    return null;
+  public Float getSaldoFromUserInCommittee(String userid, String committeeID) {
+    Float output = Float.parseFloat(selectSingleValue("userInCommittee", "saldo", new Pair<>("(user_id, committee_id)", userid + ", " + committeeID)));
+    return output;
   }
 
   public String getCommitteeName(String id) {
-    return null;
+    return selectSingleValue("committees", "group_name", new Pair<>("id", id));
   }
 
   public String getCommitteeYear(String id) {
-    return null;
+    return selectSingleValue("committees", "year", new Pair<>("id", id));
   }
 
   public List<String> getProductsInCommittee(String committeeID) {
-    return null;
+    return selectWhere("productInCommittee", "committee_id", committeeID).get("product_id");
   }
 
   public void putUserInCommittee(String id, String committeeID, String saldo) {
-
+    insert("userInCommittee", new HashMap<>(Map.of(
+        "user_id", id,
+        "committee_id", committeeID,
+        "saldo", saldo
+    )));
   }
 
-  public void updateUserSaldo(String id, String committeeId, String saldo) {
-
+  public void updateUserSaldo(String userid, String committeeID, String saldo) {
+      update("userInCommittee", new Pair<>("saldo", saldo), new Pair<>("(user_id, committee_id)", userid + ", " + committeeID));
   }
 
   public void updateProductAmount(int productID, String amount) {
-
+    update("products", new Pair<>("amount", amount), new Pair<>("id", Integer.toString(productID)));
   }
 
   /**
@@ -288,7 +293,7 @@ public class newDatabaseInterface implements IDatabaseInterface{
     * @param columnValuePair A pair with column name as first and value as second.
    *                        This contains the data to select the row to update.
    */
-  public void update(String tableName, Pair<String, String> updatedColumnValuePair, Pair<String, String> columnValuePair) {
+  private void update(String tableName, Pair<String, String> updatedColumnValuePair, Pair<String, String> columnValuePair) {
     try {
       PreparedStatement preparedStatement = connection.prepareStatement(
           "UPDATE ? SET ? = ? WHERE ? = ?"

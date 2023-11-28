@@ -7,50 +7,188 @@ import se.cholmers.backend.RequestException;
 
 public interface IDatabaseInterface {
 
-        public void closeConnection();
+    public void closeConnection();
 
-        public void executeUpdate(String query, Map<String, String> params);
+    public void executeUpdate(String query, Map<String, String> params);
 
-        public void executeUpdate(String query, List<String> params);
+    public void executeUpdate(String query, List<String> params);
 
-        public List<Map<String, String>> executeQuery(String sql, List<String> parameters);
+    public List<Map<String, String>> executeQuery(String sql, List<String> parameters);
 
-        public void createCommittee(String group_name, String year);
+    public void createCommittee(String group_name, String year);
 
-        public void createProduct(String productName, String price, String committee, String amount)
-                        throws RequestException;
+    /**
+     * Creates a product in the database
+     * precondition: There has to be a database and the product has to not exist
+     * already
+     * 
+     * @param productName
+     * @param price
+     * @param committee
+     * @param amount
+     * @throws RequestException
+     */
+    public void createProduct(String productName, String price, String committee, String amount)
+            throws RequestException;
 
-        public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo,
-                        String password)
-                        throws RequestException;
+    /**
+     * Creates a user in the database
+     * precondition: There has to be a database and the user has to not exist
+     * 
+     * 
+     * @param userName
+     * @param userNick
+     * @param phoneNumber
+     * @param committeeID
+     * @param saldo
+     * @param password
+     * @return
+     * @throws RequestException if the user already exists
+     * 
+     * postcondition: The user is created in the database
+     */
+    public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo,
+            String password)
+            throws RequestException;
 
-        public Float getProductPrice(String id);
+    /**
+     * Returns the price of a product
+     * precondition: The product has to exist
+     * @param id
+     * @return price
+     * @throws NullPointerException if the product does not exist
+     */
+    public Float getProductPrice(String id);
 
-        public int getProductAmount(String id);
+    /**
+     * Returns the amount of a product
+     * precondition: The product has to exist
+     * @param id
+     * @return amount
+     * @throws NullPointerException if the product does not exist
+     */
+    public int getProductAmount(String id);
 
-        public String getProductName(String id);
+    /**
+     * Returns name of a product
+     * precondition: The product has to exists
+     * @param id
+     * @return name
+     * @throws NullPointerException if the product does not exist
+     */
+    public String getProductName(String id);
 
-        public String getUserIDFromName(String nick, String password) throws RequestException;
+    /**
+     * Returns the user id of a user with a name and a password from the database
+     * precondition: The user has to exist
+     * @param nick
+     * @param password
+     * @return userID
+     * @throws NullPointerException if a user with the given name and password does not exist
+     */
+    public String getUseridFromName(String nick, String password) throws RequestException;
 
-        public String getUserName(String id);
+    /**
+     * Returns the username of a user
+     * precondition: The user has to exist
+     * @param nick
+     * @return username
+     * @throws NullPointerException if a user with the given name does not exist
+     */
+    public String getUserName(String id);
 
-        public String getUserNick(String id);
+    /**
+     * Returns the user nick of a user
+     * precondition: The user has to exist
+     * @param id
+     * @return userNick
+     * @throws NullPointerException if a user with the given id does not exist
+     */
+    public String getUserNick(String id);
 
-        public String getUserPhoneNumber(String id);
+    /**
+     * Returns the user phone number of a user
+     * precondition: The user has to exist
+     * @param id
+     * @return userPhoneNumber
+     * @throws NullPointerException if a user with the given id does not exist
+     */
+    public String getUserPhoneNumber(String id);
 
-        public List<String> getCommitteesOfUser(String id);
+    /**
+     * Returns  a list of the committees a user is in
+     * precondition: The user has to exist
+     * @param id
+     * @return committees
+     * @throws NullPointerException if a user with the given id does not exist
+     */
+    public List<String> getCommitteesOfUser(String id);
 
-        public Float getSaldoFromUserInCommittee(String userID, String committeeID);
+    /**
+     * Returns the particular saldo of a user in that committee
+     * precondition: The user has to exist and be in the committee and the committee has to exist
+     * @param userID
+     * @param committeeID
+     * @return saldo
+     * @throws NullPointerException if a user with the given id does not exist
+     * @throws IllegalArgumentException if the user is not in the committee
+     */
+    public Float getSaldoFromUserInCommittee(String userID, String committeeID);
 
-        public String getCommitteeName(String id);
+    /**
+     * Returns the name of a committee
+     * precondition: The committee has to exist
+     * @param id
+     * @return committeeName
+     * @throws NullPointerException if a committee with the given id does not exist
+     */
+    public String getCommitteeName(String id);
 
-        public String getCommitteeYear(String id);
+    /**
+     * Returns the year of a committee
+     * precondition: The committee has to exist
+     * @param id
+     * @return committeeYear
+     * @throws NullPointerException if a committee with the given id does not exist
+     */
+    public String getCommitteeYear(String id);
 
-        public List<String> getProductsInCommittee(String committeeID);
+    /**
+     * Returns the products owned by a committee
+     * precondition: The committee has to exist
+     * @param committeeID
+     * @return products
+     * @throws NullPointerException if a committee with the given id does not exist
+     */
+    public List<String> getProductsInCommittee(String committeeID);
 
-        public void putUserInCommittee(String id, String committeeID, String saldo);
+    /**
+     * Adds a user committee relationship to the database
+     * precondition: The user and the committee has to exist
+     * @param id
+     * @param committeeID
+     * @param saldo
+     * @throws NullPointerException if a user with the given id does not exist or the committee does not exist
+     */
+    public void putUserInCommittee(String id, String committeeID, String saldo);
 
-        public void updateUserSaldo(String id, String committeeId, String saldo);
+    /**
+     * Updates the saldo of a user in a committee
+     * precondition: The user and the committee has to exist and the user has to be in the committee
+     * @param id
+     * @param committeeId
+     * @param saldo
+     * @throws NullPointerException if a user with the given id does not exist or the committee does not exist
+     * @throws IllegalArgumentException if the user is not in the committee
+     */
+    public void updateUserSaldo(String id, String committeeId, String saldo);
 
-        public void updateProductAmount(int productID, String amount);
+    /**
+     * Updates the amount of a product
+     * precondition: The product has to exist
+     * @param productID
+     * @param amount
+     * @throws NullPointerException if a product with the given id does not exist
+     */
+    public void updateProductAmount(int productID, String amount);
 }

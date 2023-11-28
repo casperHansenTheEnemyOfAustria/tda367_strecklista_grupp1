@@ -65,7 +65,7 @@ class User {
         this.name = name;
         this.nick = nick;
         try {
-        this.id = dbi.getUserIDFromName(name, password);
+        this.id = dbi.getUseridFromName(name, password);
         } catch (RequestException e) {
             System.out.println(e.getMessage());
         }
