@@ -78,9 +78,13 @@ public class newDatabaseInterface implements IDatabaseInterface {
         return selectSingleValue("products", "name", new Pair<>("id", id));
     }
 
-    public String getUseridFromName(String nick, String password) throws RequestException {
-        if (password.equals(selectSingleValue("user", "password", new Pair<>("user_nick", nick)))) {
-            return selectSingleValue("user", "id", new Pair<>("user_nick", nick));
+    public String authenticateUser(String nick, String password) throws RequestException {
+        Map<String, List<Object>> map = selectWhere("users", "user_nick", nick);
+        if (map.get("user_nick").isEmpty()) {
+            throw new RequestException("User does not exist");
+        }
+        if (map.get("password").get(0).equals(password)) {
+            return (String) map.get("id").get(0);
         } else {
             throw new RequestException("Wrong password");
         }
@@ -105,8 +109,8 @@ public class newDatabaseInterface implements IDatabaseInterface {
     // Creates user and puts them in a committee with a saldo. Throws
     // RequestException if user already exists or if the committee does not exist.
     // initializes saldo to 0.
-    public String createUser(String phoneNumber, String userName, String userNick, String password
-    ) throws RequestException {
+    public String createUser(String userName, String phoneNumber, String userNick,
+                             String password) throws RequestException {
         String user_id = UUID.randomUUID().toString();
         insert("Users", new HashMap<>(Map.of(
                 "id", user_id,
@@ -271,11 +275,10 @@ public class newDatabaseInterface implements IDatabaseInterface {
     public Map<String, List<Object>> selectWhere(String tableName, String columnName, String value) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT * FROM ? WHERE ? = ?");
-            preparedStatement.setString(1, tableName);
-            preparedStatement.setString(2, columnName);
-            preparedStatement.setString(3, value);
+                    "SELECT * FROM %s WHERE %s = ?".formatted(tableName, columnName));
+            preparedStatement.setString(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
+            System.out.println(resultSet.getFetchSize());
             return ResultSetConverter.convert(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -293,13 +296,16 @@ public class newDatabaseInterface implements IDatabaseInterface {
     public String selectSingleValue(String tableName, String columnName, Pair<String, String> columnValuePair) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT ? FROM ? WHERE ? = ?");
-            preparedStatement.setString(1, columnName);
-            preparedStatement.setString(2, tableName);
-            preparedStatement.setString(3, columnValuePair.getKey());
-            preparedStatement.setString(4, columnValuePair.getValue());
+                    "SELECT %s FROM %s WHERE ? = ?".formatted(columnName, tableName));
+            preparedStatement.setString(1, columnValuePair.getKey());
+            preparedStatement.setString(2, columnValuePair.getValue());
+            String rv = null;
             ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.getString(1);
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString(1));
+                rv = resultSet.getString(1);
+            }
+            return rv;
         } catch (SQLException e) {
             e.printStackTrace();
         }

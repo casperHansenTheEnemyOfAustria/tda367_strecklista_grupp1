@@ -74,9 +74,9 @@ public class UserController {
      */
     @RequestMapping(value = "/login/{userName}/{password}", method = RequestMethod.GET)
     @ResponseBody
-    public Response<String[]> login(@PathVariable("userName") String userName, @PathVariable("password") String password) {
+    public Response<String> login(@PathVariable("userName") String userName, @PathVariable("password") String password) {
         try{
-            Response<String[]> response = new Response<String[]> (stateManager.login(userName, password));
+            Response<String> response = new Response<String> (stateManager.login(userName, password));
             return response;
         // }catch(RequestException e){
         //     return new Response<String[]>(null, e.getMessage());

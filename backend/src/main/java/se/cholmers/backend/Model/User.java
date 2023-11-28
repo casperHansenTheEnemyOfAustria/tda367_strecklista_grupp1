@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import se.cholmers.backend.DatabaseInterface;
 import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
@@ -65,7 +64,7 @@ class User {
         this.name = name;
         this.nick = nick;
         try {
-        this.id = dbi.getUseridFromName(name, password);
+        this.id = dbi.authenticateUser(nick, password);
         } catch (RequestException e) {
             System.out.println(e.getMessage());
         }
