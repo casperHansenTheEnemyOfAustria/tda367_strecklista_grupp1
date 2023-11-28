@@ -105,8 +105,8 @@ public class newDatabaseInterface implements IDatabaseInterface {
     // Creates user and puts them in a committee with a saldo. Throws
     // RequestException if user already exists or if the committee does not exist.
     // initializes saldo to 0.
-    public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo,
-                             String password) throws RequestException {
+    public String createUser(String phoneNumber, String userName, String userNick, String password
+    ) throws RequestException {
         String user_id = UUID.randomUUID().toString();
         insert("Users", new HashMap<>(Map.of(
                 "id", user_id,
@@ -218,23 +218,22 @@ public class newDatabaseInterface implements IDatabaseInterface {
      */
     public void insert(String tableName, Map<String, Object> columnValueMap) {
         try {
-            PreparedStatement preparedStatement;
-            preparedStatement = connection.prepareStatement(
-                    // Format string to have the correct number of question marks
-                    // This is based on the size of columnValueMap
-                    "INSERT INTO ?(?) VALUES (" + "?,".repeat(columnValueMap.size() - 1) + "?)");
-            preparedStatement.setString(1, tableName);
             StringBuilder columns = new StringBuilder();
             for (String column : columnValueMap.keySet()) {
                 columns.append(column).append(", ");
             }
             columns.delete(columns.length() - 2, columns.length() - 1);
-            preparedStatement.setString(2, columns.toString());
-            int i = 3;
+            PreparedStatement preparedStatement;
+            preparedStatement = connection.prepareStatement(
+                    // Format string to have the correct number of question marks
+                    // This is based on the size of columnValueMap
+                    "INSERT INTO %s(%s)".formatted(tableName, columns.toString()) + "VALUES (" + "?,".repeat(columnValueMap.size() - 1) + "?)");
+            int i = 1;
             for (Object value : columnValueMap.values()) {
                 preparedStatement.setObject(i, value);
                 i++;
             }
+            System.out.println(preparedStatement.toString());
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {

@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
-public class DatabaseInterface implements IDatabaseInterface {
+public class DatabaseInterface {
 
     private static DatabaseInterface instance;
 
