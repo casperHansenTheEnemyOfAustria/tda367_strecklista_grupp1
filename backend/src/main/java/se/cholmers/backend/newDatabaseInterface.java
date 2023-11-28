@@ -131,7 +131,11 @@ public class newDatabaseInterface implements IDatabaseInterface {
     }
 
     public List<String> getCommitteesOfUser(String id) {
-        return selectWhere("userInCommittee", "user_id", id).get("committee_id");
+        List<String> rv = new ArrayList<>();
+        for (Object committeeID : selectWhere("userInCommittee", "user_id", id).get("committee_id")) {
+            rv.add((String) committeeID);
+        }
+        return rv;
     }
 
     public Float getSaldoFromUserInCommittee(String userid, String committeeID) {
@@ -149,7 +153,11 @@ public class newDatabaseInterface implements IDatabaseInterface {
     }
 
     public List<String> getProductsInCommittee(String committeeID) {
-        return selectWhere("productInCommittee", "committee_id", committeeID).get("product_id");
+        List<String> rv = new ArrayList<>();
+        for (Object productID : selectWhere("productInCommittee", "committee_id", committeeID).get("product_id")) {
+            rv.add((String) productID);
+        }
+        return rv;
     }
 
     public void putUserInCommittee(String id, String committeeID, String saldo) {
@@ -181,8 +189,8 @@ public class newDatabaseInterface implements IDatabaseInterface {
          * @return A map with column names as keys and lists of values as values.
          * @throws SQLException If the ResultSet is invalid.
          */
-        public static Map<String, List<String>> convert(ResultSet resultSet) throws SQLException {
-            Map<String, List<String>> columnsWithValues = new HashMap<>();
+        public static Map<String, List<Object>> convert(ResultSet resultSet) throws SQLException {
+            Map<String, List<Object>> columnsWithValues = new HashMap<>();
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
             // Add column names to map
@@ -242,7 +250,7 @@ public class newDatabaseInterface implements IDatabaseInterface {
      * @param tableName The name of the table to select from.
      * @return A map with column names as keys and lists of values as values.
      */
-    public Map<String, List<String>> selectAll(String tableName) {
+    public Map<String, List<Object>> selectAll(String tableName) {
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM " + tableName);
@@ -261,7 +269,7 @@ public class newDatabaseInterface implements IDatabaseInterface {
      * @param value      The value to select.
      * @return A map with column names as keys and lists of values as values.
      */
-    public Map<String, List<String>> selectWhere(String tableName, String columnName, String value) {
+    public Map<String, List<Object>> selectWhere(String tableName, String columnName, String value) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "SELECT * FROM ? WHERE ? = ?");
