@@ -6,7 +6,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import se.cholmers.backend.DatabaseInterface;
+import se.cholmers.backend.newDatabaseInterface;
+import se.cholmers.backend.Interface.IDatabaseInterface;
+
 class UserGroup {
+    private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
     private Set<Product> products = new HashSet<>();
     private Year year;
     private String name;
@@ -23,6 +28,8 @@ class UserGroup {
         this.name = name;
         this.year = year;
         this.orderHistory = new OrderHistory();
+
+        //TODO: Remove and handle in DB
         this.groupID = UUID.randomUUID().toString();
         // code that initializes the object from the database
     }
@@ -33,7 +40,13 @@ class UserGroup {
      * @param groupID
      */
     public UserGroup(String groupID) {
-        // code that initializes the object from the database
+        String name = dbi.getCommitteeName(groupID);
+        Year year = Year.parse("20" + dbi.getCommitteeYear(groupID));
+        
+        this.name = name;
+        this.year = year;
+        this.groupID = groupID;
+        this.orderHistory = new OrderHistory();
     }
 
     /**
@@ -42,6 +55,12 @@ class UserGroup {
      * @return the set of products in the usergroup
      */
     public Set<Product> getProducts() {
+        List<String> productsFromDB = dbi.getProductsInCommittee(groupID);
+        for (String productID : productsFromDB) {
+            
+            products.add(new Product(productID, groupID));
+        }
+
         return products;
     }
 
@@ -56,6 +75,8 @@ class UserGroup {
         products.add(new Product(name, cost, groupID));
     }
 
+
+    //TODO add to db
     /**
      * Adds an order to the group's orderhistory
      * 

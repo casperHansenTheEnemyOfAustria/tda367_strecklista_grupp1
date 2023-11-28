@@ -15,15 +15,17 @@ class Cart {
 
     /**
      * Adds a given product to the cart
+     * 
+     * @throws NullPointerException
      */
     public void addToCart(Product product) {
         Integer currentInCart;
+        currentInCart = itemsInCart.get(product);
         try {
-            currentInCart = itemsInCart.get(product);
+            itemsInCart.put(product, currentInCart + 1);
         } catch (NullPointerException e) {
-            currentInCart = 0;
+            itemsInCart.put(product, 1);
         }
-        itemsInCart.put(product, ++currentInCart);
     }
 
     /**
@@ -41,15 +43,15 @@ class Cart {
      * @param product
      */
     public void removeFromCart(Product product) {
-        Integer currentInCart;
+        Integer currentInCart = itemsInCart.get(product);
         try {
-            currentInCart = itemsInCart.get(product);
+            if (currentInCart > 0) {
+                itemsInCart.put(product, currentInCart - 1);
+            }
         } catch (NullPointerException e) {
-            return;
+            // TODO: handle exception
         }
-        if (currentInCart > 0) {
-            itemsInCart.put(product, --currentInCart);
-        }
+
     }
 
     /**
@@ -60,7 +62,11 @@ class Cart {
     public Map<String, String> toStringMap() {
         Map<String, String> output = new HashMap<String, String>();
         for (Product p : itemsInCart.keySet()) {
-            output.put(p.getName(), itemsInCart.get(p).toString());
+            try {
+                output.put(p.getName(), itemsInCart.get(p).toString());
+            } catch (NullPointerException e) {
+                // TODO: handle exception
+            }
         }
         return output;
     }

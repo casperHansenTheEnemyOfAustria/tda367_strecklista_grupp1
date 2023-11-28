@@ -17,4 +17,12 @@ class Order {
         this.products = products;
         this.timeStamp = LocalDateTime.now();
     }
+
+    public String getTimeString() {
+        return timeStamp.toString();
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
 }

@@ -2,7 +2,16 @@ package se.cholmers.backend.Model;
 
 import java.util.UUID;
 
+import org.yaml.snakeyaml.events.Event.ID;
+
+import se.cholmers.backend.DatabaseInterface;
+import se.cholmers.backend.RequestException;
+import se.cholmers.backend.newDatabaseInterface;
+import se.cholmers.backend.Interface.IDatabaseInterface;
+
 class Product {
+    private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
+    private int amount;
     private String name;
     private String productID;
     private Float cost;
@@ -18,7 +27,28 @@ class Product {
         this.name = name;
         this.cost = cost;
         this.groupID = groupID;
-        productID = UUID.randomUUID().toString();
+        this.amount = 0;
+
+        //catches the already exists error and does nothing since its already been created
+        try {
+            dbi.createProduct(name, cost, groupID, 0);
+        } catch (RequestException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Creates a new product with a given ID.
+     * 
+     * @param productID (the ID of the product.)
+     */
+    public Product(String productID, String groupID) {
+        this.productID = productID;
+        this.name = dbi.getProductName(productID);
+        this.cost = dbi.getProductPrice(productID);
+        this.groupID = groupID;
+        this.amount = dbi.getProductAmount(productID);    
     }
 
     /**
