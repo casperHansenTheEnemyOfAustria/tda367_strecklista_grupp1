@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:donutlista/main.dart';
 
-import 'itemCard.dart';
-
-List<String> itemList = ['Item 1', 'Item 2', 'Item 3'];
 
 /* Widget: Grid of Counting buttons */
 
@@ -23,7 +21,7 @@ class MainItemGrid extends StatelessWidget{
 }
 
 class ItemTile extends StatelessWidget {
-  final int itemNo;
+  int itemNo;
   int counter = 0;
 
   ItemTile(
@@ -33,15 +31,6 @@ class ItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color color = Colors.primaries[itemNo % Colors.primaries.length];
-    
-    /*
-    leading: FlutterLogo(size: 72.0),
-    title: Text('Three-line ListTile'),
-    subtitle:
-      Text('A sufficiently long subtitle warrants three lines.'),
-    trailing: Icon(Icons.more_vert),
-    isThreeLine: true,
-    */
     
     return Padding(
       padding: const EdgeInsets.all(8.5),
