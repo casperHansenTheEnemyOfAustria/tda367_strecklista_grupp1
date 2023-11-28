@@ -365,16 +365,4 @@ public class newDatabaseInterface implements IDatabaseInterface {
             e.printStackTrace();
         }
     }
-
-    @Override
-    public void executeUpdate(String query, Map<String, String> params) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'executeUpdate'");
-    }
-
-    @Override
-    public void executeUpdate(String query, List<String> params) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'executeUpdate'");
-    }
 }
