@@ -218,13 +218,18 @@ public class newDatabaseInterface implements IDatabaseInterface{
         for (String value : (List<String>) columnValueMap.values()) {
           values.append("'").append(value).append("', ");
         }
-      } else {
-        for (V value : columnValueMap.values()) {
+      } else if (columnValueMap.values().iterator().next() instanceof Integer) {
+        for (Integer value : (List<Integer>) columnValueMap.values()) {
+          values.append(value).append(", ");
+        }
+      } else if (columnValueMap.values().iterator().next() instanceof Float) {
+        for (Float value : (List<Float>) columnValueMap.values()) {
           values.append(value).append(", ");
         }
       }
-
-
+        values.delete(values.length() - 2, values.length() - 1);
+        preparedStatement.setString(3, values.toString());
+        preparedStatement.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
     }
