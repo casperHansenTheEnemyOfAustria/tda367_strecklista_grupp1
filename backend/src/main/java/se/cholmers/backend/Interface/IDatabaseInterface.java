@@ -15,7 +15,7 @@ public interface IDatabaseInterface {
 
     public List<Map<String, String>> executeQuery(String sql, List<String> parameters);
 
-    public void createCommittee(String group_name, String year);
+    public String createCommittee(String group_name, String year);
 
     /**
      * Creates a product in the database

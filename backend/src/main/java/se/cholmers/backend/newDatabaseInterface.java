@@ -48,14 +48,19 @@ public class newDatabaseInterface implements IDatabaseInterface{
 
   /**
    * Creates a new committee using the CRUD operations.
+   *
    * @param group_name The name of the committee.
-   * @param year The year of the committee.
+   * @param year       The year of the committee.
+   * @return
    */
-  public void createCommittee(String group_name, String year) {
+  public String createCommittee(String group_name, String year) {
+    String id = UUID.randomUUID().toString();
     insert("committees", new HashMap<>(Map.of(
+        "id", id,
         "group_name", group_name,
         "year", year
     )));
+    return id;
   }
 
   /**
@@ -64,17 +69,21 @@ public class newDatabaseInterface implements IDatabaseInterface{
    * @param price The price of the product.
    * @param amount The amount of the product.
    */
-  public void createProduct(String name, Float price, Integer amount) {
+  public String createProduct(String name, Float price, Integer amount) {
+    String id = UUID.randomUUID().toString();
     insert("products", new HashMap<>(Map.of(
+        "id", id,
         "name", name,
         "price", price,
         "amount", amount
     )));
+    return id;
   }
+
   //Creates user and puts them in a committee with a saldo. Throws RequestException if user already exists or if the committee does not exist. initializes saldo to 0.
   public String createUser(String userName, String userNick, String phoneNumber, String committeeID, String saldo,
       String password) throws RequestException {
-    UUID user_id = UUID.randomUUID();
+    String user_id = UUID.randomUUID().toString();
     insert("Users", new HashMap<>(Map.of(
         "id", user_id,
         "user_name", userName,
@@ -83,7 +92,7 @@ public class newDatabaseInterface implements IDatabaseInterface{
         "password", password
     )));
 
-    return user_id.toString();
+    return user_id;
   }
 
   public Float getProductPrice(String id) {
