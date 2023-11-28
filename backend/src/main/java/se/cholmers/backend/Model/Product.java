@@ -31,7 +31,7 @@ class Product {
 
         //catches the already exists error and does nothing since its already been created
         try {
-            dbi.createProduct(name, cost.toString(), groupID, "0");
+            dbi.createProduct(name, cost, groupID, 0);
         } catch (RequestException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

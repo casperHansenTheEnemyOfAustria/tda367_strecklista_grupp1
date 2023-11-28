@@ -65,8 +65,9 @@ public class AdminController {
             @PathVariable("price") String price, @PathVariable("committeeID") String committeeID,
             @PathVariable("amount") String amount) {
         try {
+        
             // possiubly change to factory pattern??
-            dbi.createProduct(productName, price, committeeID, amount);
+            dbi.createProduct(productName, Float.parseFloat(price), committeeID, Integer.parseInt(amount));
             Response<String> response = new Response<String>("Product created");
             return response;
         } catch (RequestException e) {

@@ -69,13 +69,17 @@ public class newDatabaseInterface implements IDatabaseInterface{
    * @param price The price of the product.
    * @param amount The amount of the product.
    */
-  public String createProduct(String name, Float price, Integer amount) {
+  public String createProduct(String name, Float price, String committeeid, Integer amount) {
     String id = UUID.randomUUID().toString();
     insert("products", new HashMap<>(Map.of(
         "id", id,
         "name", name,
         "price", price,
         "amount", amount
+    )));
+    insert("productInCommittee", new HashMap<>(Map.of(
+        "product_id", id,
+        "committee_id", committeeid
     )));
     return id;
   }
@@ -358,29 +362,10 @@ public class newDatabaseInterface implements IDatabaseInterface{
     }
   }
 
-  @Override
-  public void executeUpdate(String query, Map<String, String> params) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'executeUpdate'");
-  }
 
-  @Override
-  public void executeUpdate(String query, List<String> params) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'executeUpdate'");
-  }
 
-  @Override
-  public List<Map<String, String>> executeQuery(String sql, List<String> parameters) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'executeQuery'");
-  }
 
-  @Override
-  public void createProduct(String productName, String price, String committee, String amount) throws RequestException {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'createProduct'");
-  }
 
+  
   
 }

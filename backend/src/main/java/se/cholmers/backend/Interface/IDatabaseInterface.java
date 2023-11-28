@@ -7,14 +7,16 @@ import se.cholmers.backend.RequestException;
 
 public interface IDatabaseInterface {
 
-    public void closeConnection();
 
-    public void executeUpdate(String query, Map<String, String> params);
 
-    public void executeUpdate(String query, List<String> params);
-
-    public List<Map<String, String>> executeQuery(String sql, List<String> parameters);
-
+    /**
+     * Creates a committee in the database
+     * precondition: There has to be a database and the committee has to not exist
+     * @param group_name
+     * @param year
+     * @return committeeID
+     * @throws RequestException if the committee already exists
+     */
     public String createCommittee(String group_name, String year);
 
     /**
@@ -28,7 +30,7 @@ public interface IDatabaseInterface {
      * @param amount
      * @throws RequestException
      */
-    public void createProduct(String productName, String price, String committee, String amount)
+    public String createProduct(String productName, Float price, String committeeid, Integer amount)
             throws RequestException;
 
     /**
