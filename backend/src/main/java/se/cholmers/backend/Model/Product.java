@@ -11,7 +11,7 @@ import se.cholmers.backend.Interface.IDatabaseInterface;
 
 class Product {
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
-    private int amount;
+    private Integer amount;
     private String name;
     private String productID;
     private Float cost;
@@ -93,7 +93,7 @@ class Product {
 
     public void increaseAmount() {
         amount++;
-        dbi.updateProductAmount(amount, productID);
+        dbi.updateProductAmount(amount.toString(), productID);
     }
 
     /**
