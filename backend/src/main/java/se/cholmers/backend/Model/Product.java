@@ -92,7 +92,7 @@ class Product {
             throw new RequestException("Amount cannot be negative");
         }
     }
-    
+
     /**
      * Gets the ID of a product
      * 
@@ -102,6 +102,11 @@ class Product {
         return productID;
     }
 
+    /**
+     * Gets the name of a product
+     * 
+     * @return the name of the product
+     */
     public String getName() {
         return name;
     }

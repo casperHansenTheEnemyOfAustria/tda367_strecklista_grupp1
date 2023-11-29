@@ -104,11 +104,22 @@ class User {
      * 
      * @param product
      * @param numberOfProducts
+     * @throws RequestException
      */
-    public void purchaseItem(Product product, Integer numberOfProducts) {
+    public void purchaseItem(Product product, Integer numberOfProducts) throws RequestException {
         Float currentSaldo = saldo.get(product.getGroupID());
         currentSaldo -= product.getCost() * numberOfProducts;
         saldo.put(product.getGroupID(), currentSaldo);
+
+        try{
+            dbi.updateUserSaldo(id, product.getGroupID(), currentSaldo.toString());
+        }catch(NullPointerException e){
+            throw new RequestException(id + "does not exist or" + product.getGroupID() + "does not exist");
+        }catch(IllegalArgumentException e){
+            throw new RequestException(id + "is not in " + product.getGroupID());
+        }
+        
+    
     }
 
     /**

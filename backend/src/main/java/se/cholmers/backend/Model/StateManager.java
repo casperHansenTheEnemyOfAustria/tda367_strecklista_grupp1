@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import se.cholmers.backend.RequestException;
+
 public class StateManager {
     private Map<String, ProgramState> states;
     private static StateManager instance;
@@ -100,8 +102,9 @@ public class StateManager {
      * Checks out the cart of a user given a stateID.
      * 
      * @param stateID
+     * @throws RequestException
      */
-    public void completePurchase(String stateID) {
+    public void completePurchase(String stateID) throws RequestException {
         states.get(stateID).completePurchase();
     }
 
