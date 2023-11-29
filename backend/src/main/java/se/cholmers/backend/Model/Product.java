@@ -22,20 +22,18 @@ class Product {
      * 
      * @param name (the name of the product.)
      * @param cost (the price of the product in SEK.)
+     * @throws RequestException
      */
-    public Product(String name, Float cost, String groupID) {
+    public Product(String name, Float cost, String groupID) throws RequestException {
         this.name = name;
         this.cost = cost;
         this.groupID = groupID;
         this.amount = 0;
 
         //catches the already exists error and does nothing since its already been created
-        try {
+      
             dbi.createProduct(name, cost, groupID, 0);
-        } catch (RequestException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        
     }
 
     /**
@@ -91,6 +89,11 @@ class Product {
         if (amount < 0) {
             throw new RequestException("Amount cannot be negative");
         }
+    }
+
+    public void increaseAmount() {
+        amount++;
+        dbi.updateProductAmount(amount, productID);
     }
 
     /**

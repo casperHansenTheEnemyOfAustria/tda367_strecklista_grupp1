@@ -34,8 +34,9 @@ public class StateManager {
      * @param userName
      * @param password
      * @return A unique stateID for the programState.
+     * @throws RequestException if the user login fails
      */
-    public String login(String userName, String password) {
+    public String login(String userName, String password) throws RequestException{
         User user = new User(userName, userName, password);
         ProgramState state = new ProgramState(user);
 
@@ -50,9 +51,15 @@ public class StateManager {
      * 
      * @param stateID
      * @return
+     * @throws RequestException
      */
-    public String logout(String stateID) {
-        states.remove(stateID);
+    public String logout(String stateID) throws RequestException {
+        try {
+            states.remove(stateID);
+        } catch (NullPointerException e) {
+            throw new RequestException(stateID + " is not a valid stateID");
+        }
+        
         return "log out successful";
 
     }
