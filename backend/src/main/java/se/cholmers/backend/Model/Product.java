@@ -65,6 +65,11 @@ class Product {
         return cost;
     }
 
+    public void increaseAmount() {
+        amount++;
+        dbi.updateProductAmount(amount, productID);
+    }
+
     /**
      * Gets the ID of a product
      * 

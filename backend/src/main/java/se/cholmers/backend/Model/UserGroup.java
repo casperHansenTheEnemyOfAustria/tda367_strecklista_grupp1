@@ -21,6 +21,7 @@ class UserGroup {
 
     /**
      * Creates a new UserGroup with a given name and year.
+     * this is only used for testing
      * 
      * @param name
      * @param year
