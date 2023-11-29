@@ -66,7 +66,33 @@ class Product {
     public Float getCost() {
         return cost;
     }
+ 
+    /**
+     * Increases the amount of a product by a certain amount.
+     * precondition: The amount has to be positive
+     * @param amount
+     * @throws RequestException
+     * postcondition: The amount of the product is increased by the given amount
+     */
+    public void increaseAmount(int amount) throws RequestException {
+        if (amount < 0) {
+            throw new RequestException("Amount cannot be negative");
+        }
+    }
 
+    /**
+     * Decreases the amount of a product by a certain amount. Should be called upon purchase.
+     * precondition: The amount has to be positive
+     * @param amount
+     * @throws RequestException
+     * postcondition: The amount of the product is decreased by the given amount
+     */
+    public void decreaseAmount(int amount) throws RequestException {
+        if (amount < 0) {
+            throw new RequestException("Amount cannot be negative");
+        }
+    }
+    
     /**
      * Gets the ID of a product
      * 
