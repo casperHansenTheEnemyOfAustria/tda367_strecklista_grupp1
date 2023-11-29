@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
-public class DatabaseInterface implements IDatabaseInterface {
+public class DatabaseInterface {
 
     private static DatabaseInterface instance;
 
@@ -140,12 +140,13 @@ public class DatabaseInterface implements IDatabaseInterface {
     }
 
     // Custom CREATE methods
-    public void createCommittee(String group_name, String year) {
+    public String createCommittee(String group_name, String year) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("group_name", group_name);
         parameters.put("year", year);
         String id = UUID.randomUUID().toString();
         parameters.put("id", id);
+        return id;
     }
 
     /**

@@ -7,9 +7,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import se.cholmers.backend.DatabaseInterface;
+import se.cholmers.backend.newDatabaseInterface;
+import se.cholmers.backend.Interface.IDatabaseInterface;
 
 class UserGroup {
-    private DatabaseInterface dbi = DatabaseInterface.getInstance();
+    private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
     private Set<Product> products = new HashSet<>();
     private Year year;
     private String name;
@@ -39,7 +41,7 @@ class UserGroup {
      */
     public UserGroup(String groupID) {
         String name = dbi.getCommitteeName(groupID);
-        Year year = Year.parse(dbi.getCommitteeYear(groupID));
+        Year year = Year.parse("20" + dbi.getCommitteeYear(groupID));
         
         this.name = name;
         this.year = year;

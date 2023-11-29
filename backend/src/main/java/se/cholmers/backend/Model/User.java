@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import se.cholmers.backend.DatabaseInterface;
 import se.cholmers.backend.RequestException;
+import se.cholmers.backend.newDatabaseInterface;
+import se.cholmers.backend.Interface.IDatabaseInterface;
 
 /**
  * This class represents a user in the system. It contains information about the
@@ -20,7 +21,7 @@ class User {
     private String phoneNumber;
     private Map<String, Float> saldo = new HashMap<>();
     private Set<UserGroup> groups = new HashSet<>();
-    private DatabaseInterface dbi = DatabaseInterface.getInstance();
+    private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
 
     /**
      * This is the constructor for when recreating users from the database
@@ -62,8 +63,11 @@ class User {
     public User(String name, String nick, String password) {
         this.name = name;
         this.nick = nick;
-
-        this.id = dbi.getUserIDFromName(name, password);
+        try {
+        this.id = dbi.authenticateUser(nick, password);
+        } catch (RequestException e) {
+            System.out.println(e.getMessage());
+        }
         System.out.println("User id: " + id);
 
         addGroupsFromDatabase();
@@ -71,7 +75,11 @@ class User {
     }
 
     public void addUserToGroup(UserGroup group) {
-        dbi.putUserInCommittee(id, group.getID().toString(), "0");
+        try{
+            dbi.putUserInCommittee(id, group.getID().toString(), 0f);
+        } catch (RequestException e) {
+            System.out.println(e.getMessage());
+        }
         groups.add(group);
     }
 

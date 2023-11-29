@@ -33,13 +33,13 @@ public class StateManager {
      * @param password
      * @return A unique stateID for the programState.
      */
-    public String[] login(String userName, String password) {
+    public String login(String userName, String password) {
         User user = new User(userName, userName, password);
         ProgramState state = new ProgramState(user);
 
         String stateID = UUID.randomUUID().toString();
         states.put(stateID, state);
-        String[] output = { stateID, getAuth(stateID) };
+        String output = stateID;
         return output;
     }
 

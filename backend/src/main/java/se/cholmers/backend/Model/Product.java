@@ -2,11 +2,15 @@ package se.cholmers.backend.Model;
 
 import java.util.UUID;
 
+import org.yaml.snakeyaml.events.Event.ID;
+
 import se.cholmers.backend.DatabaseInterface;
 import se.cholmers.backend.RequestException;
+import se.cholmers.backend.newDatabaseInterface;
+import se.cholmers.backend.Interface.IDatabaseInterface;
 
 class Product {
-    private DatabaseInterface dbi = DatabaseInterface.getInstance();
+    private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
     private int amount;
     private String name;
     private String productID;
@@ -27,7 +31,7 @@ class Product {
 
         //catches the already exists error and does nothing since its already been created
         try {
-            dbi.createProduct(name, cost.toString(), groupID, "0");
+            dbi.createProduct(name, cost, groupID, 0);
         } catch (RequestException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
