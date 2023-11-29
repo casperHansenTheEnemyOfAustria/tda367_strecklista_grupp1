@@ -207,5 +207,5 @@ public interface IDatabaseInterface {
      * @param amount
      * @throws NullPointerException if a product with the given id does not exist
      */
-    public void updateProductAmount(int productID, String amount);
+    public void updateProductAmount(String productID, String amount);
 }
