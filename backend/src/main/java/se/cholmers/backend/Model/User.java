@@ -60,16 +60,10 @@ class User {
      * 
      * @throws NullPointerException if the input is null
      */
-    public User(String name, String nick, String password) {
+    public User(String name, String nick, String password) throws RequestException{
         this.name = name;
         this.nick = nick;
-        try {
         this.id = dbi.authenticateUser(nick, password);
-        } catch (RequestException e) {
-            System.out.println(e.getMessage());
-        }
-        System.out.println("User id: " + id);
-
         addGroupsFromDatabase();
 
     }

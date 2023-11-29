@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import se.cholmers.backend.DatabaseInterface;
+import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
@@ -70,8 +71,9 @@ class UserGroup {
      * 
      * @param name
      * @param cost
+     * @throws RequestException
      */
-    public void addProduct(String name, Float cost) {
+    public void addProduct(String name, Float cost) throws RequestException {
         products.add(new Product(name, cost, groupID));
     }
 
