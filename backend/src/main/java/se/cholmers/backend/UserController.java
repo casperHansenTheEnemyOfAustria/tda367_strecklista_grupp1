@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 // import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 // import org.springframework.web.bind.annotation.RequestParam;
@@ -39,9 +40,9 @@ public class UserController {
      * @param groupID (the groupID of the group the user😎 is in)
      * @return response (a response with the correct code💀 and the correct saldo🤑 if the saldo🤑 was fetched. Otherwise it should havea an error🆘 code)  
      */
-    @RequestMapping(value  = "/getSaldo/{sessionID}/{groupID}", method = RequestMethod.GET)
+    @RequestMapping(value  = "/getSaldo", method = RequestMethod.GET)
     @ResponseBody
-    public Response<String>getSaldo(@PathVariable("sessionID") String sessionID, @PathVariable("groupID") String authToken) {
+    public Response<String>getSaldo(@RequestHeader("sessionID") String sessionID, @RequestHeader("groupID") String authToken) {
         try{
             Response<String> saldo = new Response<String>(stateManager.getSaldo(sessionID, authToken));
      
@@ -72,9 +73,9 @@ public class UserController {
      * @param password (the password of the user😎 input by the user)
      * @return response (a response with the correct code💀 and the correct sessionID and authentication key if the user😎 was logged in. Otherwise it should havea an error🆘 code)
      */
-    @RequestMapping(value = "/login/{userName}/{password}", method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     @ResponseBody
-    public Response<String> login(@PathVariable("userName") String userName, @PathVariable("password") String password) {
+    public Response<String> login(@RequestHeader("userName") String userName, @RequestHeader("password") String password) {
         try{
             Response<String> response = new Response<String> (stateManager.login(userName, password));
             return response;
@@ -92,9 +93,9 @@ public class UserController {
      * @param sessionID (the sessionID of the user😎 stored by the device)
      * @return response (a response with the correct code💀 and the correct message if the user😎 was logged out. Otherwise it should havea an error🆘 code)
      */
-    @RequestMapping(value = "/logout/{sessionID}", method = RequestMethod.POST)
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> logout(@PathVariable("sessionID") String sessionID) {
+    public Response<String> logout(@RequestHeader("sessionID") String sessionID) {
         try{
             Response<String> response = new Response<String> (stateManager.logout(sessionID));
             return response;
@@ -110,9 +111,9 @@ public class UserController {
      * @param sessionID (the sessionID of the user😎 stored by the device)
      * @return response (a response with the correct code💀 and the correct cart if the cart was fetched. Otherwise it should havea an error🆘 code)   
      */
-    @RequestMapping(value = "/getCart/{sessionID}" , method = RequestMethod.GET)
+    @RequestMapping(value = "/getCart/" , method = RequestMethod.GET)
     @ResponseBody
-    public Response<Map<String, String>> getCart(@PathVariable("sessionID") String sessionID) {
+    public Response<Map<String, String>> getCart(@RequestHeader("sessionID") String sessionID) {
         try{
             Response<Map<String, String>> response = new Response<Map<String, String>> (stateManager.getCart(sessionID));
             return response;
@@ -129,9 +130,9 @@ public class UserController {
      * @param productID (the productID of the product🍩 to be added to the cart user😎 input) 
      * @return response (a response with the correct code💀 and the correct message if the product🍩 was added to the cart. Otherwise it should forward an error🆘 code💀 from the model)
      */
-    @RequestMapping(value = "/addToCart/{sessionID}/{productID}", method = RequestMethod.POST)
+    @RequestMapping(value = "/addToCart", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> addToCart(@PathVariable("sessionID") String sessionID, @PathVariable("productID") String productID) {
+    public Response<String> addToCart(@RequestHeader("sessionID") String sessionID, @RequestHeader("productID") String productID) {
         try{
             stateManager.addToCart(sessionID, productID);
             Response<String> response = new Response<String> ("added to cart");
@@ -150,9 +151,9 @@ public class UserController {
      * @param productID (the productID of the product🍩 to be removed from the cart user😎 input)
      * 
      */
-    @RequestMapping(value = "/removeFromCart/{sessionID}/{productID}", method = RequestMethod.POST)
+    @RequestMapping(value = "/removeFromCart", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> removeFromCart(@PathVariable("sessionID") String sessionID, @PathVariable("productID") String productID) {
+    public Response<String> removeFromCart(@RequestHeader("sessionID") String sessionID, @RequestHeader("productID") String productID) {
         try{
             stateManager.removeFromCart(sessionID, productID);
             Response<String> response = new Response<String> ("Removed from Cart");
@@ -169,9 +170,9 @@ public class UserController {
      * @param sessionID (the sessionID of the user😎 stored by the device)
      * @return response (a response with the correct code💀 and the correct price if the price was fetched. Otherwise it should havea an error🆘 code)
      */
-    @RequestMapping(value = "/completePurchase/{sessionID}", method = RequestMethod.POST)
+    @RequestMapping(value = "/completePurchase", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> completePurchase(@PathVariable("sessionID") String sessionID) {
+    public Response<String> completePurchase(@RequestHeader("sessionID") String sessionID) {
         try{
             stateManager.completePurchase(sessionID);
             Response<String> response = new Response<String> ("Purchase completed");
@@ -188,9 +189,9 @@ public class UserController {
      * @param sessionID (the sessionID of the user😎 stored by the device)
      * @return response (a response with the correct code💀 and the correct products🍩 if the products🍩 were fetched. Otherwise it should havea an error🆘 code)
      */
-    @RequestMapping(value = "/getProducts/{sessionID}", method = RequestMethod.GET)
+    @RequestMapping(value = "/getProducts", method = RequestMethod.GET)
     @ResponseBody
-    public Response<Map<String, String>> getProducts(@PathVariable("sessionID") String sessionID) {
+    public Response<Map<String, String>> getProducts(@RequestHeader("sessionID") String sessionID) {
         try{
             Response<Map<String, String>> response = new Response<Map<String, String>>(new HashMap<String, String>());
             return response;

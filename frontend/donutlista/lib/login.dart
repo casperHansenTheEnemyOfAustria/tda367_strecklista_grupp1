@@ -14,7 +14,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginState extends State<LoginPage> { 
-  final apiUrl = "http://localhost:8080";
+  final apiUrl = "localhost:8080";
 
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -24,14 +24,12 @@ class LoginState extends State<LoginPage> {
 );
 
  Future<void> sendPostRequest() async {
-    var response = await http.post(apiUrl as Uri,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "username": usernameController.text,
-          "password": passwordController.text,
-          "userId": 1,
-        }));
-
+    // print(await http.get(Uri.http("${apiUrl}login/${usernameController.text}/${passwordController.text}")));
+    var response = await http.get(Uri.http(apiUrl,"/login"), 
+    headers: {
+      "userName": usernameController.text, 
+      "password": passwordController.text
+      });
     if (response.statusCode == 200) {
       Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen()));
     } else {
