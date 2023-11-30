@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'homescreen.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
 
 
 class LoginPage extends StatefulWidget {
@@ -13,32 +10,7 @@ class LoginPage extends StatefulWidget {
   LoginState createState() => LoginState();
 }
 
-class LoginState extends State<LoginPage> { 
-  final apiUrl = "http://localhost:8080";
-
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
-  final snackBar = SnackBar(
-    content: Text('Failed to login!'),
-);
-
- Future<void> sendPostRequest() async {
-    var response = await http.post(apiUrl as Uri,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "username": usernameController.text,
-          "password": passwordController.text,
-          "userId": 1,
-        }));
-
-    if (response.statusCode == 200) {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen()));
-    } else {
-      snackBar;
-    }
-  }
-
+class LoginState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,23 +29,22 @@ class LoginState extends State<LoginPage> {
                     child: Image.asset('assets/images/smurf.png')),
               ),
             ),
-            Padding(
+            const Padding(
               //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
-                controller: usernameController,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Email',
                     hintText: 'Enter valid email id as abc@gmail.com'),
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(
                   left: 15.0, right: 15.0, top: 15, bottom: 0),
               //padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
-                controller: passwordController,
+
                 obscureText: true,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -96,8 +67,14 @@ class LoginState extends State<LoginPage> {
               //decoration: BoxDecoration(
               //    color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: TextButton(
-                onPressed: sendPostRequest,
-                child: Text(
+                onPressed: () {
+                  Navigator.push(
+                      
+                      // TODO: Add if correct login & password. Else: Reload page? 
+
+                      context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+                },
+                child: const Text(
                   'Login',
                   style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
