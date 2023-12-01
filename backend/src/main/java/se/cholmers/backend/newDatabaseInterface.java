@@ -208,8 +208,8 @@ public class newDatabaseInterface implements IDatabaseInterface {
                 new Pair<>("(user_id, committee_id)", userid + ", " + committeeID));
     }
 
-    public void updateProductAmount(int productID, String amount) {
-        update("products", new Pair<>("amount", amount), new Pair<>("id", Integer.toString(productID)));
+    public void updateProductAmount(String productID, String amount) {
+        update("products", new Pair<>("amount", amount), new Pair<>("id", productID));
     }
 
     /**

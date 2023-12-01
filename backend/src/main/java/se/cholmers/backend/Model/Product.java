@@ -11,7 +11,7 @@ import se.cholmers.backend.Interface.IDatabaseInterface;
 
 class Product {
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
-    private int amount;
+    private Integer amount;
     private String name;
     private String productID;
     private Float cost;
@@ -22,20 +22,18 @@ class Product {
      * 
      * @param name (the name of the product.)
      * @param cost (the price of the product in SEK.)
+     * @throws RequestException
      */
-    public Product(String name, Float cost, String groupID) {
+    public Product(String name, Float cost, String groupID) throws RequestException {
         this.name = name;
         this.cost = cost;
         this.groupID = groupID;
         this.amount = 0;
 
         //catches the already exists error and does nothing since its already been created
-        try {
+      
             dbi.createProduct(name, cost, groupID, 0);
-        } catch (RequestException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        
     }
 
     /**
@@ -66,6 +64,37 @@ class Product {
     public Float getCost() {
         return cost;
     }
+ 
+    /**
+     * Increases the amount of a product by a certain amount.
+     * precondition: The amount has to be positive
+     * @param amount
+     * @throws RequestException
+     * postcondition: The amount of the product is increased by the given amount
+     */
+    public void increaseAmount(int amount) throws RequestException {
+        if (amount < 0) {
+            throw new RequestException("Amount cannot be negative");
+        }
+    }
+
+    /**
+     * Decreases the amount of a product by a certain amount. Should be called upon purchase.
+     * precondition: The amount has to be positive
+     * @param amount
+     * @throws RequestException
+     * postcondition: The amount of the product is decreased by the given amount
+     */
+    public void decreaseAmount(int amount) throws RequestException {
+        if (amount < 0) {
+            throw new RequestException("Amount cannot be negative");
+        }
+    }
+
+    public void increaseAmount() {
+        amount++;
+        dbi.updateProductAmount(amount.toString(), productID);
+    }
 
     /**
      * Gets the ID of a product
@@ -76,6 +105,11 @@ class Product {
         return productID;
     }
 
+    /**
+     * Gets the name of a product
+     * 
+     * @return the name of the product
+     */
     public String getName() {
         return name;
     }

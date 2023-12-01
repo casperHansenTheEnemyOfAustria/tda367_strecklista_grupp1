@@ -109,10 +109,12 @@ public class UserController {
     public ResponseEntity<String> logout(@RequestBody LoggedInUserRequest freq) {
         String sessionID = freq.getSessionID();
         try{
+
             ResponseEntity<String> ResponseEntity = new ResponseEntity<String> (stateManager.logout(sessionID), HttpStatus.OK);
             return ResponseEntity;
-        // }catch(RequestException e){
-        //     return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
+        }catch(RequestException e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
+
         }finally{
 
         }
@@ -194,10 +196,13 @@ public class UserController {
         String sessionID = freq.getSessionID();
         try{
             stateManager.completePurchase(sessionID);
+
             ResponseEntity<String> ResponseEntity = new ResponseEntity<String> ("Purchase completed",  HttpStatus.OK);
             return ResponseEntity;
-        // }catch(RequestException e){
-        //     return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
+        }catch(RequestException e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
+
+
         }finally{
 
         }
