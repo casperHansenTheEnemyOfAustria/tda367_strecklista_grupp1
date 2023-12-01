@@ -1,7 +1,12 @@
 package se.cholmers.backend;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,6 +21,7 @@ import se.cholmers.backend.Model.StateManager;
  * It talks directly to the database interface
  */
 @RestController
+@CrossOrigin
 public class AdminController {
     @Autowired
     StateManager stateManager;
@@ -31,21 +37,23 @@ public class AdminController {
      * 
      * @param userName (the users name)
      * @param password (the users wanted password)
-     * @return response (a response with the correct code and a success message if
+     * @return ResponseEntity (a ResponseEntity with the correct code and a success message if
      *         the user was created. Otherwise it should havea an error code)
      * 
      */
-    @RequestMapping(value = "/createUser/{userName}/{password}", method = RequestMethod.POST)
+    @RequestMapping(value = "/createUser", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> createUser(@PathVariable("userName") String userName,
-            @PathVariable("password") String password) {
+    public ResponseEntity<String> createUser(@RequestBody AdminRequest freq) {
+        
         try {
+            String userName = freq.getData("userName");
+            String password = freq.getData("password");
             // possiubly change to factory pattern??
             dbi.createUser(userName, "0734111337", userName, password);
-            Response<String> response = new Response<String>("user created");
-            return response;
+            ResponseEntity<String> ResponseEntity = new ResponseEntity<String>("user created", HttpStatus.OK);
+            return ResponseEntity;
         } catch (RequestException e) {
-            return new Response<String>(null, e.getMessage());
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } finally {
 
         }
@@ -56,20 +64,22 @@ public class AdminController {
      *
      * @param name (the name of the committee)
      * @param year (the year of the committee)
-     * @return response (a response with the correct code and a success message if
+     * @return ResponseEntity (a ResponseEntity with the correct code and a success message if
      *         the committee was created. Otherwise it should havea an error code)
      */
-    @RequestMapping(value = "/createCommittee/{name}/{year}", method = RequestMethod.POST)
+    @RequestMapping(value = "/createCommittee", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> createCommittee(@PathVariable("name") String name,
-                                       @PathVariable("year") String year) {
+    public ResponseEntity<String> createCommittee(@RequestBody AdminRequest freq) {
+        
         try {
+            String name = freq.getData("name");
+            String year = freq.getData("year");
             // possiubly change to factory pattern??
             dbi.createCommittee(name, year);
-            Response<String> response = new Response<String>("Committee created");
-            return response;
+            ResponseEntity<String> ResponseEntity = new ResponseEntity<String>("Committee created", HttpStatus.OK);
+            return ResponseEntity;
         } catch (RequestException e) {
-            return new Response<String>(null, e.getMessage());
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } finally {
 
         }
@@ -80,21 +90,22 @@ public class AdminController {
      *
      * @param userNick
      * @param committeeID
-     * @return response (a response with the correct code and a success message if
+     * @return ResponseEntity (a ResponseEntity with the correct code and a success message if
      *        the user was added to the group. Otherwise it should havea an error
      *        code)
      */
     @RequestMapping(value = "/addUserToGroup/{userNick}/{committeeID}", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> addUserToGroup(@PathVariable("userNick") String userNick,
-            @PathVariable("committeeID") String committeeID) {
+    public ResponseEntity<String> addUserToGroup(@RequestBody AdminRequest freq) {
         try {
+            String userNick = freq.getData("userNick");
+            String committeeID = freq.getData("committeeID");
             // possiubly change to factory pattern??
             dbi.putUserInCommittee(userNick, committeeID, 0f);
-            Response<String> response = new Response<String>("User added to group");
-            return response;
+            ResponseEntity<String> ResponseEntity = new ResponseEntity<String>("User added to group", HttpStatus.OK);
+            return ResponseEntity;
         } catch (RequestException e) {
-            return new Response<String>(null, e.getMessage());
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } finally {
 
         }
@@ -105,22 +116,24 @@ public class AdminController {
      * 
      * @param productName
      * @param price
-     * @return response (a response with the correct code and a success message if
+     * @return ResponseEntity (a ResponseEntity with the correct code and a success message if
      *         the product was created. Otherwise it should havea an error code)
      */
     @RequestMapping(value = "/createProduct/{productName}/{price}/{committeeID}/{amount}", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> createProduct(@PathVariable("productName") String productName,
-            @PathVariable("price") String price, @PathVariable("committeeID") String committeeID,
-            @PathVariable("amount") String amount) {
+    public ResponseEntity<String> createProduct(@RequestBody AdminRequest freq) {
         try {
         
+            String productName = freq.getData("productName");
+            String price = freq.getData("price");
+            String committeeID = freq.getData("committeeID");
+            String amount = freq.getData("amount");
             // possiubly change to factory pattern??
             dbi.createProduct(productName, Float.parseFloat(price), committeeID, Integer.parseInt(amount));
-            Response<String> response = new Response<String>("Product created");
-            return response;
+            ResponseEntity<String> ResponseEntity = new ResponseEntity<String>("Product created", HttpStatus.OK);
+            return ResponseEntity;
         } catch (RequestException e) {
-            return new Response<String>(null, e.getMessage());
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } finally {
 
         }

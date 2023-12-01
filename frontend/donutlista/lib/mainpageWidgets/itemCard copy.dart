@@ -1,54 +1,31 @@
 import 'package:flutter/material.dart';
-
-Widget mainPage = const MainItemGrid(); 
-
-class MainItemGrid extends StatelessWidget{
-  const MainItemGrid({super.key});
-  @override
-  Widget build(BuildContext context){
-      return GridView.count(
-  primary: false,
-  padding: const EdgeInsets.all(20),
-  crossAxisSpacing: 10,
-  mainAxisSpacing: 10,
-  crossAxisCount: 2,
-  children: 
-    <Widget>[
-      Container(
-        padding: const EdgeInsets.all(8),
-        child: ItemButton()
-        ), 
-    ],
-
-/* TODO: Add summary list */
-
-/* TODO: Add Buy and cancel button */
-
-);
-}
-}
+import 'package:hexcolor/hexcolor.dart';
 
 
-/* Counting button */
+/* Counting Card */
 class ItemButton extends StatefulWidget {
   int counter = 0;
 
   ItemButton({super.key});
 
   @override
-  ButtonState createState() => ButtonState();
+  ActiveItem createState() => ActiveItem();
 }
 
 
-class ButtonState extends State<ItemButton> {
+class ActiveItem extends State<ItemButton> {
 
   @override
   Widget build(BuildContext context) {
 
     return Container(
-              decoration: BoxDecoration(
-              //padding: const EdgeInsets.all(8),
-              color: Colors.teal[100],
+              decoration: 
+              BoxDecoration(
+                /* border: Border.all(
+                color: HexColor('#09CDDA'),
+                width: 1,
+                ), */
+              color: HexColor('#09cdda'),
             ),
             child: 
                 Column(            
@@ -60,14 +37,19 @@ class ButtonState extends State<ItemButton> {
                   children: [
                     GestureDetector(
                       onTap: () => setState(() {
-                              widget.counter == 0 ? print('counter at 0') : widget.counter--;
+                              if (widget.counter == 0)
+                                widget.counter = 0;
+                              else 
+                                widget.counter--; 
+                              print(widget.counter);
                             }),
                         child: Icon(Icons.remove)),
                     Text('${widget.counter}'),
                     GestureDetector(
                       onTap: () {setState(() {
-                        print('set');
                                 widget.counter++;
+                                print(widget.counter);
+
                             });},
                         child: Icon(Icons.add)),
                   
@@ -75,7 +57,9 @@ class ButtonState extends State<ItemButton> {
             ),
             GestureDetector(
                       onTap: () => setState(() {
-                              widget.counter == 0 ? print('counter at 0') : widget.counter = 0;
+                              widget.counter = 0;
+                              print(widget.counter);
+
                             }),
                         child: Icon(Icons.delete)),
             ]
@@ -83,5 +67,3 @@ class ButtonState extends State<ItemButton> {
             );
   }
 }
-
-/* Summary list */
