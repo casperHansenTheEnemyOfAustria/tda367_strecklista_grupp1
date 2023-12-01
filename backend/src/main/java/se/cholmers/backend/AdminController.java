@@ -1,7 +1,9 @@
 package se.cholmers.backend;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,6 +18,7 @@ import se.cholmers.backend.Model.StateManager;
  * It talks directly to the database interface
  */
 @RestController
+@CrossOrigin
 public class AdminController {
     @Autowired
     StateManager stateManager;
@@ -35,11 +38,13 @@ public class AdminController {
      *         the user was created. Otherwise it should havea an error code)
      * 
      */
-    @RequestMapping(value = "/createUser/{userName}/{password}", method = RequestMethod.POST)
+    @RequestMapping(value = "/createUser", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> createUser(@PathVariable("userName") String userName,
-            @PathVariable("password") String password) {
+    public Response<String> createUser(@RequestBody AdminRequest freq) {
+        
         try {
+            String userName = freq.getData("userName");
+            String password = freq.getData("password");
             // possiubly change to factory pattern??
             dbi.createUser(userName, "0734111337", userName, password);
             Response<String> response = new Response<String>("user created");
@@ -59,11 +64,13 @@ public class AdminController {
      * @return response (a response with the correct code and a success message if
      *         the committee was created. Otherwise it should havea an error code)
      */
-    @RequestMapping(value = "/createCommittee/{name}/{year}", method = RequestMethod.POST)
+    @RequestMapping(value = "/createCommittee", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> createCommittee(@PathVariable("name") String name,
-                                       @PathVariable("year") String year) {
+    public Response<String> createCommittee(@RequestBody AdminRequest freq) {
+        
         try {
+            String name = freq.getData("name");
+            String year = freq.getData("year");
             // possiubly change to factory pattern??
             dbi.createCommittee(name, year);
             Response<String> response = new Response<String>("Committee created");
@@ -86,9 +93,10 @@ public class AdminController {
      */
     @RequestMapping(value = "/addUserToGroup/{userNick}/{committeeID}", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> addUserToGroup(@PathVariable("userNick") String userNick,
-            @PathVariable("committeeID") String committeeID) {
+    public Response<String> addUserToGroup(@RequestBody AdminRequest freq) {
         try {
+            String userNick = freq.getData("userNick");
+            String committeeID = freq.getData("committeeID");
             // possiubly change to factory pattern??
             dbi.putUserInCommittee(userNick, committeeID, 0f);
             Response<String> response = new Response<String>("User added to group");
@@ -110,11 +118,13 @@ public class AdminController {
      */
     @RequestMapping(value = "/createProduct/{productName}/{price}/{committeeID}/{amount}", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> createProduct(@PathVariable("productName") String productName,
-            @PathVariable("price") String price, @PathVariable("committeeID") String committeeID,
-            @PathVariable("amount") String amount) {
+    public Response<String> createProduct(@RequestBody AdminRequest freq) {
         try {
         
+            String productName = freq.getData("productName");
+            String price = freq.getData("price");
+            String committeeID = freq.getData("committeeID");
+            String amount = freq.getData("amount");
             // possiubly change to factory pattern??
             dbi.createProduct(productName, Float.parseFloat(price), committeeID, Integer.parseInt(amount));
             Response<String> response = new Response<String>("Product created");

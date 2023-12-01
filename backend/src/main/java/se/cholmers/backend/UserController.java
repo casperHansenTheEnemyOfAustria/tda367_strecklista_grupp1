@@ -1,10 +1,12 @@
 package se.cholmers.backend;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 // import lombok.Data;
 // import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 // import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,6 +28,7 @@ import java.util.Map;
  * UserController this controls user😎 features such as login, logout and getsaldo🤑 etc it has access to the session manager to fetch its given session from different users
  */
 @RestController
+@CrossOrigin
 // @RequestMapping("/user")
 public class UserController {
     @Autowired
@@ -42,13 +45,15 @@ public class UserController {
      */
     @RequestMapping(value  = "/getSaldo", method = RequestMethod.GET)
     @ResponseBody
-    public Response<String>getSaldo(@RequestHeader("sessionID") String sessionID, @RequestHeader("groupID") String authToken) {
+    public Response<String>getSaldo(@RequestBody LoggedInUserRequest freq) {   
         try{
-            Response<String> saldo = new Response<String>(stateManager.getSaldo(sessionID, authToken));
+            String sessionID = freq.getSessionID();
+            String groupId = freq.getData("groupId");
+            Response<String> saldo = new Response<String>(stateManager.getSaldo(sessionID, groupId));
      
             return saldo;
-        // }catch(RequestException e){
-        //     return new Response<String>(null, e.getMessage());
+        }catch(RequestException e){
+            return new Response<String>(null, e.getMessage());
         }finally{
 
         }
@@ -75,12 +80,15 @@ public class UserController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     @ResponseBody
-    public Response<String> login(@RequestHeader("userName") String userName, @RequestHeader("password") String password) {
+    public Response<String> login(@RequestBody LoginRequest freq) {
+        
         try{
+            String userName =  freq.getData("userName");
+            String password =  freq.getData("password");
             Response<String> response = new Response<String> (stateManager.login(userName, password));
             return response;
-        // }catch(RequestException e){
-        //     return new Response<String[]>(null, e.getMessage());
+        }catch(RequestException e){
+            return new Response<String>(null, e.getMessage());
         }finally{
 
         }
@@ -95,7 +103,8 @@ public class UserController {
      */
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> logout(@RequestHeader("sessionID") String sessionID) {
+    public Response<String> logout(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
         try{
             Response<String> response = new Response<String> (stateManager.logout(sessionID));
             return response;
@@ -111,9 +120,10 @@ public class UserController {
      * @param sessionID (the sessionID of the user😎 stored by the device)
      * @return response (a response with the correct code💀 and the correct cart if the cart was fetched. Otherwise it should havea an error🆘 code)   
      */
-    @RequestMapping(value = "/getCart/" , method = RequestMethod.GET)
+    @RequestMapping(value = "/getCart" , method = RequestMethod.GET)
     @ResponseBody
-    public Response<Map<String, String>> getCart(@RequestHeader("sessionID") String sessionID) {
+    public Response<Map<String, String>> getCart(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
         try{
             Response<Map<String, String>> response = new Response<Map<String, String>> (stateManager.getCart(sessionID));
             return response;
@@ -132,13 +142,16 @@ public class UserController {
      */
     @RequestMapping(value = "/addToCart", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> addToCart(@RequestHeader("sessionID") String sessionID, @RequestHeader("productID") String productID) {
+    public Response<String> addToCart(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
+        
         try{
+            String productID = freq.getData("productID");
             stateManager.addToCart(sessionID, productID);
             Response<String> response = new Response<String> ("added to cart");
             return response;
-        // }catch(RequestException e){
-        //     return new Response<String>(null, e.getMessage());
+        }catch(RequestException e){
+            return new Response<String>(null, e.getMessage());
         }finally{
             
         }
@@ -153,13 +166,15 @@ public class UserController {
      */
     @RequestMapping(value = "/removeFromCart", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> removeFromCart(@RequestHeader("sessionID") String sessionID, @RequestHeader("productID") String productID) {
+    public Response<String> removeFromCart(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
         try{
+            String productID = freq.getData("productID");
             stateManager.removeFromCart(sessionID, productID);
             Response<String> response = new Response<String> ("Removed from Cart");
             return response;
-        // }catch(RequestException e){
-        //     return new Response<String>(null, e.getMessage());
+        }catch(RequestException e){
+            return new Response<String>(null, e.getMessage());
         }finally{
 
         }
@@ -172,7 +187,8 @@ public class UserController {
      */
     @RequestMapping(value = "/completePurchase", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> completePurchase(@RequestHeader("sessionID") String sessionID) {
+    public Response<String> completePurchase(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
         try{
             stateManager.completePurchase(sessionID);
             Response<String> response = new Response<String> ("Purchase completed");
@@ -191,9 +207,11 @@ public class UserController {
      */
     @RequestMapping(value = "/getProducts", method = RequestMethod.GET)
     @ResponseBody
-    public Response<Map<String, String>> getProducts(@RequestHeader("sessionID") String sessionID) {
+    public Response<Map<String, String>> getProducts(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
         try{
             Response<Map<String, String>> response = new Response<Map<String, String>>(new HashMap<String, String>());
+            // Response<Map<String, String>> response = new Response<Map<String, String>>(stateManager.getProducts(sessionID));
             return response;
         // }catch(RequestException e){
         //     return new Response<Map<String, String>>(null, e.getMessage());
