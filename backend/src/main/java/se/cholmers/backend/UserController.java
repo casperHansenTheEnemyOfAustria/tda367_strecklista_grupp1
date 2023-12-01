@@ -108,8 +108,8 @@ public class UserController {
         try{
             Response<String> response = new Response<String> (stateManager.logout(sessionID));
             return response;
-        // }catch(RequestException e){
-        //     return new Response<String>(null, e.getMessage());
+        }catch(RequestException e){
+            return new Response<String>(null, e.getMessage());
         }finally{
 
         }
@@ -193,8 +193,8 @@ public class UserController {
             stateManager.completePurchase(sessionID);
             Response<String> response = new Response<String> ("Purchase completed");
             return response;
-        // }catch(RequestException e){
-        //     return new Response<String>(null, e.getMessage());
+        }catch(RequestException e){
+            return new Response<String>(null, e.getMessage());
         }finally{
 
         }

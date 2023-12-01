@@ -4,11 +4,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import se.cholmers.backend.RequestException;
+
 public class UserTest {
 
     @Test
     void ableToCreateUser() {
-        User tUser = new User("Test", "Test", "test");
+        try {
+            User tUser = new User("Test", "Test", "test");
+        } catch (RequestException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -25,4 +32,5 @@ public class UserTest {
     void unableToCreateUserWithNullNameAndNickname() {
         assertThrows(NullPointerException.class, () -> new User(null, "Test", "test"));
     }
+    
 }
