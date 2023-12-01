@@ -55,7 +55,7 @@ public class UserController {
      
             return saldo;
         }catch(RequestException e){
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }finally{
 
         }
@@ -70,7 +70,7 @@ public class UserController {
     //         ResponseEntity<String> ResponseEntity = new ResponseEntity<String> (stateManager.createUser(userName, password));
     //         return ResponseEntity;
     //     }catch(RequestException e){
-    //         return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
+    //         return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
     //     }
     // }
 
@@ -91,7 +91,7 @@ public class UserController {
             return ResponseEntity;
         }catch(RequestException e){
             System.out.println("bruh");
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }finally{
 
         }
@@ -113,7 +113,7 @@ public class UserController {
             ResponseEntity<String> ResponseEntity = new ResponseEntity<String> (stateManager.logout(sessionID), HttpStatus.OK);
             return ResponseEntity;
         }catch(RequestException e){
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
 
         }finally{
 
@@ -133,7 +133,7 @@ public class UserController {
             ResponseEntity<Map<String, String>> ResponseEntity = new ResponseEntity<Map<String, String>> (stateManager.getCart(sessionID), HttpStatus.OK);
             return ResponseEntity;
         // }catch(RequestException e){
-        //     return new ResponseEntity<Cart>(e.getMessage(), HttpStatus.OK);
+        //     return new ResponseEntity<Cart>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }finally{
 
         }
@@ -156,7 +156,7 @@ public class UserController {
             ResponseEntity<String> ResponseEntity = new ResponseEntity<String> ("added to cart", HttpStatus.OK);
             return ResponseEntity;
         }catch(RequestException e){
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }finally{
             
         }
@@ -179,7 +179,7 @@ public class UserController {
             ResponseEntity<String> ResponseEntity = new ResponseEntity<String> ("Removed from Cart", HttpStatus.OK);
             return ResponseEntity;
         }catch(RequestException e){
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }finally{
 
         }
@@ -200,7 +200,7 @@ public class UserController {
             ResponseEntity<String> ResponseEntity = new ResponseEntity<String> ("Purchase completed",  HttpStatus.OK);
             return ResponseEntity;
         }catch(RequestException e){
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
 
 
         }finally{
@@ -222,7 +222,7 @@ public class UserController {
             // ResponseEntity<Map<String, String>> ResponseEntity = new ResponseEntity<Map<String, String>>(stateManager.getProducts(sessionID));
             return ResponseEntity;
         // }catch(RequestException e){
-        //     return new ResponseEntity<Map<String, String>>(e.getMessage(), HttpStatus.OK);
+        //     return new ResponseEntity<Map<String, String>>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }finally{
 
         }
