@@ -1,4 +1,7 @@
+import 'package:donutlista/appbar.dart';
+import 'package:donutlista/mainpage.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 void main() => runApp(const MyApp());
 
@@ -10,47 +13,62 @@ class MyApp extends StatelessWidget{
   }
 }
 
-class MainItemGrid extends StatelessWidget{
-  const MainItemGrid({super.key});
-  @override
-  Widget build(BuildContext context){
-      return  GridView.count(
-      // Create a grid with 2 columns. If you change the scrollDirection to
-      // horizontal, this produces 2 rows.
-      crossAxisCount: 2,
-      // Generate 100 widgets that display their index in the List.
-      children: List.generate(100, (index) {
-        return Center(
-          child: Text(
-            'Item $index',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-        );
-      }),
-    );
-
-  }
-}
+/*
+Homescreen shows all widgets on the page, 
+the appbar with menu, and the page the user is on.
+*/
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter layout demo',
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Flutter layout demo'),
-        ),
-        body: const Center(
-          child: MainItemGrid(),
+      theme: ThemeData(
+        colorScheme: const ColorScheme.highContrastDark().copyWith(
+          secondary: HexColor("#09cdda")
         )
       ),
+      title: 'StecklistIT',
+      home: Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 63, 63, 63),
+          actionsIconTheme: const IconThemeData(
+          size: 30.0,
+          opacity: 10.0
+  ),
+          title: Container(child: titleSection),
+          ),
+        body: Center(child: Container(child: mainPage))
+
+//TODO: Add page switch as homescreen body
+/* Find a way to connect which dropdown is selected with a correct change to the body */
+
+
+
+        ),
     );
   }
-  
 }
 
 
+/* TODO: Find out how to implement
 
-
+          onChanged: (String? newValue) {
+            if (newValue != dropdownValue) {
+              switch (newValue) {
+                case 'Strecklista':
+                  Navigator.pushNamed(context, '/mainRoute');
+                  break;
+                case 'Transaktioner':
+                  Navigator.pushNamed(context, '/transactionRoute');
+                  break;
+                case 'Inventarier':
+                  Navigator.pushNamed(context, '/inventoryRoute');
+                  break;
+                case 'Användare':
+                  Navigator.pushNamed(context, '/userRoute');
+                  break;
+              }
+            }
+}
+*/
