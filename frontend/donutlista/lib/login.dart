@@ -23,15 +23,22 @@ class LoginState extends State<LoginPage> {
     content: Text('Failed to login!'),
 );
 
+
  Future<void> sendPostRequest() async {
+    var content = {
+        'stateID': "något",
+        'data': {
+          'enGrej': 'en annan grej'
+        }
+      };
     final response = await http.post(
+      
       Uri.http(apiUrl, '/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(
-          <String, String>{'username': usernameController.text, 'password': passwordController.text}),
-          );
+      body: jsonEncode(content),
+      );
   
     if (response.statusCode == 200) {
       Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen()));
