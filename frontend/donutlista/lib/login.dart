@@ -24,12 +24,15 @@ class LoginState extends State<LoginPage> {
 );
 
  Future<void> sendPostRequest() async {
-    // print(await http.get(Uri.http("${apiUrl}login/${usernameController.text}/${passwordController.text}")));
-    var response = await http.get(Uri.http(apiUrl,"/login"), 
-    headers: {
-      "userName": usernameController.text, 
-      "password": passwordController.text
-      });
+    final response = await http.post(
+      Uri.http(apiUrl, '/login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+          <String, String>{'username': usernameController.text, 'password': passwordController.text}),
+          );
+  
     if (response.statusCode == 200) {
       Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen()));
     } else {
