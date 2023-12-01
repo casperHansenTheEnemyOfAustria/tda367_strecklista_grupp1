@@ -74,12 +74,12 @@ public class UserController {
      */
     @RequestMapping(value = "/login/{userName}/{password}", method = RequestMethod.GET)
     @ResponseBody
-    public Response<String[]> login(@PathVariable("userName") String userName, @PathVariable("password") String password) {
+    public Response<String> login(@PathVariable("userName") String userName, @PathVariable("password") String password) {
         try{
-            Response<String[]> response = new Response<String[]> (stateManager.login(userName, password));
+            Response<String> response = new Response<String> (stateManager.login(userName, password));
             return response;
-        // }catch(RequestException e){
-        //     return new Response<String[]>(null, e.getMessage());
+        }catch(RequestException e){
+            return new Response<String>(null, e.getMessage());
         }finally{
 
         }
@@ -98,8 +98,8 @@ public class UserController {
         try{
             Response<String> response = new Response<String> (stateManager.logout(sessionID));
             return response;
-        // }catch(RequestException e){
-        //     return new Response<String>(null, e.getMessage());
+        }catch(RequestException e){
+            return new Response<String>(null, e.getMessage());
         }finally{
 
         }
@@ -176,8 +176,8 @@ public class UserController {
             stateManager.completePurchase(sessionID);
             Response<String> response = new Response<String> ("Purchase completed");
             return response;
-        // }catch(RequestException e){
-        //     return new Response<String>(null, e.getMessage());
+        }catch(RequestException e){
+            return new Response<String>(null, e.getMessage());
         }finally{
 
         }

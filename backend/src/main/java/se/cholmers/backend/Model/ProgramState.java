@@ -3,6 +3,8 @@ package se.cholmers.backend.Model;
 import java.util.HashMap;
 import java.util.Map;
 
+import se.cholmers.backend.RequestException;
+
 class ProgramState {
     private User currentUser;
     private Cart cart;
@@ -61,8 +63,10 @@ class ProgramState {
 
     /**
      * Empties the cart and updates the saldo (saldo update not yet working)
+     * @throws RequestException
      */
-    public void completePurchase() {
+    public void completePurchase() throws RequestException {
+        //TODO: Add logic for changing saldo
         for (Product product : cart.getCart().keySet()) {
             currentUser.purchaseItem(product, cart.getCart().get(product));
         }

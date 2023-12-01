@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import se.cholmers.backend.Interface.IDatabaseInterface;
 import se.cholmers.backend.Model.StateManager;
 
 import org.springframework.context.annotation.Bean;
@@ -31,15 +32,15 @@ public class BackendApplication {
 
 @Configuration
 class AppConfig {
-    @Bean
+	@Bean
 	//change pstate to model/application
-    public StateManager stateManager() {
+	public StateManager stateManager() {
 		return StateManager.getInstance();
 
 	}
 
 	@Bean
-	public DatabaseInterface databaseInterface() {
-		return DatabaseInterface.getInstance();
+	public IDatabaseInterface databaseInterface() {
+		return newDatabaseInterface.getInstance();
 	}
 }
