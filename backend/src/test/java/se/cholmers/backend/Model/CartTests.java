@@ -38,7 +38,7 @@ class CartTests {
     void addNullsToCart() {
 
         try {
-
+            //Should throw request exception if null therefore not working. Can't add null to map.
             Product nullProduct;
             nullProduct = new Product(null, null, null);
             assertDoesNotThrow(() -> cart.addToCart(nullProduct));

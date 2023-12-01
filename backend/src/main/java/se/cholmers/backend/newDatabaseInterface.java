@@ -266,7 +266,7 @@ public class newDatabaseInterface implements IDatabaseInterface {
         int i = 1;
         for (Object value : columnValueMap.values()) {
             if (value instanceof String) {
-                preparedStatement.setObject(i, value);
+                preparedStatement.setString(i, (String) value);
             }
             if (value instanceof Integer) {
                 preparedStatement.setInt(i, (Integer) value);

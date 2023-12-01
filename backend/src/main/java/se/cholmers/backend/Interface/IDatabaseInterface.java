@@ -2,6 +2,7 @@ package se.cholmers.backend.Interface;
 
 import java.util.List;
 
+import javafx.util.Pair;
 import se.cholmers.backend.RequestException;
 
 public interface IDatabaseInterface {
@@ -30,6 +31,20 @@ public interface IDatabaseInterface {
      */
     public String createProduct(String productName, Float price, String committeeid, Integer amount)
             throws RequestException;
+
+        
+        /**
+         * Deletes a row from a table in the database
+         * precondition: There has to be a database and the row has to exist
+         * 
+         * @param tableName
+         * @param columnValuePair
+         * @throws RequestException if the row does not exist
+         */
+
+    public void delete(String tableName, Pair<String, String> columnValuePair) 
+                throws RequestException;
+
 
     /**
      * Creates a user in the database
@@ -85,7 +100,7 @@ public interface IDatabaseInterface {
      * @param nick
      * @param password
      * @return userID
-     * @throws NullPointerException if a user with the given name and password does
+     * @throws RequestException if a user with the given name and password does
      *                              not exist
      */
     public String authenticateUser(String nick, String password) throws RequestException;

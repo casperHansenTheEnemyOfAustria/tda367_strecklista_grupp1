@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import io.micrometer.core.ipc.http.HttpSender.Request;
 import se.cholmers.backend.RequestException;
 
 public class UserTest {
@@ -20,17 +21,17 @@ public class UserTest {
 
     @Test
     void unableToCreateUserWithNullName() {
-        assertThrows(NullPointerException.class, () -> new User(null, "Test", "test"));
+        assertThrows(RequestException.class, () -> new User(null, "Test", "test"));
     }
 
     @Test
     void unableToCreateUserWithNullNickname() {
-        assertThrows(NullPointerException.class, () -> new User(null, "Test", "test"));
+        assertThrows(RequestException.class, () -> new User(null, "Test", "test"));
     }
 
     @Test
     void unableToCreateUserWithNullNameAndNickname() {
-        assertThrows(NullPointerException.class, () -> new User(null, "Test", "test"));
+        assertThrows(RequestException.class, () -> new User(null, "Test", "test"));
     }
     
 }

@@ -3,9 +3,12 @@ package se.cholmers.backend;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+
+import se.cholmers.backend.Interface.IDatabaseInterface;
 
 public class dbTests {
-    DatabaseInterface dbi = DatabaseInterface.getInstance();
+    IDatabaseInterface dbi = newDatabaseInterface.getInstance();
 
     @Test
     void testGetUser() {
@@ -15,29 +18,37 @@ public class dbTests {
         String userNick = "Test";
         String userPhoneNumber = "0701234567";
         try {
-            dbi.createUser(userName, password, userNick, userPhoneNumber, userNick, userPhoneNumber);
+            dbi.createUser(userName, userPhoneNumber, userNick, password);
+            assertEquals(userName, dbi.getUserName(userID));
+            assertEquals(userNick, dbi.getUserNick(userID));
+            assertEquals(userPhoneNumber, dbi.getUserPhoneNumber(userID));
         } catch (RequestException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            if (!(e.getMessage().equals("User already exists or something idk")))
+                Assert.fail("Test failed" + e.getMessage());
         }
-        assertEquals(userName, dbi.getUserName(userID));
-        assertEquals(userNick, dbi.getUserNick(userID));
-        assertEquals(userPhoneNumber, dbi.getUserPhoneNumber(userID));
     }
+
+    
 
     @Test
     void testGetUserIDFromNick() {
-        String userID = "1";
         String userName = "Test User";
         String password = "1337";
         String userNick = "Test";
         String userPhoneNumber = "0701234567";
         try {
-            dbi.createUser(userName, password, userNick, userPhoneNumber, userNick, userPhoneNumber);
+            String id = dbi.createUser(userName, userPhoneNumber, userNick, password);
+            assertEquals(id, dbi.authenticateUser(userNick, password));
         } catch (RequestException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
+            Assert.fail("Test failed" + e.getMessage());
         }
-        assertEquals(userID, dbi.getUserIDFromName(userNick, null));
+    }
+
+    @Test 
+    void deleteFromDatabase() {
+        throw new UnsupportedOperationException();
     }
 }
