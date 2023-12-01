@@ -2,19 +2,26 @@ package se.cholmers.backend.Model;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import se.cholmers.backend.RequestException;
+import se.cholmers.backend.newDatabaseInterface;
+import se.cholmers.backend.Interface.IDatabaseInterface;
 
 /**
  * This class represents a user in the system. It contains information about the
  * user such as their name, nickname and phone number
  */
 class User {
+    private String id;
     private String name;
     private String nick;
     private String phoneNumber;
     private Map<String, Float> saldo = new HashMap<>();
     private Set<UserGroup> groups = new HashSet<>();
+    private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
 
     /**
      * This is the constructor for when recreating users from the database
@@ -22,7 +29,25 @@ class User {
      * @param userID
      */
     public User(String userID) {
+        this.id = userID;
+        this.name = dbi.getUserName(userID);
+        this.nick = dbi.getUserNick(userID);
+        this.phoneNumber = dbi.getUserPhoneNumber(userID);
+        addGroupsFromDatabase();
+    }
 
+    /**
+     * This method adds the user's groups to the user from the database
+     * 
+     * @param userID
+     * 
+     */
+    private void addGroupsFromDatabase() {
+        // TODO add a catch for if there are no groups
+        List<String> comitteeIds = dbi.getCommitteesOfUser(id);
+        for (String param : comitteeIds) {
+            groups.add(new UserGroup(param));
+        }
     }
 
     /**
@@ -33,13 +58,22 @@ class User {
      * @param name
      * @param nick
      * 
+     * @throws NullPointerException if the input is null
      */
-    public User(String name, String nick) {
+    public User(String name, String nick, String password) throws RequestException{
         this.name = name;
         this.nick = nick;
+        this.id = dbi.authenticateUser(nick, password);
+        addGroupsFromDatabase();
+
     }
 
     public void addUserToGroup(UserGroup group) {
+        try{
+            dbi.putUserInCommittee(id, group.getID().toString(), 0f);
+        } catch (RequestException e) {
+            System.out.println(e.getMessage());
+        }
         groups.add(group);
     }
 
@@ -52,12 +86,9 @@ class User {
      * @throws NullPointerException     if the user is not a member of any group
      */
     public Float getSaldo(String groupID) {
-        for (UserGroup userGroup : groups) {
-            if (userGroup.getID() == groupID) {
-                return saldo.get(groupID);
-            }
-        }
-        return 0f;
+        Float saldoFromDB = dbi.getSaldoFromUserInCommittee(id, groupID);
+        saldo.put(groupID, saldoFromDB);
+        return saldo.get(groupID);
     }
 
     /**
@@ -67,11 +98,22 @@ class User {
      * 
      * @param product
      * @param numberOfProducts
+     * @throws RequestException
      */
-    public void purchaseItem(Product product, Integer numberOfProducts) {
+    public void purchaseItem(Product product, Integer numberOfProducts) throws RequestException {
         Float currentSaldo = saldo.get(product.getGroupID());
         currentSaldo -= product.getCost() * numberOfProducts;
         saldo.put(product.getGroupID(), currentSaldo);
+
+        try{
+            dbi.updateUserSaldo(id, product.getGroupID(), currentSaldo.toString());
+        }catch(NullPointerException e){
+            throw new RequestException(id + "does not exist or" + product.getGroupID() + "does not exist");
+        }catch(IllegalArgumentException e){
+            throw new RequestException(id + "is not in " + product.getGroupID());
+        }
+        
+    
     }
 
     /**
@@ -82,6 +124,7 @@ class User {
      */
     public Set<Product> getAllProducts() {
         Set<Product> allProducts = new HashSet<>();
+        addGroupsFromDatabase();
         for (UserGroup userGroup : groups) {
             allProducts.addAll(userGroup.getProducts());
         }
