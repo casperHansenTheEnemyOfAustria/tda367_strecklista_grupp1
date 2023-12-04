@@ -41,9 +41,9 @@ public class UserController {
      */
     @RequestMapping(value  = "/getSaldo/{sessionID}/{groupID}", method = RequestMethod.GET)
     @ResponseBody
-    public Response<String>getSaldo(@PathVariable("sessionID") String sessionID, @PathVariable("groupID") String authToken) {
+    public Response<String>getSaldo(@PathVariable("sessionID") String sessionID, @PathVariable("groupID") String groupID) {
         try{
-            Response<String> saldo = new Response<String>(stateManager.getSaldo(sessionID, authToken));
+            Response<String> saldo = new Response<String>(stateManager.getSaldo(sessionID, groupID));
      
             return saldo;
         // }catch(RequestException e){
