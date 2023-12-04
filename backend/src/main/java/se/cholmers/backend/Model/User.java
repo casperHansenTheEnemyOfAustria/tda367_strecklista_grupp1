@@ -14,7 +14,7 @@ import se.cholmers.backend.Interface.IDatabaseInterface;
  * This class represents a user in the system. It contains information about the
  * user such as their name, nickname and phone number
  */
-class User {
+class User implements se.cholmers.backend.Model.Interfaces.IUser {
     private String id;
     private String name;
     private String nick;
@@ -68,6 +68,7 @@ class User {
 
     }
 
+    @Override
     public void addUserToGroup(UserGroup group) {
         try{
             dbi.putUserInCommittee(id, group.getID().toString(), 0f);
@@ -77,29 +78,14 @@ class User {
         groups.add(group);
     }
 
-    /**
-     * 
-     * @param groupID
-     * @return the saldo of the user in the context of its groupID
-     * 
-     * @throws IllegalArgumentException if the user is not a member of the group
-     * @throws NullPointerException     if the user is not a member of any group
-     */
+    @Override
     public Float getSaldo(String groupID) {
         Float saldoFromDB = dbi.getSaldoFromUserInCommittee(id, groupID);
         saldo.put(groupID, saldoFromDB);
         return saldo.get(groupID);
     }
 
-    /**
-     * Updates the user saldo based on the price and number of the products it wants
-     * to purchase.
-     * Negative saldo is permitted.
-     * 
-     * @param product
-     * @param numberOfProducts
-     * @throws RequestException
-     */
+    @Override
     public void purchaseItem(Product product, Integer numberOfProducts) throws RequestException {
         Float currentSaldo = saldo.get(product.getGroupID());
         currentSaldo -= product.getCost() * numberOfProducts;
@@ -116,12 +102,7 @@ class User {
     
     }
 
-    /**
-     * 
-     * @return returns a set of all products the user has access to in all its
-     *         usergorups
-     * @throws NullPointerException if the user is not a member of any group
-     */
+    @Override
     public Set<Product> getAllProducts() {
         Set<Product> allProducts = new HashSet<>();
         addGroupsFromDatabase();
@@ -131,13 +112,7 @@ class User {
         return allProducts;
     }
 
-    /**
-     * 
-     * @param productID
-     * @return the product with the given productID logged in its usergroup's
-     *         database
-     * @throws NullPointerException if the user is not a member of any group
-     */
+    @Override
     public Product getProduct(String productID) {
         for (Product product : getAllProducts()) {
             System.out.println("Looking for product with ID: " + productID + " found product with ID: " + product.getID());

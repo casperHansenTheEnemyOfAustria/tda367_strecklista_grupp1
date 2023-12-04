@@ -3,10 +3,11 @@ package se.cholmers.backend.Model;
 import java.util.HashMap;
 import java.util.Map;
 
+import se.cholmers.backend.Model.Interfaces.IUser;
 import se.cholmers.backend.RequestException;
 
 class ProgramState implements se.cholmers.backend.Model.Interfaces.IProgramState {
-    private User currentUser;
+    private IUser currentUser;
     private Cart cart;
 
     /**
@@ -14,7 +15,7 @@ class ProgramState implements se.cholmers.backend.Model.Interfaces.IProgramState
      * 
      * @param user
      */
-    public ProgramState(User user) {
+    public ProgramState(IUser user) {
         this.currentUser = user;
         this.cart = new Cart();
     }
