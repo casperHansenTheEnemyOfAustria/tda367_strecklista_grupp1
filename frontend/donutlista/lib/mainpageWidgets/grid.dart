@@ -4,11 +4,15 @@ import 'package:donutlista/main.dart';
 
 import 'itemCard.dart';
 
+  Map<String, String> itemLMap = {'Item 1':'Price 1', 'Item 2':'Price 2', 'Item 3':'Price 3'};
+
 
 /* Widget: Grid of Counting buttons */
 
 class MainItemGrid extends StatefulWidget{
+
   const MainItemGrid({super.key});
+
   @override
   State<MainItemGrid> createState() => _ItemGridState();
 }
@@ -29,6 +33,7 @@ class _ItemGridState extends State<MainItemGrid> {
 
 class ItemTile extends StatefulWidget {
   int itemNo;
+    
 
   ItemTile(
     this.itemNo, {super.key}
@@ -40,6 +45,10 @@ class ItemTile extends StatefulWidget {
 
 class _ActiveItemTile extends State<ItemTile> {
   int counter = 0;
+  Map<String, String> itemMap = {'Item 1':'Price 1', 'Item 2':'Price 2', 'Item 3':'Price 3'};
+
+
+
 
   void _incrementCounter() {
     setState(() {
@@ -82,8 +91,8 @@ class _ActiveItemTile extends State<ItemTile> {
         child: 
           Column(            
           children: [
-          Text('Item'
-            //itemList[itemNo],
+          Text('Item' 
+            //ItemMap[itemNo],
             //key: Key('text_$itemNo'),
           ),
           Text(
