@@ -125,6 +125,10 @@ public class StateManager {
     public List<String> getAvaliableProduct(String stateID) {
         return states.get(stateID).getAllProducts();
     } 
+
+    public Map<String, String> getProduct(String stateID, String productID){
+        return states.get(stateID).getProduct(productID);
+    }
     
 
     /**

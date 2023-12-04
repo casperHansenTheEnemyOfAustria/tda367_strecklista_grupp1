@@ -83,4 +83,13 @@ class ProgramState {
         }
         return allProducts;
     }
+
+    public Map<String, String> getProduct(String productID){
+        Product tempProd = currentUser.getProduct(productID);
+        Map<String, String> output = new HashMap<>();
+        output.put("Name", tempProd.getName());
+        output.put("Price", tempProd.getCost().toString());
+        output.put("Amount", tempProd.getProductAmount());
+
+    }
 }
