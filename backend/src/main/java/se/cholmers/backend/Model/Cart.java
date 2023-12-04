@@ -3,7 +3,7 @@ package se.cholmers.backend.Model;
 import java.util.HashMap;
 import java.util.Map;
 
-class Cart {
+class Cart implements se.cholmers.backend.Model.Interfaces.ICart {
     private Map<Product, Integer> itemsInCart;
 
     /**
