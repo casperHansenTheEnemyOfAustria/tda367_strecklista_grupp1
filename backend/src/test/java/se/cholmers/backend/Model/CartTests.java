@@ -7,11 +7,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import se.cholmers.backend.Model.Interfaces.ICart;
 import se.cholmers.backend.RequestException;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CartTests {
-    Cart cart;
+    ICart cart;
 
     @BeforeAll
     void setup() {

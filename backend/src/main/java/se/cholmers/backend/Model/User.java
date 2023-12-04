@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import se.cholmers.backend.Model.Interfaces.IUserGroup;
 import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
@@ -20,7 +21,7 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
     private String nick;
     private String phoneNumber;
     private Map<String, Float> saldo = new HashMap<>();
-    private Set<UserGroup> groups = new HashSet<>();
+    private Set<IUserGroup> groups = new HashSet<>();
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
 
     /**
@@ -69,7 +70,7 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
     }
 
     @Override
-    public void addUserToGroup(UserGroup group) {
+    public void addUserToGroup(IUserGroup group) {
         try{
             dbi.putUserInCommittee(id, group.getID().toString(), 0f);
         } catch (RequestException e) {
@@ -106,8 +107,8 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
     public Set<Product> getAllProducts() {
         Set<Product> allProducts = new HashSet<>();
         addGroupsFromDatabase();
-        for (UserGroup userGroup : groups) {
-            allProducts.addAll(userGroup.getProducts());
+        for (IUserGroup IUserGroup : groups) {
+            allProducts.addAll(IUserGroup.getProducts());
         }
         return allProducts;
     }

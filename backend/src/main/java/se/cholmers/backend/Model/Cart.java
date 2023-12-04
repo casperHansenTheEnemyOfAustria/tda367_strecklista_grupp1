@@ -43,11 +43,6 @@ class Cart implements ICart {
 
     }
 
-    /**
-     * Returns a map of products ans their amount in the cart as a string map.
-     * 
-     * @return map of product name and amount
-     */
     public Map<String, String> toStringMap() {
         Map<String, String> output = new HashMap<String, String>();
         for (Product p : itemsInCart.keySet()) {

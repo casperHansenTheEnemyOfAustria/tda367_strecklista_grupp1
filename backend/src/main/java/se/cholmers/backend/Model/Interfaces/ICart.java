@@ -30,4 +30,11 @@ public interface ICart {
      * Clears the cart from all items.
      */
     void empty();
+
+    /**
+     * Returns a map of products ans their amount in the cart as a string map.
+     *
+     * @return map of product name and amount
+     */
+    Map<String, String> toStringMap();
 }

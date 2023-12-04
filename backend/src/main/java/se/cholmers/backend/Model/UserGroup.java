@@ -11,7 +11,7 @@ import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
-class UserGroup {
+class UserGroup implements se.cholmers.backend.Model.Interfaces.IUserGroup {
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
     private Set<Product> products = new HashSet<>();
     private Year year;
@@ -51,11 +51,7 @@ class UserGroup {
         this.IOrderHistory = new OrderHistory();
     }
 
-    /**
-     * First updates the products from the database.
-     * 
-     * @return the set of products in the usergroup
-     */
+    @Override
     public Set<Product> getProducts() {
         List<String> productsFromDB = dbi.getProductsInCommittee(groupID);
         for (String productID : productsFromDB) {
@@ -66,42 +62,24 @@ class UserGroup {
         return products;
     }
 
-    /**
-     * Creates a new product and adds to the existing set of products.
-     * Temp solution until we have a working database interface.
-     * 
-     * @param name
-     * @param cost
-     * @throws RequestException
-     */
+    @Override
     public void addProduct(String name, Float cost) throws RequestException {
         products.add(new Product(name, cost, groupID));
     }
 
 
     //TODO add to db
-    /**
-     * Adds an order to the group's orderhistory
-     * 
-     * @param order
-     */
+    @Override
     public void addOrderToHistory(Order order) {
         IOrderHistory.addOrderToHistory(order);
     }
 
-    /**
-     * First updates the history from the database.
-     * 
-     * @return the order history for a group
-     */
+    @Override
     public List<Order> getOrderHistory() {
         return IOrderHistory.getOrderHistory();
     }
 
-    /**
-     * 
-     * @return the groupID of a certain group.
-     */
+    @Override
     public String getID() {
         return this.groupID;
     }

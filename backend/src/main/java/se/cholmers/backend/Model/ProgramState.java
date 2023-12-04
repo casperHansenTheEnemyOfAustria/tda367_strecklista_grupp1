@@ -3,12 +3,13 @@ package se.cholmers.backend.Model;
 import java.util.HashMap;
 import java.util.Map;
 
+import se.cholmers.backend.Model.Interfaces.ICart;
 import se.cholmers.backend.Model.Interfaces.IUser;
 import se.cholmers.backend.RequestException;
 
 class ProgramState implements se.cholmers.backend.Model.Interfaces.IProgramState {
     private IUser currentUser;
-    private Cart cart;
+    private ICart cart;
 
     /**
      * Creates a program state given a certain User.
