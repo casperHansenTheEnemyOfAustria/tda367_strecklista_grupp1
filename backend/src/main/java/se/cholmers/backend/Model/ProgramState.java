@@ -5,7 +5,7 @@ import java.util.Map;
 
 import se.cholmers.backend.RequestException;
 
-class ProgramState {
+class ProgramState implements se.cholmers.backend.Model.Interfaces.IProgramState {
     private User currentUser;
     private Cart cart;
 
@@ -19,53 +19,30 @@ class ProgramState {
         this.cart = new Cart();
     }
 
-    /**
-     * Returns the saldo as a string for use in the frontend given a groupID for the
-     * user owning the ProgramState.
-     * 
-     * @param groupID
-     * @return A string of the saldo a user has in a given group.
-     */
+    @Override
     public String getSaldo(String groupID) {
         return currentUser.getSaldo(groupID).toString();
     }
 
-    /**
-     * Adds a product to the cart owned by the user owning the ProgramState given
-     * the productID as a string.
-     * 
-     * @param productID
-     */
+    @Override
     public void addToCart(String productID) {
         Product product = currentUser.getProduct(productID);
         System.out.println(product.getName());
         cart.addToCart(product);
     }
 
-    /**
-     * Removes a product from the cart owned by the user owning the ProgramState
-     * given the productID as a string.
-     * 
-     * @param productID
-     */
+    @Override
     public void removeFromCart(String productID) {
         Product product = currentUser.getProduct(productID);
         cart.removeFromCart(product);
     }
 
-    /**
-     * Returns the contents of the Cart.
-     * 
-     * @return the contents of the Cart.
-     */
+    @Override
     public Map<String, String> getCart() {
         return cart.toStringMap();
     }
 
-    /**
-     * Empties the cart and updates the saldo (saldo update not yet working)
-     * @throws RequestException
-     */
+    @Override
     public void completePurchase() throws RequestException {
         //TODO: Add logic for changing saldo
         for (Product product : cart.getCart().keySet()) {

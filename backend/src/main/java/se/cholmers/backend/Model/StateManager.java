@@ -4,10 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import se.cholmers.backend.Model.Interfaces.IProgramState;
 import se.cholmers.backend.RequestException;
 
 public class StateManager {
-    private Map<String, ProgramState> states;
+    private Map<String, IProgramState> states;
     private static StateManager instance;
 
     /**
@@ -38,7 +39,7 @@ public class StateManager {
      */
     public String login(String userName, String password) throws RequestException{
         User user = new User(userName, userName, password);
-        ProgramState state = new ProgramState(user);
+        IProgramState state = new ProgramState(user);
 
         String stateID = UUID.randomUUID().toString();
         states.put(stateID, state);
