@@ -94,7 +94,7 @@ public class AdminController {
      *        the user was added to the group. Otherwise it should havea an error
      *        code)
      */
-    @RequestMapping(value = "/addUserToGroup/{userNick}/{committeeID}", method = RequestMethod.POST)
+    @RequestMapping(value = "/addUserToGroup", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> addUserToGroup(@RequestBody AdminRequest freq) {
         try {
@@ -119,7 +119,7 @@ public class AdminController {
      * @return ResponseEntity (a ResponseEntity with the correct code and a success message if
      *         the product was created. Otherwise it should havea an error code)
      */
-    @RequestMapping(value = "/createProduct/{productName}/{price}/{committeeID}/{amount}", method = RequestMethod.POST)
+    @RequestMapping(value = "/createProduct", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> createProduct(@RequestBody AdminRequest freq) {
         try {
