@@ -18,7 +18,7 @@ public class LoggedInUserRequest implements iRequest {
         System.out.println(data);
         String out = data.get(key);
         if(out == null){
-            throw new RequestException("No such key");
+            throw new RequestException("No such key please use" + data.keySet().toString());
         }
         return out;
         
