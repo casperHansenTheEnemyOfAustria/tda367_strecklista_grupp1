@@ -126,4 +126,8 @@ public class StateManager {
     private String getAuth(String stateID) {
         return "test";
     }
+
+    public Map<String, String> getProducts(String sessionID) {
+        return states.get(sessionID).getProducts();
+    }
 }

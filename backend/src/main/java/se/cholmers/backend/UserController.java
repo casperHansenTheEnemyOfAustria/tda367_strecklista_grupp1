@@ -192,7 +192,7 @@ public class UserController {
     @ResponseBody
     public Response<Map<String, String>> getProducts(@PathVariable("sessionID") String sessionID) {
         try{
-            Response<Map<String, String>> response = new Response<Map<String, String>>(new HashMap<String, String>());
+            Response<Map<String, String>> response = new Response<Map<String, String>>(stateManager.getProducts(sessionID));
             return response;
         // }catch(RequestException e){
         //     return new Response<Map<String, String>>(null, e.getMessage());

@@ -46,4 +46,11 @@ public interface IProduct {
      * @return the name of the product
      */
     String getName();
+
+    /**
+     * Gets the price of a product
+     *
+     * @return the price of the product
+     */
+    Float getPrice();
 }
