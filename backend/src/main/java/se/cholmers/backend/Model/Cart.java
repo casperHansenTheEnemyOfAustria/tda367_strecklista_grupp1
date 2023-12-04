@@ -2,8 +2,9 @@ package se.cholmers.backend.Model;
 
 import java.util.HashMap;
 import java.util.Map;
+import se.cholmers.backend.Model.Interfaces.ICart;
 
-class Cart implements se.cholmers.backend.Model.Interfaces.ICart {
+class Cart implements ICart {
     private Map<Product, Integer> itemsInCart;
 
     /**

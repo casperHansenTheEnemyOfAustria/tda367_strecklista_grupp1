@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import se.cholmers.backend.DatabaseInterface;
+import se.cholmers.backend.Model.Interfaces.IOrderHistory;
 import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
@@ -17,7 +17,7 @@ class UserGroup {
     private Year year;
     private String name;
     private String groupID;
-    private OrderHistory orderHistory;
+    private IOrderHistory IOrderHistory;
 
     /**
      * Creates a new UserGroup with a given name and year.
@@ -29,7 +29,7 @@ class UserGroup {
     public UserGroup(String name, Year year) {
         this.name = name;
         this.year = year;
-        this.orderHistory = new OrderHistory();
+        this.IOrderHistory = new OrderHistory();
 
         //TODO: Remove and handle in DB
         this.groupID = UUID.randomUUID().toString();
@@ -48,7 +48,7 @@ class UserGroup {
         this.name = name;
         this.year = year;
         this.groupID = groupID;
-        this.orderHistory = new OrderHistory();
+        this.IOrderHistory = new OrderHistory();
     }
 
     /**
@@ -86,7 +86,7 @@ class UserGroup {
      * @param order
      */
     public void addOrderToHistory(Order order) {
-        orderHistory.addOrderToHistory(order);
+        IOrderHistory.addOrderToHistory(order);
     }
 
     /**
@@ -95,7 +95,7 @@ class UserGroup {
      * @return the order history for a group
      */
     public List<Order> getOrderHistory() {
-        return orderHistory.getOrderHistory();
+        return IOrderHistory.getOrderHistory();
     }
 
     /**

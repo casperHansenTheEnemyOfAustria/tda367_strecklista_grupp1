@@ -7,15 +7,16 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import se.cholmers.backend.Model.Interfaces.IOrderHistory;
 import se.cholmers.backend.RequestException;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class OrderHistoryTests {
-    OrderHistory tOrderHistory;
+    IOrderHistory tIOrderHistory;
 
     @BeforeAll
     void setup() {
-        tOrderHistory = new OrderHistory();
+        tIOrderHistory = new OrderHistory();
     }
 
     @Test
@@ -26,7 +27,7 @@ public class OrderHistoryTests {
               List<Product> tProductList = new ArrayList<>();
         tProductList.add(tProduct);
         Order tOrder = new Order(tProductList);
-        tOrderHistory.addOrderToHistory(tOrder);
+        tIOrderHistory.addOrderToHistory(tOrder);
         } catch (RequestException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -37,11 +38,11 @@ public class OrderHistoryTests {
     @Test
     void ableToAddOrdersToHistoryWithNullProducts() {
         Order tOrder = new Order(null);
-        tOrderHistory.addOrderToHistory(tOrder);
+        tIOrderHistory.addOrderToHistory(tOrder);
     }
 
     @Test
     void ableToGetOrderHistoryWhereOrdersAreNull() {
-        tOrderHistory.getOrderHistory();
+        tIOrderHistory.getOrderHistory();
     }
 }
