@@ -21,6 +21,7 @@ import se.cholmers.backend.Model.StateManager;
 
 
 import java.util.HashMap;
+import java.util.List;
 
 // import org.springframework.*;
 
@@ -217,10 +218,11 @@ public class UserController {
      */
     @RequestMapping(value = "/getProducts", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Map<String, String>> getProducts(@RequestBody LoggedInUserRequest freq) {
+    public ResponseEntity<List<Map<String,String>>> getProducts(@RequestBody LoggedInUserRequest freq) {
         String sessionID = freq.getSessionID();
+        
         try{
-            ResponseEntity<Map<String, String>> ResponseEntity = new ResponseEntity<Map<String, String>>(new HashMap<String, String>(), HttpStatus.OK);
+            ResponseEntity<List<Map<String,String>>> ResponseEntity = new ResponseEntity<List<Map<String,String>>>(stateManager.getAvaliableProducts(sessionID),HttpStatus.OK);
             // ResponseEntity<Map<String, String>> ResponseEntity = new ResponseEntity<Map<String, String>>(stateManager.getProducts(sessionID));
             return ResponseEntity;
         // }catch(RequestException e){
@@ -229,6 +231,10 @@ public class UserController {
 
         }
     }
+
+    
+
+
 
 
 

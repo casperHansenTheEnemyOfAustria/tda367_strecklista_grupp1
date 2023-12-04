@@ -122,10 +122,16 @@ public class StateManager {
      * @param stateID
      * @return a list of the product ids
      */
-    public List<String> getAvaliableProduct(String stateID) {
+    public List<Map<String,String>> getAvaliableProducts(String stateID) {
         return states.get(stateID).getAllProducts();
     } 
 
+    /**
+     * returns a map of the product info
+     * @param stateID
+     * @param productID
+     * @return
+     */
     public Map<String, String> getProduct(String stateID, String productID){
         return states.get(stateID).getProduct(productID);
     }

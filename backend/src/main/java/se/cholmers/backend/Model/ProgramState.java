@@ -76,20 +76,35 @@ class ProgramState {
         return;
     }
 
-    public List<String> getAllProducts() {
-        List<String> allProducts = new ArrayList<>();
+    /**
+     * returns a list of product maps
+     * @return
+     */
+    public List<Map<String, String>> getAllProducts() {
+        List<Map<String, String>> allProducts = new ArrayList<>();
         for (Product p : currentUser.getAllProducts()) {
-            allProducts.add(p.getID());
+            allProducts.add(getProduct(p.getID()));
         }
         return allProducts;
     }
 
+    /**
+     * returns a map of the product info with the structure
+     * Name
+     * Price
+     * Amount
+     * id
+     * @param productID
+     * @return
+     */
     public Map<String, String> getProduct(String productID){
         Product tempProd = currentUser.getProduct(productID);
         Map<String, String> output = new HashMap<>();
         output.put("Name", tempProd.getName());
         output.put("Price", tempProd.getCost().toString());
-        output.put("Amount", tempProd.getProductAmount());
+        output.put("Amount", tempProd.getAmount());
+        output.put("Id", productID);
+        return output;
 
     }
 }
