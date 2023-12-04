@@ -18,7 +18,7 @@ public class AdminRequest implements iRequest {
 
         String out = data.get(key);
         if (out == null) {
-            throw new RequestException("No such key " + data.keySet().toString() + " please use " + key);
+            throw new RequestException("No such key " + data.keySet().toArray()[data.keySet().size()-1].toString() + " please use " + key);
         }
         return out;
 
