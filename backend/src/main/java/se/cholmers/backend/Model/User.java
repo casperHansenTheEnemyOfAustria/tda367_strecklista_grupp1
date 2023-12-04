@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import se.cholmers.backend.Model.Interfaces.IProduct;
 import se.cholmers.backend.Model.Interfaces.IUserGroup;
 import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
@@ -40,8 +41,7 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
     /**
      * This method adds the user's groups to the user from the database
      * 
-     * @param userID
-     * 
+     *
      */
     private void addGroupsFromDatabase() {
         // TODO add a catch for if there are no groups
@@ -87,7 +87,7 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
     }
 
     @Override
-    public void purchaseItem(Product product, Integer numberOfProducts) throws RequestException {
+    public void purchaseItem(IProduct product, Integer numberOfProducts) throws RequestException {
         Float currentSaldo = saldo.get(product.getGroupID());
         currentSaldo -= product.getCost() * numberOfProducts;
         saldo.put(product.getGroupID(), currentSaldo);
@@ -104,8 +104,8 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
     }
 
     @Override
-    public Set<Product> getAllProducts() {
-        Set<Product> allProducts = new HashSet<>();
+    public Set<IProduct> getAllProducts() {
+        Set<IProduct> allProducts = new HashSet<>();
         addGroupsFromDatabase();
         for (IUserGroup IUserGroup : groups) {
             allProducts.addAll(IUserGroup.getProducts());
@@ -114,8 +114,8 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
     }
 
     @Override
-    public Product getProduct(String productID) {
-        for (Product product : getAllProducts()) {
+    public IProduct getProduct(String productID) {
+        for (IProduct product : getAllProducts()) {
             System.out.println("Looking for product with ID: " + productID + " found product with ID: " + product.getID());
             if (product.getID().equals(productID)) {
                 return product;

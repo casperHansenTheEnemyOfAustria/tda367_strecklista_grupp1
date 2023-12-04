@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import se.cholmers.backend.Model.Interfaces.ICart;
+import se.cholmers.backend.Model.Interfaces.IProduct;
 import se.cholmers.backend.RequestException;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -21,7 +22,7 @@ class CartTests {
 
     @Test
     void addProductToCartWorks() {
-        Product myProduct;
+        IProduct myProduct;
         try {
             myProduct = new Product("testName", 0f, "testGroupID");
             cart.addToCart(myProduct);
@@ -40,7 +41,7 @@ class CartTests {
 
         try {
             //Should throw request exception if null therefore not working. Can't add null to map.
-            Product nullProduct;
+            IProduct nullProduct;
             nullProduct = new Product(null, null, null);
             assertDoesNotThrow(() -> cart.addToCart(nullProduct));
         } catch (RequestException e) {
@@ -66,7 +67,7 @@ class CartTests {
 
     @Test
     void removeProductFromCart() {
-        Product myProduct;
+        IProduct myProduct;
         try {
             myProduct = new Product("testName", 0f, "testGroupID");
             cart.addToCart(myProduct);

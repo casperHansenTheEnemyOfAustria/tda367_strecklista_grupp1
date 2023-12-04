@@ -7,13 +7,14 @@ import java.util.Set;
 import java.util.UUID;
 
 import se.cholmers.backend.Model.Interfaces.IOrderHistory;
+import se.cholmers.backend.Model.Interfaces.IProduct;
 import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
 class UserGroup implements se.cholmers.backend.Model.Interfaces.IUserGroup {
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
-    private Set<Product> products = new HashSet<>();
+    private Set<IProduct> products = new HashSet<>();
     private Year year;
     private String name;
     private String groupID;
@@ -52,7 +53,7 @@ class UserGroup implements se.cholmers.backend.Model.Interfaces.IUserGroup {
     }
 
     @Override
-    public Set<Product> getProducts() {
+    public Set<IProduct> getProducts() {
         List<String> productsFromDB = dbi.getProductsInCommittee(groupID);
         for (String productID : productsFromDB) {
             

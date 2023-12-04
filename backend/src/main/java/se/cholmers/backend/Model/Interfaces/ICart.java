@@ -1,7 +1,5 @@
 package se.cholmers.backend.Model.Interfaces;
 
-import se.cholmers.backend.Model.Product;
-
 import java.util.Map;
 
 public interface ICart {
@@ -10,21 +8,21 @@ public interface ICart {
      *
      * @throws NullPointerException
      */
-    void addToCart(Product product);
+    void addToCart(IProduct product);
 
     /**
      * Returns a map of all the products and amount of each contained in the cart.
      *
      * @return
      */
-    Map<Product, Integer> getCart();
+    Map<IProduct, Integer> getCart();
 
     /**
      * Removes a given product from the cart.
      *
      * @param product
      */
-    void removeFromCart(Product product);
+    void removeFromCart(IProduct product);
 
     /**
      * Clears the cart from all items.

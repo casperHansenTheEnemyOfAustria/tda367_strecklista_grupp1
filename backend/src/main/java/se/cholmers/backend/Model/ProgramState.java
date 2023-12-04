@@ -1,9 +1,9 @@
 package se.cholmers.backend.Model;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import se.cholmers.backend.Model.Interfaces.ICart;
+import se.cholmers.backend.Model.Interfaces.IProduct;
 import se.cholmers.backend.Model.Interfaces.IUser;
 import se.cholmers.backend.RequestException;
 
@@ -28,14 +28,14 @@ class ProgramState implements se.cholmers.backend.Model.Interfaces.IProgramState
 
     @Override
     public void addToCart(String productID) {
-        Product product = currentUser.getProduct(productID);
+        IProduct product = currentUser.getProduct(productID);
         System.out.println(product.getName());
         cart.addToCart(product);
     }
 
     @Override
     public void removeFromCart(String productID) {
-        Product product = currentUser.getProduct(productID);
+        IProduct product = currentUser.getProduct(productID);
         cart.removeFromCart(product);
     }
 
@@ -47,7 +47,7 @@ class ProgramState implements se.cholmers.backend.Model.Interfaces.IProgramState
     @Override
     public void completePurchase() throws RequestException {
         //TODO: Add logic for changing saldo
-        for (Product product : cart.getCart().keySet()) {
+        for (IProduct product : cart.getCart().keySet()) {
             currentUser.purchaseItem(product, cart.getCart().get(product));
         }
         cart.empty();

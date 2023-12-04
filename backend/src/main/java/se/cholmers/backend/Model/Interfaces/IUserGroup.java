@@ -1,7 +1,6 @@
 package se.cholmers.backend.Model.Interfaces;
 
 import se.cholmers.backend.Model.Order;
-import se.cholmers.backend.Model.Product;
 import se.cholmers.backend.RequestException;
 
 import java.util.List;
@@ -13,7 +12,7 @@ public interface IUserGroup {
      *
      * @return the set of products in the usergroup
      */
-    Set<Product> getProducts();
+    Set<IProduct> getProducts();
 
     /**
      * Creates a new product and adds to the existing set of products.

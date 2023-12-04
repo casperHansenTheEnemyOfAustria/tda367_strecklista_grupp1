@@ -1,5 +1,7 @@
 package se.cholmers.backend.Model;
 
+import se.cholmers.backend.Model.Interfaces.IProduct;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +33,7 @@ class OrderHistory implements se.cholmers.backend.Model.Interfaces.IOrderHistory
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(order.getTimeString());
             stringBuilder.append(", ");
-            for (Product product : order.getProducts()) {
+            for (IProduct product : order.getProducts()) {
                 stringBuilder.append(product.toString());
                 stringBuilder.append(", ");
             }

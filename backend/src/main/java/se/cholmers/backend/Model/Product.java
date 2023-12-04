@@ -9,7 +9,7 @@ import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
-public class Product {
+public class Product implements se.cholmers.backend.Model.Interfaces.IProduct {
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
     private Integer amount;
     private String name;
@@ -49,67 +49,42 @@ public class Product {
         this.amount = dbi.getProductAmount(productID);    
     }
 
-    /**
-     * 
-     * @return the groupID of the UserGroup a certain product belongs to.
-     */
+    @Override
     public String getGroupID() {
         return groupID;
     }
 
-    /**
-     * 
-     * @return the cost of a certain product.
-     */
+    @Override
     public Float getCost() {
         return cost;
     }
  
-    /**
-     * Increases the amount of a product by a certain amount.
-     * precondition: The amount has to be positive
-     * @param amount
-     * @throws RequestException
-     * postcondition: The amount of the product is increased by the given amount
-     */
+    @Override
     public void increaseAmount(int amount) throws RequestException {
         if (amount < 0) {
             throw new RequestException("Amount cannot be negative");
         }
     }
 
-    /**
-     * Decreases the amount of a product by a certain amount. Should be called upon purchase.
-     * precondition: The amount has to be positive
-     * @param amount
-     * @throws RequestException
-     * postcondition: The amount of the product is decreased by the given amount
-     */
+    @Override
     public void decreaseAmount(int amount) throws RequestException {
         if (amount < 0) {
             throw new RequestException("Amount cannot be negative");
         }
     }
 
+    @Override
     public void increaseAmount() {
         amount++;
         dbi.updateProductAmount(amount.toString(), productID);
     }
 
-    /**
-     * Gets the ID of a product
-     * 
-     * @return the ID of the product
-     */
+    @Override
     public String getID() {
         return productID;
     }
 
-    /**
-     * Gets the name of a product
-     * 
-     * @return the name of the product
-     */
+    @Override
     public String getName() {
         return name;
     }

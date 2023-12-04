@@ -1,13 +1,11 @@
 package se.cholmers.backend.Model.Interfaces;
 
-import se.cholmers.backend.Model.Product;
-import se.cholmers.backend.Model.UserGroup;
 import se.cholmers.backend.RequestException;
 
 import java.util.Set;
 
 public interface IUser {
-    void addUserToGroup(UserGroup group);
+    void addUserToGroup(IUserGroup group);
 
     /**
      * @param groupID
@@ -26,14 +24,14 @@ public interface IUser {
      * @param numberOfProducts
      * @throws RequestException
      */
-    void purchaseItem(Product product, Integer numberOfProducts) throws RequestException;
+    void purchaseItem(IProduct product, Integer numberOfProducts) throws RequestException;
 
     /**
      * @return returns a set of all products the user has access to in all its
      * usergorups
      * @throws NullPointerException if the user is not a member of any group
      */
-    Set<Product> getAllProducts();
+    Set<IProduct> getAllProducts();
 
     /**
      * @param productID
@@ -41,5 +39,5 @@ public interface IUser {
      * database
      * @throws NullPointerException if the user is not a member of any group
      */
-    Product getProduct(String productID);
+    IProduct getProduct(String productID);
 }
