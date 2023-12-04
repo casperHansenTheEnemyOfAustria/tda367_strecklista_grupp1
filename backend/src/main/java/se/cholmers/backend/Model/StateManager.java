@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import se.cholmers.backend.Model.Interfaces.IProgramState;
+import se.cholmers.backend.Model.Interfaces.IUser;
 import se.cholmers.backend.RequestException;
 
 public class StateManager {
@@ -38,7 +39,7 @@ public class StateManager {
      * @throws RequestException if the user login fails
      */
     public String login(String userName, String password) throws RequestException{
-        User user = new User(userName, userName, password);
+        IUser user = new User(userName, userName, password);
         IProgramState state = new ProgramState(user);
 
         String stateID = UUID.randomUUID().toString();
