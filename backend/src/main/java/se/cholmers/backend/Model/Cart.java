@@ -13,11 +13,7 @@ class Cart implements se.cholmers.backend.Model.Interfaces.ICart {
         itemsInCart = new HashMap<>();
     }
 
-    /**
-     * Adds a given product to the cart
-     * 
-     * @throws NullPointerException
-     */
+    @Override
     public void addToCart(Product product) {
         Integer currentInCart;
         currentInCart = itemsInCart.get(product);
@@ -28,20 +24,12 @@ class Cart implements se.cholmers.backend.Model.Interfaces.ICart {
         }
     }
 
-    /**
-     * Returns a map of all the products and amount of each contained in the cart.
-     * 
-     * @return
-     */
+    @Override
     public Map<Product, Integer> getCart() {
         return itemsInCart;
     }
 
-    /**
-     * Removes a given product from the cart.
-     * 
-     * @param product
-     */
+    @Override
     public void removeFromCart(Product product) {
         Integer currentInCart = itemsInCart.get(product);
         try {
@@ -72,9 +60,7 @@ class Cart implements se.cholmers.backend.Model.Interfaces.ICart {
         return output;
     }
 
-    /**
-     * Clears the cart from all items.
-     */
+    @Override
     public void empty() {
         this.itemsInCart = new HashMap<>();
     }

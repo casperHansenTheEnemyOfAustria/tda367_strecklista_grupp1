@@ -9,7 +9,7 @@ import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
-class Product {
+public class Product {
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
     private Integer amount;
     private String name;
