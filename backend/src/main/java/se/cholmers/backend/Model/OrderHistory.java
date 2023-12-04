@@ -1,9 +1,11 @@
 package se.cholmers.backend.Model;
 
+import se.cholmers.backend.Model.Interfaces.IProduct;
+
 import java.util.ArrayList;
 import java.util.List;
 
-class OrderHistory {
+class OrderHistory implements se.cholmers.backend.Model.Interfaces.IOrderHistory {
     List<Order> orders;
 
     /**
@@ -14,29 +16,24 @@ class OrderHistory {
         orders = new ArrayList<>();
     }
 
-    /**
-     * Appends a order to the history.
-     * 
-     * @param order
-     */
-    void addOrderToHistory(Order order) {
+    @Override
+    public void addOrderToHistory(Order order) {
         orders.add(order);
     }
 
-    /**
-     * @return a list of orders.
-     */
-    List<Order> getOrderHistory() {
+    @Override
+    public List<Order> getOrderHistory() {
         return orders;
     }
 
+    @Override
     public List<String> toStringList() {
         List<String> stringList = new ArrayList<>();
         for (Order order : orders) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(order.getTimeString());
             stringBuilder.append(", ");
-            for (Product product : order.getProducts()) {
+            for (IProduct product : order.getProducts()) {
                 stringBuilder.append(product.toString());
                 stringBuilder.append(", ");
             }

@@ -6,18 +6,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import se.cholmers.backend.DatabaseInterface;
+import se.cholmers.backend.Model.Interfaces.IOrderHistory;
+import se.cholmers.backend.Model.Interfaces.IProduct;
 import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
-class UserGroup {
+class UserGroup implements se.cholmers.backend.Model.Interfaces.IUserGroup {
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
-    private Set<Product> products = new HashSet<>();
+    private Set<IProduct> products = new HashSet<>();
     private Year year;
     private String name;
     private String groupID;
-    private OrderHistory orderHistory;
+    private IOrderHistory IOrderHistory;
 
     /**
      * Creates a new UserGroup with a given name and year.
@@ -29,7 +30,7 @@ class UserGroup {
     public UserGroup(String name, Year year) {
         this.name = name;
         this.year = year;
-        this.orderHistory = new OrderHistory();
+        this.IOrderHistory = new OrderHistory();
 
         //TODO: Remove and handle in DB
         this.groupID = UUID.randomUUID().toString();
@@ -48,15 +49,11 @@ class UserGroup {
         this.name = name;
         this.year = year;
         this.groupID = groupID;
-        this.orderHistory = new OrderHistory();
+        this.IOrderHistory = new OrderHistory();
     }
 
-    /**
-     * First updates the products from the database.
-     * 
-     * @return the set of products in the usergroup
-     */
-    public Set<Product> getProducts() {
+    @Override
+    public Set<IProduct> getProducts() {
         List<String> productsFromDB = dbi.getProductsInCommittee(groupID);
         for (String productID : productsFromDB) {
             
@@ -66,42 +63,24 @@ class UserGroup {
         return products;
     }
 
-    /**
-     * Creates a new product and adds to the existing set of products.
-     * Temp solution until we have a working database interface.
-     * 
-     * @param name
-     * @param cost
-     * @throws RequestException
-     */
+    @Override
     public void addProduct(String name, Float cost) throws RequestException {
         products.add(new Product(name, cost, groupID));
     }
 
 
     //TODO add to db
-    /**
-     * Adds an order to the group's orderhistory
-     * 
-     * @param order
-     */
+    @Override
     public void addOrderToHistory(Order order) {
-        orderHistory.addOrderToHistory(order);
+        IOrderHistory.addOrderToHistory(order);
     }
 
-    /**
-     * First updates the history from the database.
-     * 
-     * @return the order history for a group
-     */
+    @Override
     public List<Order> getOrderHistory() {
-        return orderHistory.getOrderHistory();
+        return IOrderHistory.getOrderHistory();
     }
 
-    /**
-     * 
-     * @return the groupID of a certain group.
-     */
+    @Override
     public String getID() {
         return this.groupID;
     }
