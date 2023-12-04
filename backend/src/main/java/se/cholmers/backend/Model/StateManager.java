@@ -43,6 +43,7 @@ public class StateManager {
         String stateID = UUID.randomUUID().toString();
         states.put(stateID, state);
         String output = stateID;
+        System.out.println("user login with id" + output);
         return output;
     }
 

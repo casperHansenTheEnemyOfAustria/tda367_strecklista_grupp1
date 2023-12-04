@@ -86,11 +86,13 @@ public class UserController {
         
         try{
             String userName =  freq.getData("userName");
+            System.out.println(userName);
             String password =  freq.getData("password");
+            System.out.println(password);
             ResponseEntity<String> ResponseEntity = new ResponseEntity<String> (stateManager.login(userName, password), HttpStatus.OK);
             return ResponseEntity;
         }catch(RequestException e){
-            System.out.println("bruh");
+            System.out.println(e.getMessage());
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }finally{
 

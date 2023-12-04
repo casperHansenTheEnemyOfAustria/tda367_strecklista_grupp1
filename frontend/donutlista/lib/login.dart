@@ -26,10 +26,8 @@ class LoginState extends State<LoginPage> {
 
  Future<void> sendPostRequest() async {
     var content = {
-        'stateID': "något",
-        'data': {
-          'enGrej': 'en annan grej'
-        }
+        "userName": usernameController.text,
+        "password": passwordController.text
       };
     final response = await http.post(
       
@@ -42,6 +40,7 @@ class LoginState extends State<LoginPage> {
   
     if (response.statusCode == 200) {
       Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+      print(response.body);
     } else {
       snackBar;
     }
