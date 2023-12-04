@@ -3,7 +3,7 @@ package se.cholmers.backend.Model;
 import java.time.LocalDateTime;
 import java.util.List;
 
-class Order {
+public class Order {
     private LocalDateTime timeStamp;
     private List<Product> products;
 
