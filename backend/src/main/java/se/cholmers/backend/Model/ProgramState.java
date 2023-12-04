@@ -38,6 +38,7 @@ class ProgramState {
      */
     public void addToCart(String productID) {
         Product product = currentUser.getProduct(productID);
+        System.out.println(product.getName());
         cart.addToCart(product);
     }
 

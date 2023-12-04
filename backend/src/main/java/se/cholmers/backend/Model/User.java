@@ -140,7 +140,8 @@ class User {
      */
     public Product getProduct(String productID) {
         for (Product product : getAllProducts()) {
-            if (product.getID() == productID) {
+            System.out.println("Looking for product with ID: " + productID + " found product with ID: " + product.getID());
+            if (product.getID().equals(productID)) {
                 return product;
             }
         }

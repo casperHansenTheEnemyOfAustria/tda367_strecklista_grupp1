@@ -64,6 +64,7 @@ class Cart {
         for (Product p : itemsInCart.keySet()) {
             try {
                 output.put(p.getName(), itemsInCart.get(p).toString());
+                System.out.println(p.getName() + " " + itemsInCart.get(p).toString());
             } catch (NullPointerException e) {
                 // TODO: handle exception
             }
