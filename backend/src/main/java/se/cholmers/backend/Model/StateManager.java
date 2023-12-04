@@ -1,6 +1,7 @@
 package se.cholmers.backend.Model;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -115,6 +116,16 @@ public class StateManager {
     public void completePurchase(String stateID) throws RequestException {
         states.get(stateID).completePurchase();
     }
+
+    /**
+     * prerequisite: The stateID has to be valid
+     * @param stateID
+     * @return a list of the product ids
+     */
+    public List<String> getAvaliableProduct(String stateID) {
+        return states.get(stateID).getAllProducts();
+    } 
+    
 
     /**
      * Idk

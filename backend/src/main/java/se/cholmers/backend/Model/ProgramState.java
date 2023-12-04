@@ -1,6 +1,8 @@
 package se.cholmers.backend.Model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import se.cholmers.backend.RequestException;
@@ -72,5 +74,13 @@ class ProgramState {
         }
         cart.empty();
         return;
+    }
+
+    public List<String> getAllProducts() {
+        List<String> allProducts = new ArrayList<>();
+        for (Product p : currentUser.getAllProducts()) {
+            allProducts.add(p.getID());
+        }
+        return allProducts;
     }
 }
