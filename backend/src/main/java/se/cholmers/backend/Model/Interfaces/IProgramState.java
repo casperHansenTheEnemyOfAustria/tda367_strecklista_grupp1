@@ -43,4 +43,11 @@ public interface IProgramState {
      * @throws RequestException if the request fails.
      */
     void completePurchase() throws RequestException;
+
+    /**
+     * Returns a map of all products in the database.
+     *
+     * @return a map of all products in the database.
+     */
+    Map<String, String> getProducts();
 }

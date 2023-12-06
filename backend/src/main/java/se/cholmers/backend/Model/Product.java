@@ -8,8 +8,9 @@ import se.cholmers.backend.DatabaseInterface;
 import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
+import se.cholmers.backend.Model.Interfaces.IProduct;
 
-public class Product implements se.cholmers.backend.Model.Interfaces.IProduct {
+public class Product implements IProduct {
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
     private Integer amount;
     private String name;
@@ -92,5 +93,10 @@ public class Product implements se.cholmers.backend.Model.Interfaces.IProduct {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Float getPrice() {
+        return cost;
     }
 }

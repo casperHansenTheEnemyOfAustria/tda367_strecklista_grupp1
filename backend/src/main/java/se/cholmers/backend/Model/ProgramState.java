@@ -1,13 +1,15 @@
 package se.cholmers.backend.Model;
 
 import java.util.Map;
+import java.util.HashMap;
 
 import se.cholmers.backend.Model.Interfaces.ICart;
 import se.cholmers.backend.Model.Interfaces.IProduct;
 import se.cholmers.backend.Model.Interfaces.IUser;
 import se.cholmers.backend.RequestException;
+import se.cholmers.backend.Model.Interfaces.IProgramState;
 
-class ProgramState implements se.cholmers.backend.Model.Interfaces.IProgramState {
+class ProgramState implements IProgramState {
     private IUser currentUser;
     private ICart cart;
 
@@ -52,5 +54,14 @@ class ProgramState implements se.cholmers.backend.Model.Interfaces.IProgramState
         }
         cart.empty();
         return;
+    }
+
+    @Override
+    public Map<String, String> getProducts() {
+        Map<String, String> output = new HashMap<String, String>();
+        for (IProduct p : currentUser.getAllProducts()) {
+            output.put(p.getName(), p.getPrice().toString());
+        }
+        return output;
     }
 }
