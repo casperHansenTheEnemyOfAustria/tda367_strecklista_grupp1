@@ -21,6 +21,7 @@ import se.cholmers.backend.Model.StateManager;
 
 
 import java.util.HashMap;
+import java.util.List;
 
 // import org.springframework.*;
 
@@ -217,10 +218,11 @@ public class UserController {
      */
     @RequestMapping(value = "/getProducts", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Map<String, String>> getProducts(@RequestBody LoggedInUserRequest freq) {
+    public ResponseEntity<List<Map<String,String>>> getProducts(@RequestBody LoggedInUserRequest freq) {
         String sessionID = freq.getSessionID();
+        
         try{
-            ResponseEntity<Map<String, String>> ResponseEntity = new ResponseEntity<Map<String, String>>(new HashMap<String, String>(), HttpStatus.OK);
+            ResponseEntity<List<Map<String,String>>> ResponseEntity = new ResponseEntity<List<Map<String,String>>>(stateManager.getAvaliableProducts(sessionID),HttpStatus.OK);
             // ResponseEntity<Map<String, String>> ResponseEntity = new ResponseEntity<Map<String, String>>(stateManager.getProducts(sessionID));
             return ResponseEntity;
         // }catch(RequestException e){
@@ -229,6 +231,29 @@ public class UserController {
 
         }
     }
+
+    /**
+     * getProduct gets a product🍩 from the database arranged as a map of its features, name, amount, cost and id
+     * @param sessionID (the sessionID of the user😎 stored by the device)
+     * @param productID (the productID of the product🍩 to be fetched user😎 input)
+     * @return ResponseEntity (a ResponseEntity with the correct code💀 and the correct product🍩 if the product🍩 was fetched. Otherwise it should havea an error🆘 code)
+     */
+    @RequestMapping(value = "/getProduct", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> getProduct(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
+        try{
+            String productID = freq.getData("productID");
+            ResponseEntity<Map<String, String>> responseEntity = new ResponseEntity<Map<String, String>>(stateManager.getProduct(sessionID, productID), HttpStatus.OK);
+            return responseEntity;
+        }catch(RequestException e){
+            return new ResponseEntity<Map<String, String>>(new HashMap<String, String>(), HttpStatus.BAD_REQUEST);
+        }finally{
+
+        }
+    }
+
+
 
 
 
