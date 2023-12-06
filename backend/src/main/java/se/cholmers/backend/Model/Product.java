@@ -29,10 +29,15 @@ public class Product implements se.cholmers.backend.Model.Interfaces.IProduct {
         this.cost = cost;
         this.groupID = groupID;
         this.amount = 0;
+    
+        
 
         //catches the already exists error and does nothing since its already been created
-      
+        try {
             dbi.createProduct(name, cost, groupID, 0);
+        } catch (NullPointerException e){
+            throw new RequestException("Product can't contatin null values");
+        }
         
     }
 
