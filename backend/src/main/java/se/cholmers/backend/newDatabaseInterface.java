@@ -190,7 +190,7 @@ public class newDatabaseInterface implements IDatabaseInterface {
         return rv;
     }
 
-    public void putUserInCommittee(String username, String committeeID, Float saldo) throws RequestException {
+    public void putUserInCommittee(String username, String committeeID, float saldo) throws RequestException {
         String userid = getUseridFromNick(username);
         try{
             insert("userInCommittee", new HashMap<>(Map.of(
@@ -280,7 +280,6 @@ public class newDatabaseInterface implements IDatabaseInterface {
         if (numExecutes == 0) {
             throw new SQLException("Insert failed, no rows affected.");
         }
-
     }
 
     // Read
@@ -316,6 +315,8 @@ public class newDatabaseInterface implements IDatabaseInterface {
                     "SELECT * FROM %s WHERE %s = ?".formatted(tableName, columnName));
             preparedStatement.setString(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
+            //For debugging
+            String debug = preparedStatement.toString();
             return ResultSetConverter.convert(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -408,10 +409,10 @@ public class newDatabaseInterface implements IDatabaseInterface {
     public void delete(String tableName, Pair<String, String> columnValuePair) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "DELETE FROM ? WHERE ? = ?");
-            preparedStatement.setString(1, tableName);
-            preparedStatement.setString(2, columnValuePair.getKey());
-            preparedStatement.setString(3, columnValuePair.getValue());
+                    "DELETE FROM %s WHERE %s = ?".formatted(tableName, columnValuePair.getKey()));
+            preparedStatement.setString(1, columnValuePair.getValue());
+            //Just for debugging
+            String debug = preparedStatement.toString();
             int numExecutes = preparedStatement.executeUpdate();
             if (numExecutes == 0) {
                 throw new SQLException("Delete failed, no rows affected.");

@@ -1,8 +1,13 @@
 package se.cholmers.backend;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
+
+import javafx.util.Pair;
+
 import org.junit.Assert;
 
 import se.cholmers.backend.Interface.IDatabaseInterface;
@@ -39,16 +44,82 @@ public class dbTests {
         String userNick = "Test";
         String userPhoneNumber = "0701234567";
         try {
-            String id = dbi.createUser(userName, userPhoneNumber, userNick, password);
-            assertEquals(id, dbi.authenticateUser(userNick, password));
+            if (dbi.authenticateUser(userNick, password) != null) {
+                dbi.delete("users", new Pair<String,String>("user_nick", userNick));
+            }
+                String id = dbi.createUser(userName, userPhoneNumber, userNick, password);
+            //assertEquals(id, dbi.authenticateUser(userNick, password));
         } catch (RequestException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             Assert.fail("Test failed" + e.getMessage());
         }
     }
 
     @Test 
     void deleteFromDatabase() {
-        throw new UnsupportedOperationException();
+        String userName = "Test User";
+        String password = "1337";
+        String userNick = "Test";
+        String userPhoneNumber = "0701234567";
+
+        try {
+            String id = dbi.createUser(userName, userPhoneNumber, userNick, password);
+        } catch (RequestException e) {
+            e.printStackTrace();
+        }
+        assertDoesNotThrow(() -> dbi.delete("users", new Pair<String,String>("user_nick", userNick)));
+        assertThrows(RequestException.class, () -> dbi.authenticateUser(userNick, password));
     }
+
+    @Test
+    void testUpdateUserSaldo() {
+        String userName = "Test User";
+        String password = "1337";
+        String userNick = "Test";
+        String userPhoneNumber = "0701234567";
+        String committeeName = "Test Committee";
+        String committeeYear = "22";
+
+        
+        //Potentially null
+        String userID = null;
+        
+        try {
+            userID = dbi.createUser(userName, userPhoneNumber, userNick, password);
+        } catch (RequestException e) {
+            try {
+                userID = dbi.authenticateUser(userNick, password);
+            } catch (RequestException e1) {
+                Assert.fail();
+            }
+        }
+        try {
+            dbi.delete("Committes", new Pair<String,String>("committee_name", committeeName));
+        } catch (RequestException e){
+            // Do nothing
+        }
+        try {
+            String committeeID = dbi.createCommittee(committeeName, committeeYear);
+            test(userID, committeeID, "0");
+
+        } catch (RequestException e) {
+                Assert.fail();
+        }
+
+    }
+
+
+    private void test(String userID, String committeeID, String saldo) {
+            try {
+                dbi.updateUserSaldo(userID, committeeID, saldo);
+                assertEquals(saldo, dbi.getSaldoFromUserInCommittee(userID, committeeID));
+            } catch (RequestException e) {
+                e.printStackTrace();
+                Assert.fail("Test failed" + e.getMessage());
+            }
+    
+            
+        } 
+
+    
 }

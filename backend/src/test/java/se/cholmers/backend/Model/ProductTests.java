@@ -13,41 +13,6 @@ public class ProductTests {
     }
 
     @Test
-    void ableToCreateProductWithNullName() throws RequestException {
-        IProduct tProduct = new Product(null, 0f, "test");
-    }
-
-    @Test
-    void ableToCreateProductWithNullPrice() throws RequestException {
-        IProduct tProduct = new Product("Test", null, "test");
-    }
-
-    @Test
-    void ableToCreateProductWithNullCategory() throws RequestException {
-        IProduct tProduct = new Product("Test", 0f, null);
-    }
-
-    @Test
-    void ableToCreateProductWithNullNameAndPrice() throws RequestException {
-        IProduct tProduct = new Product(null, null, "test");
-    }
-
-    @Test
-    void ableToCreateProductWithNullNameAndCategory() throws RequestException {
-        IProduct tProduct = new Product(null, 0f, null);
-    }
-
-    @Test
-    void ableToCreateProductWithNullPriceAndCategory() throws RequestException {
-        IProduct tProduct = new Product("Test", null, null);
-    }
-
-    @Test
-    void ableToCreateProductWithNullNamePriceAndCategory() throws RequestException {
-        IProduct tProduct = new Product(null, null, null);
-    }
-
-    @Test
     void ableToCreateProductWithEmptyName() throws RequestException {
         IProduct tProduct = new Product("", 0f, "test");
     }

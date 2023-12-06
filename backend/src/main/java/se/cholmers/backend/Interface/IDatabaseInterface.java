@@ -198,7 +198,7 @@ public interface IDatabaseInterface {
      * @throws NullPointerException if a user with the given id does not exist or
      *                              the committee does not exist
      */
-    public void putUserInCommittee(String username, String committeeID, Float saldo) throws RequestException;
+    public void putUserInCommittee(String username, String committeeID, float saldo) throws RequestException;
 
     /**
      * Updates the saldo of a user in a committee
