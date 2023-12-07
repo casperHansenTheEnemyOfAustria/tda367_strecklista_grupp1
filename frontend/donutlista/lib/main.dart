@@ -4,7 +4,7 @@ import 'login.dart';
 
 /* MyApp gives theme and starts off att login page */
 
-List<String> itemList = ['Item 1', 'Item 2', 'Item 3'];
+List<String> itemList = ['Item 1', 'Item 2', 'Item 3', 'bla', 'blah'];
 Map<String, String> itemLMap = {'Item 1':'Price 1', 'Item 2':'Price 2', 'Item 3':'Price 3'};
 
 Map<String, int> ItemMap = {

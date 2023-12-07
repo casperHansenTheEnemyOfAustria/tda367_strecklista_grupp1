@@ -1,8 +1,6 @@
 import 'package:donutlista/mainpageWidgets/bottomNav.dart';
 import 'package:donutlista/mainpageWidgets/grid.dart';
-import 'package:donutlista/mainpageWidgets/itemCard.dart';
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 
 import 'mainpageWidgets/summary_list.dart';
 import 'navigation.dart';
@@ -24,25 +22,20 @@ class _MainPage extends State<MainPage> {
     appBar: AppBar(
       title: Text(widget.title),
       ),
-    body: Center(
-    child: MainItemGrid(),
+    body: 
+    Column(
+      children: [
+          SizedBox(
+            height: 400.0,
+            child: MainItemGrid()),
+        SizedBox(
+            height: 150.0,
+            child: SummaryList(),
+    )]
+    
     ),
-    bottomSheet:
-      Container(
-        decoration: BoxDecoration(
-          /*border: Border.all(
-            color: HexColor('#09CDDA'),
-            width: 0,
-          ), */
-          //borderRadius: BorderRadius.circular(10),     
-          color: HexColor('#000000'),
-          ),
-        child: 
-      SummaryList(), //TODO: Implement w controller
-      ),
     bottomNavigationBar: 
-      PurchaseButtons(), //TODO
-    );
+      PurchaseButtons()); //TODO
   }
 }
 

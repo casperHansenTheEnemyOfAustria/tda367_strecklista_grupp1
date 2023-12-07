@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:donutlista/main.dart';
@@ -17,6 +18,7 @@ class MainItemGrid extends StatefulWidget{
   State<MainItemGrid> createState() => _ItemGridState();
 }
 class _ItemGridState extends State<MainItemGrid> {
+  
   @override
   Widget build(BuildContext context){
       return 
@@ -50,27 +52,32 @@ class _ActiveItemTile extends State<ItemTile> {
 
 
 
-  void _incrementCounter() {
+  int _incrementCounter() {
     setState(() {
       counter++;
     });
+    return counter;
   }
 
-  void _decrementCounter() {
+  int _decrementCounter() {
     setState(() {
       if (counter == 0)
         counter = 0;
       else 
         counter--; 
     });
+    return counter;
   }
 
 
-  void _resetCounter() {
+  int _resetCounter() {
     setState(() {
       counter = 0;
     });
+    return counter;
   }
+
+   
 
   @override
   Widget build(BuildContext context) {
@@ -82,10 +89,6 @@ class _ActiveItemTile extends State<ItemTile> {
       child: Container(
         decoration: 
         BoxDecoration(
-          /* border: Border.all(
-          color: HexColor('#09CDDA'),
-          width: 1,
-          ), */
         color: HexColor('#09cdda'),
             ),
         child: 
