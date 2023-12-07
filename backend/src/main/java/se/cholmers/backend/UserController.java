@@ -26,6 +26,8 @@ import java.util.List;
 // import org.springframework.*;
 
 import java.util.Map;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 /**
  * UserController this controls user😎 features such as login, logout and getsaldo🤑 etc it has access to the session manager to fetch its given session from different users
@@ -252,6 +254,23 @@ public class UserController {
 
         }
     }
+
+    @RequestMapping(value="/addToExistingProduct", method=RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<String> addToProduct(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
+        try{
+            String productID = freq.getData("productID");
+            String amount = freq.getData("amount");
+            stateManager.addToProduct(sessionID, productID, amount);
+            return new ResponseEntity<String>("added", HttpStatus.OK);
+        }catch(RequestException e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }finally{
+
+        }
+    }
+    
 
 
 
