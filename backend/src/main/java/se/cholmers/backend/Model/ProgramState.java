@@ -108,8 +108,8 @@ class ProgramState {
 
     }
 
-    public void increaseProductAmount(String productID, String amount) throws NumberFormatException, RequestException{
+    public void increaseProductAmount(String productID, int amount) throws RequestException{
         Product tempProd = currentUser.getProduct(productID);
-        tempProd.increaseAmount(Integer.parseInt(amount));
+        tempProd.increaseAmount(amount);
     }
 }

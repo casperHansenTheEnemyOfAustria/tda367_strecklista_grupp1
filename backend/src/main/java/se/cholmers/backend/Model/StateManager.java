@@ -146,7 +146,7 @@ public class StateManager {
      * @throws RequestException
      * 
      */
-    public void increaseProductAmount(String stateID, String productID, String amount) throws NumberFormatException, RequestException{
+    public void increaseProductAmount(String stateID, String productID, int amount) throws NumberFormatException, RequestException{
         //TODO update user saldo after increasing the amount
         states.get(stateID).increaseProductAmount(productID, amount);
     }

@@ -262,7 +262,7 @@ public class UserController {
         try{
             String productID = freq.getData("productID");
             String amount = freq.getData("amount");
-            stateManager.increaseProductAmount(sessionID, productID, amount);
+            stateManager.increaseProductAmount(sessionID, productID, Integer.parseInt(amount));
             return new ResponseEntity<String>("added", HttpStatus.OK);
         }catch(RequestException e){
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
