@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import se.cholmers.backend.Interface.IDatabaseInterface;
 import se.cholmers.backend.Model.StateManager;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 /**
  * AdminController this controlls admin features such as creating users and
@@ -138,5 +140,22 @@ public class AdminController {
 
         }
     }
+
+    @RequestMapping(value = "/updateProductAmount", method = RequestMethod.POST )
+    @ResponseBody
+    public ResponseEntity<String> updateProductAmount(@RequestBody AdminRequest freq) {
+        try {
+            String productID = freq.getData("productID");
+            String amount = freq.getData("amount");
+            dbi.updateProductAmount(productID, amount);
+            ResponseEntity<String> ResponseEntity = new ResponseEntity<String>("Product amount updated", HttpStatus.OK);
+            return ResponseEntity;
+        } catch (RequestException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } finally {
+
+        }
+    }
+    
 
 }
