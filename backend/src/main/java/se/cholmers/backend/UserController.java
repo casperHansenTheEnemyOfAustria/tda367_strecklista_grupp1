@@ -255,14 +255,14 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value="/addToExistingProduct", method=RequestMethod.POST)
+    @RequestMapping(value="/increaseProductAmount", method=RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> addToProduct(@RequestBody LoggedInUserRequest freq) {
         String sessionID = freq.getSessionID();
         try{
             String productID = freq.getData("productID");
             String amount = freq.getData("amount");
-            stateManager.addToProduct(sessionID, productID, amount);
+            stateManager.increaseProductAmount(sessionID, productID, amount);
             return new ResponseEntity<String>("added", HttpStatus.OK);
         }catch(RequestException e){
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
