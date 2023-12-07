@@ -41,7 +41,6 @@ class ItemTile extends StatefulWidget {
 }
 
 class _ActiveItemTile extends State<ItemTile> {
-  int counter = 0;
 
   int _incrementCounter() {
     setState(() {
@@ -66,8 +65,10 @@ class _ActiveItemTile extends State<ItemTile> {
     setState(() {
       counter = 0;
     });
-    return counter;
+    return currentCounter;
   }
+
+  int get currentCounter => counter;
 
    
 
