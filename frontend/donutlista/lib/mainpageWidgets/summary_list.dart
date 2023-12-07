@@ -8,24 +8,13 @@ import 'grid.dart';
 
 class SummaryList extends StatelessWidget{
   const SummaryList({super.key});
-  
-  get counter => ItemTile(counter);
-
   @override
   Widget build(BuildContext context){
       return 
-     FractionallySizedBox(
-      widthFactor: 1.0,
-      heightFactor: 0.35,
-      
-      child:
-      
       ListView.builder(
-        itemCount: itemList.length,
+        itemCount: itemMap.length,
         itemBuilder: (context, index) => ItemTile(index),
-        
-        )
-     );
+        );
 }
 }
 
@@ -42,7 +31,6 @@ class ItemTile extends StatelessWidget {
     
     return Padding(
       padding: const EdgeInsets.all(8.5),
-      //TODO: Center
       child: Container(
         child: 
           Row(            
