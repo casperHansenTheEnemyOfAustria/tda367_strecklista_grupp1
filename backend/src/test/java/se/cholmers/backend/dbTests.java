@@ -98,28 +98,25 @@ public class dbTests {
         } catch (RequestException e){
             // Do nothing
         }
+        String committeeID = null;
         try {
-            String committeeID = dbi.createCommittee(committeeName, committeeYear);
-            test(userID, committeeID, "0");
-
+            committeeID = dbi.createCommittee(committeeName, committeeYear);
+    
         } catch (RequestException e) {
                 Assert.fail();
         }
+        try {
+                dbi.updateUserSaldo(userID, committeeID, "100");
+                assertEquals(100, dbi.getSaldoFromUserInCommittee(userID, committeeID));
+            } catch (NullPointerException np) {
+                np.printStackTrace();
+                Assert.fail("Test failed" + np.getMessage());
+            } catch (IllegalArgumentException iae) {
+                iae.printStackTrace();
+                Assert.fail("Test failed" + iae.getMessage());
+            }
 
     }
-
-
-    private void test(String userID, String committeeID, String saldo) {
-            try {
-                dbi.updateUserSaldo(userID, committeeID, saldo);
-                assertEquals(saldo, dbi.getSaldoFromUserInCommittee(userID, committeeID));
-            } catch (RequestException e) {
-                e.printStackTrace();
-                Assert.fail("Test failed" + e.getMessage());
-            }
-    
-            
-        } 
 
     
 }

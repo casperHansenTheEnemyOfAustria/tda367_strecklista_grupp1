@@ -212,7 +212,7 @@ public interface IDatabaseInterface {
      *                                  or the committee does not exist
      * @throws IllegalArgumentException if the user is not in the committee
      */
-    public void updateUserSaldo(String id, String committeeId, String saldo);
+    public void updateUserSaldo(String id, String committeeId, String saldo) throws NullPointerException, IllegalArgumentException;
 
     /**
      * Updates the amount of a product
