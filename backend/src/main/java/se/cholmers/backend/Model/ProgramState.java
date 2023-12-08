@@ -1,6 +1,8 @@
 package se.cholmers.backend.Model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import se.cholmers.backend.RequestException;
@@ -72,5 +74,37 @@ class ProgramState {
         }
         cart.empty();
         return;
+    }
+
+    /**
+     * returns a list of product maps
+     * @return
+     */
+    public List<Map<String, String>> getAllProducts() {
+        List<Map<String, String>> allProducts = new ArrayList<>();
+        for (Product p : currentUser.getAllProducts()) {
+            allProducts.add(getProduct(p.getID()));
+        }
+        return allProducts;
+    }
+
+    /**
+     * returns a map of the product info with the structure
+     * Name
+     * Price
+     * Amount
+     * id
+     * @param productID
+     * @return
+     */
+    public Map<String, String> getProduct(String productID){
+        Product tempProd = currentUser.getProduct(productID);
+        Map<String, String> output = new HashMap<>();
+        output.put("Name", tempProd.getName());
+        output.put("Price", tempProd.getCost().toString());
+        output.put("Amount", tempProd.getAmount());
+        output.put("Id", productID);
+        return output;
+
     }
 }

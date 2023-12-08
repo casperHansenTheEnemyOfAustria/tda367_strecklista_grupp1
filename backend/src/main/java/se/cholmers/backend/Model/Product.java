@@ -76,6 +76,8 @@ class Product {
         if (amount < 0) {
             throw new RequestException("Amount cannot be negative");
         }
+        this.amount+=amount;
+        dbi.updateProductAmount(productID, this.amount.toString());
     }
 
     /**
@@ -89,6 +91,8 @@ class Product {
         if (amount < 0) {
             throw new RequestException("Amount cannot be negative");
         }
+        this.amount-=amount;
+        dbi.updateProductAmount(productID, this.amount.toString());
     }
 
     public void increaseAmount() {
@@ -112,5 +116,10 @@ class Product {
      */
     public String getName() {
         return name;
+    }
+
+    public String getAmount(){
+        dbi.updateProductAmount(productID, amount.toString());
+        return amount.toString();
     }
 }
