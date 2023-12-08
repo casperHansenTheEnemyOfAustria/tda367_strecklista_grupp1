@@ -114,7 +114,7 @@ class User {
 
         try{
             dbi.updateUserSaldo(id, product.getGroupID(), currentSaldo.toString());
-            product.decreaseAmount(numberOfProducts);;
+            product.decreaseAmount(numberOfProducts);
         }catch(NullPointerException e){
             throw new RequestException(id + "does not exist or" + product.getGroupID() + "does not exist");
         }catch(IllegalArgumentException e){
@@ -176,6 +176,10 @@ class User {
     public List<Order> getOrderHistory() throws RequestException {
         
         return orderHistory.getOrderHistory();
+    }
+
+    public String getID() {
+        return id;
     }
 
 }

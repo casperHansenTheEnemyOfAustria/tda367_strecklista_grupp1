@@ -74,6 +74,7 @@ class ProgramState {
         for (Product product : cart.getCart().keySet()) {
             currentUser.purchaseItem(product, cart.getCart().get(product));
         }
+        new Order((List<Product>) cart.getCart().keySet(), currentUser.getID());
         cart.empty();
         return;
     }
