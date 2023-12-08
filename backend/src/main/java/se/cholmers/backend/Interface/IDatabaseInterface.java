@@ -224,5 +224,5 @@ public interface IDatabaseInterface {
      * @param committeeID
      * @return
      */
-    public List<Map<LocalDateTime, List<String>>> getOrders(String committeeID);
+    public List<Map<LocalDateTime, List<String>>> getAllOrders(String committeeID);
 }

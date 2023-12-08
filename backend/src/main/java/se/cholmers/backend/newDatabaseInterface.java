@@ -429,9 +429,7 @@ public class newDatabaseInterface implements IDatabaseInterface {
         List<String> rv = new ArrayList<>();
         List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
         for(Object transactionId : committeeTransactions){
-            Time time = Time.valueOf(selectSingleValue("transaction", "transaction_time", new Pair<>("id", (String) transactionId)));
-            Date date = Date.valueOf(selectSingleValue("transaction", "transaction_date", new Pair<>("id", (String) transactionId)));
-            LocalDateTime transactionTime = LocalDateTime.of(date.toLocalDate(), time.toLocalTime());
+            LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
 
             rv = getTransactionProducts((String) transactionId);
             
@@ -454,17 +452,22 @@ public class newDatabaseInterface implements IDatabaseInterface {
     }
 
     @Override
-    public List<Map<LocalDateTime, List<String>>> getOrders(String committeeID) {
+    public List<Map<LocalDateTime, List<String>>> getAllOrders(String committeeID) {
         List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
         List<Map<LocalDateTime, List<String>>> rv = new ArrayList<>();
         for(Object transactionId : committeeTransactions){
-            Time time = Time.valueOf(selectSingleValue("transaction", "transaction_time", new Pair<>("id", (String) transactionId)));
-            Date date = Date.valueOf(selectSingleValue("transaction", "transaction_date", new Pair<>("id", (String) transactionId)));
-            LocalDateTime transactionTime = LocalDateTime.of(date.toLocalDate(), time.toLocalTime());
+            LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
             Map<LocalDateTime, List<String>> map = new HashMap<>();
             map.put(transactionTime, getTransactionProducts(committeeID));
             rv.add(map);
         }
         return rv;
+    }
+
+    private LocalDateTime getTransactionDateTime(String transactionId) {
+        Time time = Time.valueOf(selectSingleValue("transaction", "transaction_time", new Pair<>("id",  transactionId)));
+        Date date = Date.valueOf(selectSingleValue("transaction", "transaction_date", new Pair<>("id",  transactionId)));
+        LocalDateTime transactionTime = LocalDateTime.of(date.toLocalDate(), time.toLocalTime());
+        return transactionTime;
     }
 }
