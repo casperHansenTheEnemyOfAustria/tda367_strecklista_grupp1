@@ -473,22 +473,14 @@ public class newDatabaseInterface implements IDatabaseInterface {
 
     @Override
     public void addOrder(String groupID, LocalDateTime timeStamp, List<String> products) {
-        String transactionID = UUID.randomUUID().toString();
-        try{
-            insert("transaction", new HashMap<>(Map.of(
-                    "id", transactionID,
-                    "committee_id", groupID,
-                    "transaction_date", timeStamp.toLocalDate(),
-                    "transaction_time", timeStamp.toLocalTime())));
-        }
-        catch (SQLException e){
-            e.printStackTrace();
-        }
-        for(String productid : products){
+        for(String product : products){
             try{
-                insert("transactionProduct", new HashMap<>(Map.of(
-                        "transaction_id", transactionID,
-                        "product_id", productid)));
+                insert("transaction", new HashMap<>(Map.of(
+                        "id", UUID.randomUUID().toString(),
+                        "product_id", product,
+                        "committee_id", groupID,
+                        "transaction_time", timeStamp.toLocalTime(),
+                        "transaction_date", timeStamp.toLocalDate())));
             }
             catch (SQLException e){
                 throw new NullPointerException(e.getMessage());
