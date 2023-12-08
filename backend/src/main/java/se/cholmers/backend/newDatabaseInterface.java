@@ -4,6 +4,7 @@ import javafx.util.Pair;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -421,5 +422,49 @@ public class newDatabaseInterface implements IDatabaseInterface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public List<String> getOrder(String committeeID, LocalDateTime orderTime) {
+        List<String> rv = new ArrayList<>();
+        List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
+        for(Object transactionId : committeeTransactions){
+            Time time = Time.valueOf(selectSingleValue("transaction", "transaction_time", new Pair<>("id", (String) transactionId)));
+            Date date = Date.valueOf(selectSingleValue("transaction", "transaction_date", new Pair<>("id", (String) transactionId)));
+            LocalDateTime transactionTime = LocalDateTime.of(date.toLocalDate(), time.toLocalTime());
+
+            rv = getTransactionProducts((String) transactionId);
+            
+        }
+        return rv;
+    }
+
+    private List<String> getTransactionProducts(String transactionID){
+        List<String> rv = new ArrayList<>();
+        List<Object> transactionProducts = selectWhere("transaction", "transaction_id", transactionID).get("product_id");
+        for(Object product : transactionProducts){
+            rv.add((String) product);
+        }
+        return rv;
+    }
+
+    private List<Object> getCommitteeTransactions(String committeeID) {
+        List<Object> committeeTransactions = selectWhere("transaction", "committee_id", committeeID).get("id");
+        return committeeTransactions;
+    }
+
+    @Override
+    public List<Map<LocalDateTime, List<String>>> getOrders(String committeeID) {
+        List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
+        List<Map<LocalDateTime, List<String>>> rv = new ArrayList<>();
+        for(Object transactionId : committeeTransactions){
+            Time time = Time.valueOf(selectSingleValue("transaction", "transaction_time", new Pair<>("id", (String) transactionId)));
+            Date date = Date.valueOf(selectSingleValue("transaction", "transaction_date", new Pair<>("id", (String) transactionId)));
+            LocalDateTime transactionTime = LocalDateTime.of(date.toLocalDate(), time.toLocalTime());
+            Map<LocalDateTime, List<String>> map = new HashMap<>();
+            map.put(transactionTime, getTransactionProducts(committeeID));
+            rv.add(map);
+        }
+        return rv;
     }
 }

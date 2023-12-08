@@ -1,6 +1,8 @@
 package se.cholmers.backend.Interface;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import se.cholmers.backend.RequestException;
 
@@ -208,4 +210,19 @@ public interface IDatabaseInterface {
      * @throws NullPointerException if a product with the given id does not exist
      */
     public void updateProductAmount(String productID, String amount);
+
+    /**
+     * returns a list of products ordered by a committee at a certain time (an order)
+     * @param committeeID
+     * @param orderTime
+     * @return
+     */
+    public List<String> getOrder(String committeeID, LocalDateTime orderTime);
+
+    /**
+     * returns a list of all orders made by a committee ordered in chunks of time
+     * @param committeeID
+     * @return
+     */
+    public List<Map<LocalDateTime, List<String>>> getOrders(String committeeID);
 }
