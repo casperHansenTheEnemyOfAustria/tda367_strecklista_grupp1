@@ -111,6 +111,18 @@ running this program is best done on linux since we have scripts prepared for te
 }
 ```
 
+- /increaseProductAmount
+- - example body:
+```json
+{
+    "sessionID": "sessionID",
+    "data": {
+        "productID": "a product id",
+        "amount": "an amount"
+    }
+}
+```
+
 #### admin
 - /createProduct
 - - example body:
@@ -127,8 +139,62 @@ running this program is best done on linux since we have scripts prepared for te
 }
 ```
 - /createUser
+- - example body:
+```json
+{
+    "auth": "something",
+    "data": {
+        "userName": "a user name",
+        "password": "a user password",
+    }
+}
+```
 - /createCommittee
-- /addUserToCommittee
+- - example body:
+```json
+{
+    "auth": "something",
+    "data": {
+        "name": "a committee name",
+        "year": "a committee year"
+    }
+}
+```
+- /addUserToGroup
+- - example body:
+```json
+{
+    "auth": "something",
+    "data": {
+        "userNick": "a user name(nick)",
+        "committeeID": "a committee id"
+    }
+}
+```
+- /updateProductAmount
+- - example body:
+```json
+{
+    "auth": "something",
+    "data": {
+        "productID": "a product id",
+        "amount": "an amount"
+    }
+}
+```
+- /updateUserSaldo
+- - example body:
+```json
+{
+    "auth": "something",
+    "data": {
+        "userNick": "a user name(nick)",
+        "committeeID": "a committee id",
+        "saldo": "a saldo"
+    }
+}
+```
+
 
 
 

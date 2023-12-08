@@ -173,7 +173,7 @@ public class AdminController {
      * @return
      *
      */
-    @RequestMapping( value = "updateUserSaldo", method = RequestMethod.POST)
+    @RequestMapping( value = "/updateUserSaldo", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> updateUserSaldo(@RequestBody AdminRequest freq) {
         try {
