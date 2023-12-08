@@ -15,12 +15,9 @@ public class OrderHistoryTests {
 
     @BeforeAll
     void setup() {
-        try {
+     
             tOrderHistory = new OrderHistory("test");
-        } catch (RequestException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+
     }
 
     @Test
