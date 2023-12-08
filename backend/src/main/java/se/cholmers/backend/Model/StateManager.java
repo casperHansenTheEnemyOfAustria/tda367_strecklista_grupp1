@@ -135,7 +135,21 @@ public class StateManager {
     public Map<String, String> getProduct(String stateID, String productID){
         return states.get(stateID).getProduct(productID);
     }
-    
+
+    /**
+     * Adds amounts to a product in a usergroup 
+     * prerequisite: The stateID has to be valid and the user has to be in the usergroup and the product has to exist
+     * @param stateID
+     * @param productID
+     * @param amount
+     * @throws NumberFormatException
+     * @throws RequestException
+     * 
+     */
+    public void increaseProductAmount(String stateID, String productID, int amount) throws NumberFormatException, RequestException{
+        //TODO update user saldo after increasing the amount
+        states.get(stateID).increaseProductAmount(productID, amount);
+    }
 
     /**
      * Idk

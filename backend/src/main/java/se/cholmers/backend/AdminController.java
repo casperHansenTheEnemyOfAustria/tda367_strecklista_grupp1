@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import se.cholmers.backend.Interface.IDatabaseInterface;
 import se.cholmers.backend.Model.StateManager;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 /**
  * AdminController this controlls admin features such as creating users and
@@ -138,5 +140,55 @@ public class AdminController {
 
         }
     }
+
+    /**
+     * updateProductAmount updates the amount of a product in the database
+     * @param freq
+     * @return ResponseEntity (a ResponseEntity with the correct code and a success message if
+     *        the product amount was updated. Otherwise it should havea an error code)
+     */
+    @RequestMapping(value = "/updateProductAmount", method = RequestMethod.POST )
+    @ResponseBody
+    public ResponseEntity<String> updateProductAmount(@RequestBody AdminRequest freq) {
+        try {
+            String productID = freq.getData("productID");
+            String amount = freq.getData("amount");
+            dbi.updateProductAmount(productID, amount);
+            ResponseEntity<String> ResponseEntity = new ResponseEntity<String>("Product amount updated", HttpStatus.OK);
+            return ResponseEntity;
+        } catch (RequestException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } finally {
+
+        }
+    }
+
+
+    /**
+     * updateUserSaldo updates the saldo of a user in a group
+     * user has to be in the group for this to work
+     * user also has to exist
+     * saldo can be anything since we have negative support
+     * @param freq
+     * @return
+     *
+     */
+    @RequestMapping( value = "updateUserSaldo", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<String> updateUserSaldo(@RequestBody AdminRequest freq) {
+        try {
+            String userNick = freq.getData("userNick");
+            String committeeID = freq.getData("committeeID");
+            String saldo = freq.getData("saldo");
+            dbi.updateUserSaldo(userNick, committeeID, saldo);
+            ResponseEntity<String> ResponseEntity = new ResponseEntity<String>("User saldo updated", HttpStatus.OK);
+            return ResponseEntity;
+        } catch (RequestException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } finally {
+
+        }
+    }
+    
 
 }
