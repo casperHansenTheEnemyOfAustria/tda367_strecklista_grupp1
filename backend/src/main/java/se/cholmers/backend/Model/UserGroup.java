@@ -27,8 +27,9 @@ class UserGroup {
      * 
      * @param name
      * @param year
+     * @throws RequestException
      */
-    public UserGroup(String name, Year year) {
+    public UserGroup(String name, Year year) throws RequestException {
         this.name = name;
         this.year = year;
         
@@ -44,8 +45,9 @@ class UserGroup {
      * Fetches a UserGroup from the database given a groupID
      * 
      * @param groupID
+     * @throws RequestException
      */
-    public UserGroup(String groupID) {
+    public UserGroup(String groupID) throws RequestException {
         String name = dbi.getCommitteeName(groupID);
         Year year = Year.parse("20" + dbi.getCommitteeYear(groupID));
         
@@ -97,8 +99,9 @@ class UserGroup {
      * First updates the history from the database.
      * 
      * @return the order history for a group
+     * @throws RequestException
      */
-    public List<Order> getOrderHistory() {
+    public List<Order> getOrderHistory() throws RequestException {
         
         return orderHistory.getOrderHistory();
     }

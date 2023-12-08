@@ -37,8 +37,9 @@ class ProgramState {
      * the productID as a string.
      * 
      * @param productID
+     * @throws RequestException
      */
-    public void addToCart(String productID) {
+    public void addToCart(String productID) throws RequestException {
         Product product = currentUser.getProduct(productID);
         cart.addToCart(product);
     }
@@ -48,8 +49,9 @@ class ProgramState {
      * given the productID as a string.
      * 
      * @param productID
+     * @throws RequestException
      */
-    public void removeFromCart(String productID) {
+    public void removeFromCart(String productID) throws RequestException {
         Product product = currentUser.getProduct(productID);
         cart.removeFromCart(product);
     }
@@ -79,8 +81,9 @@ class ProgramState {
     /**
      * returns a list of product maps
      * @return
+     * @throws RequestException
      */
-    public List<Map<String, String>> getAllProducts() {
+    public List<Map<String, String>> getAllProducts() throws RequestException {
         List<Map<String, String>> allProducts = new ArrayList<>();
         for (Product p : currentUser.getAllProducts()) {
             allProducts.add(getProduct(p.getID()));
@@ -96,8 +99,9 @@ class ProgramState {
      * id
      * @param productID
      * @return
+     * @throws RequestException
      */
-    public Map<String, String> getProduct(String productID){
+    public Map<String, String> getProduct(String productID) throws RequestException{
         Product tempProd = currentUser.getProduct(productID);
         Map<String, String> output = new HashMap<>();
         output.put("Name", tempProd.getName());

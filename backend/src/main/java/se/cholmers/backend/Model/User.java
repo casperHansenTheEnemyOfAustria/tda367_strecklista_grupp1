@@ -27,8 +27,9 @@ class User {
      * This is the constructor for when recreating users from the database
      * 
      * @param userID
+     * @throws RequestException
      */
-    public User(String userID) {
+    public User(String userID) throws RequestException {
         this.id = userID;
         this.name = dbi.getUserName(userID);
         this.nick = dbi.getUserNick(userID);
@@ -40,9 +41,10 @@ class User {
      * This method adds the user's groups to the user from the database
      * 
      * @param userID
+     * @throws RequestException
      * 
      */
-    private void addGroupsFromDatabase() {
+    private void addGroupsFromDatabase() throws RequestException {
         // TODO add a catch for if there are no groups
         List<String> comitteeIds = dbi.getCommitteesOfUser(id);
         for (String param : comitteeIds) {
@@ -121,9 +123,10 @@ class User {
      * 
      * @return returns a set of all products the user has access to in all its
      *         usergorups
+     * @throws RequestException
      * @throws NullPointerException if the user is not a member of any group
      */
-    public Set<Product> getAllProducts() {
+    public Set<Product> getAllProducts() throws RequestException {
         Set<Product> allProducts = new HashSet<>();
         addGroupsFromDatabase();
         for (UserGroup userGroup : groups) {
@@ -137,9 +140,10 @@ class User {
      * @param productID
      * @return the product with the given productID logged in its usergroup's
      *         database
+     * @throws RequestException
      * @throws NullPointerException if the user is not a member of any group
      */
-    public Product getProduct(String productID) {
+    public Product getProduct(String productID) throws RequestException {
         for (Product product : getAllProducts()) {
             if (product.getID() == productID) {
                 return product;

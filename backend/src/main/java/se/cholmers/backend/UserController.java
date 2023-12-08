@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import se.cholmers.backend.Model.StateManager;
 
-
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -227,8 +226,8 @@ public class UserController {
             ResponseEntity<List<Map<String,String>>> ResponseEntity = new ResponseEntity<List<Map<String,String>>>(stateManager.getAvaliableProducts(sessionID),HttpStatus.OK);
             // ResponseEntity<Map<String, String>> ResponseEntity = new ResponseEntity<Map<String, String>>(stateManager.getProducts(sessionID));
             return ResponseEntity;
-        // }catch(RequestException e){
-        //     return new ResponseEntity<Map<String, String>>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }catch(RequestException e){
+            return new ResponseEntity<List<Map<String, String>>>(HttpStatus.BAD_REQUEST);
         }finally{
 
         }

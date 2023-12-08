@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
@@ -18,8 +19,9 @@ class Order {
      * 
      * @param products
      * @param groupID
+     * @throws RequestException
      */
-    public Order(List<Product> products, String groupID) {
+    public Order(List<Product> products, String groupID) throws RequestException {
         new Order(groupID, LocalDateTime.now(), products);
     }
 
@@ -44,8 +46,9 @@ class Order {
      * as a timestamp. This is for creating a new order.
      * @param groupID
      * @param timeStamp
+     * @throws RequestException
      */
-    public Order(String groupID, List<String> productIDs, LocalDateTime timeStamp) {
+    public Order(String groupID, List<String> productIDs, LocalDateTime timeStamp) throws RequestException {
         this.timeStamp = timeStamp;
         for (String id: productIDs) {
             products.add(new Product(id, groupID));
@@ -60,15 +63,21 @@ class Order {
      * @param products
      * @param groupID
      * @param timeStamp
+     * @throws RequestException
      */
-    public Order(String groupID, LocalDateTime timeStamp, List<Product> products) {
+    public Order(String groupID, LocalDateTime timeStamp, List<Product> products) throws RequestException {
         this.products = products;
         this.timeStamp = timeStamp;
         List<String> productIDs = new ArrayList<>();
         for (Product product : products) {
             productIDs.add(product.getID());
         }
-        dbi.addOrder(groupID, timeStamp, productIDs);
+        try {
+            dbi.addOrder(groupID, timeStamp, productIDs);
+        } catch (NullPointerException e) {
+            throw new RequestException("could not add order to database due to" + e.getMessage());
+        }
+        
     }
 
     

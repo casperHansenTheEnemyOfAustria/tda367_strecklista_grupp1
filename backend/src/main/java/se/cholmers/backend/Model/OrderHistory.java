@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
@@ -17,8 +18,9 @@ class OrderHistory {
     /**
      * Constructor for creating a new orderhistory should never be used outside of
      * the UserGroup constructor.
+     * @throws RequestException
      */
-    OrderHistory(String groupID) {
+    OrderHistory(String groupID) throws RequestException {
         this.groupID = groupID;
         getOrderHistory();
     }
@@ -35,8 +37,9 @@ class OrderHistory {
 
     /**
      * @return a list of orders.
+     * @throws RequestException
      */
-    List<Order> getOrderHistory() {
+    List<Order> getOrderHistory() throws RequestException {
         List<Map<LocalDateTime, List<String>>> orderHistoryFromDB = dbi.getAllOrders(groupID);
         for (Map<LocalDateTime, List<String>> order : orderHistoryFromDB) {
             for(LocalDateTime time : order.keySet())
