@@ -107,4 +107,9 @@ class ProgramState {
         return output;
 
     }
+
+    public void increaseProductAmount(String productID, int amount) throws RequestException{
+        Product tempProd = currentUser.getProduct(productID);
+        tempProd.increaseAmount(amount);
+    }
 }
