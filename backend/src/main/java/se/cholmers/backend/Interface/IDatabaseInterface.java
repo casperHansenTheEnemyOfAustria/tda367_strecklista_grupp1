@@ -225,4 +225,14 @@ public interface IDatabaseInterface {
      * @return
      */
     public List<Map<LocalDateTime, List<String>>> getAllOrders(String committeeID);
+
+    /**
+     * Adds an order to the database
+     * precondition: The committee has to exist
+     * @param committeeID
+     * @param orderTime
+     * @param products
+     * @throws NullPointerException if a committee with the given id does not exist
+     */
+    public void addOrder(String committeeID, LocalDateTime orderTime, List<String> products);
 }

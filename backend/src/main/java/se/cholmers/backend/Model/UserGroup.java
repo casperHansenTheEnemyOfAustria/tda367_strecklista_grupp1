@@ -1,8 +1,10 @@
 package se.cholmers.backend.Model;
 
+import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,10 +31,12 @@ class UserGroup {
     public UserGroup(String name, Year year) {
         this.name = name;
         this.year = year;
-        this.orderHistory = new OrderHistory();
+        
 
         //TODO: Remove and handle in DB
         this.groupID = UUID.randomUUID().toString();
+
+        this.orderHistory = new OrderHistory(this.groupID);
         // code that initializes the object from the database
     }
 
@@ -48,7 +52,7 @@ class UserGroup {
         this.name = name;
         this.year = year;
         this.groupID = groupID;
-        this.orderHistory = new OrderHistory();
+        this.orderHistory = new OrderHistory(groupID);
     }
 
     /**
@@ -95,6 +99,7 @@ class UserGroup {
      * @return the order history for a group
      */
     public List<Order> getOrderHistory() {
+        
         return orderHistory.getOrderHistory();
     }
 

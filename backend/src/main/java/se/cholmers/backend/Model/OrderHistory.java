@@ -1,18 +1,28 @@
 package se.cholmers.backend.Model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import se.cholmers.backend.newDatabaseInterface;
+import se.cholmers.backend.Interface.IDatabaseInterface;
 
 class OrderHistory {
     List<Order> orders;
+    String groupID;
+    IDatabaseInterface dbi = newDatabaseInterface.getInstance();
+
 
     /**
      * Constructor for creating a new orderhistory should never be used outside of
      * the UserGroup constructor.
      */
-    OrderHistory() {
-        orders = new ArrayList<>();
+    OrderHistory(String groupID) {
+        this.groupID = groupID;
+        getOrderHistory();
     }
+
 
     /**
      * Appends a order to the history.
@@ -27,6 +37,11 @@ class OrderHistory {
      * @return a list of orders.
      */
     List<Order> getOrderHistory() {
+        List<Map<LocalDateTime, List<String>>> orderHistoryFromDB = dbi.getAllOrders(groupID);
+        for (Map<LocalDateTime, List<String>> order : orderHistoryFromDB) {
+            for(LocalDateTime time : order.keySet())
+                addOrderToHistory(new Order(groupID, order.get(time), time));
+        }
         return orders;
     }
 

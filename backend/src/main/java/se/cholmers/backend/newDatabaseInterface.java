@@ -470,4 +470,29 @@ public class newDatabaseInterface implements IDatabaseInterface {
         LocalDateTime transactionTime = LocalDateTime.of(date.toLocalDate(), time.toLocalTime());
         return transactionTime;
     }
+
+    @Override
+    public void addOrder(String groupID, LocalDateTime timeStamp, List<String> products) {
+        String transactionID = UUID.randomUUID().toString();
+        try{
+            insert("transaction", new HashMap<>(Map.of(
+                    "id", transactionID,
+                    "committee_id", groupID,
+                    "transaction_date", timeStamp.toLocalDate(),
+                    "transaction_time", timeStamp.toLocalTime())));
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        for(String productid : products){
+            try{
+                insert("transactionProduct", new HashMap<>(Map.of(
+                        "transaction_id", transactionID,
+                        "product_id", productid)));
+            }
+            catch (SQLException e){
+                throw new NullPointerException(e.getMessage());
+            }
+        }
+    }
 }
