@@ -10,8 +10,9 @@ import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
 class OrderHistory {
-    List<Order> orders;
-    String groupID;
+    private List<Order> orders;
+    private String groupID;
+
     IDatabaseInterface dbi = newDatabaseInterface.getInstance();
 
 
@@ -20,9 +21,14 @@ class OrderHistory {
      * the UserGroup constructor.
      * @throws RequestException
      */
-    OrderHistory(String groupID) throws RequestException {
+    OrderHistory(String groupID, String userId) throws RequestException {
         this.groupID = groupID;
-        getOrderHistory();
+        getOrderHistory(userId);
+    }
+
+    public OrderHistory(String groupID) {
+        this.groupID = groupID;
+        this.orders = new ArrayList<>();
     }
 
 
@@ -39,12 +45,22 @@ class OrderHistory {
      * @return a list of orders.
      * @throws RequestException
      */
-    List<Order> getOrderHistory() throws RequestException {
-        List<Map<LocalDateTime, List<String>>> orderHistoryFromDB = dbi.getAllOrders(groupID);
-        for (Map<LocalDateTime, List<String>> order : orderHistoryFromDB) {
+    List<Order> getOrderHistory(String userId) throws RequestException {
+        List<Map<LocalDateTime, String>> orderHistoryFromDB = dbi.getAllOrders(groupID, userId);
+        for (Map<LocalDateTime, String> order : orderHistoryFromDB) {
             for(LocalDateTime time : order.keySet())
-                addOrderToHistory(new Order(groupID, order.get(time), time));
+                addOrderToHistory(new Order(groupID, order.get(time), dbi.getOrder(groupID, userId, time), time));
         }
+        return orders;
+    }
+
+
+        List<Order> getOrderHistory() throws RequestException {
+        List<Map<LocalDateTime, String>> orderHistoryFromDB = dbi.getAllOrders(groupID);
+        for (Map<LocalDateTime, String> order : orderHistoryFromDB) {
+            for(LocalDateTime time : order.keySet())
+                for(String userId : dbi.getOrder(groupID,time).keySet())
+                    addOrderToHistory(new Order(groupID, userId, dbi.getOrder(groupID, userId, time), time));        }
         return orders;
     }
 

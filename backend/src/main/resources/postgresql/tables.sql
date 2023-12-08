@@ -28,6 +28,7 @@ CREATE TABLE Products (
 
 CREATE TABLE Transaction (
     id TEXT PRIMARY KEY,
+    committee_id TEXT REFERENCES Committees(id) NOT NULL,
     user_id TEXT REFERENCES Users(id) NOT NULL,
     product_id TEXT REFERENCES Products(id) NOT NULL,
     transaction_time TIME NOT NULL,

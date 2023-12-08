@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import javafx.util.Pair;
 import se.cholmers.backend.RequestException;
 
 public interface IDatabaseInterface {
@@ -217,14 +218,17 @@ public interface IDatabaseInterface {
      * @param orderTime
      * @return
      */
-    public List<String> getOrder(String committeeID, LocalDateTime orderTime);
+    public Map<String, List<String>>  getOrder(String committeeID, LocalDateTime orderTime);
+    public List<String> getOrder(String committeeID, String userId, LocalDateTime orderTime)
 
     /**
      * returns a list of all orders made by a committee ordered in chunks of time
      * @param committeeID
      * @return
      */
-    public List<Map<LocalDateTime, List<String>>> getAllOrders(String committeeID);
+    public List<Map<LocalDateTime, String>> getAllOrders(String committeeID);
+
+    public List<Map<LocalDateTime, String>> getAllOrders(String committeeID, String userID);
 
     /**
      * Adds an order to the database
@@ -234,5 +238,5 @@ public interface IDatabaseInterface {
      * @param products
      * @throws NullPointerException if a committee with the given id does not exist
      */
-    public void addOrder(String committeeID, LocalDateTime orderTime, List<String> products);
+    public void addOrder(String committeeID, String userID, LocalDateTime orderTime, List<String> products);
 }

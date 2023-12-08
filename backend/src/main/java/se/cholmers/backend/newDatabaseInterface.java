@@ -425,18 +425,34 @@ public class newDatabaseInterface implements IDatabaseInterface {
     }
 
     @Override
-    public List<String> getOrder(String userId, LocalDateTime orderTime) {
-        List<String> rv = new ArrayList<>();
-        List<Object> userTransactions = getUserTransactions(userId);
-        for(Object transactionId : userTransactions){
+    public Map<String, List<String>> getOrder(String committeeID, LocalDateTime orderTime) {
+        Map<String, List<String>> rv = new HashMap<>();
+        List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
+        for(Object transactionId : committeeTransactions){
             LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
-
-            rv = getTransactionProducts((String) transactionId);
-            
+            if(transactionTime.equals(orderTime)){
+                rv.put(getTransactionUserID((String) transactionId), getTransactionProducts((String) transactionId));
+            }
         }
         return rv;
     }
 
+    @Override
+    public List<String> getOrder(String committeeID, String userId, LocalDateTime orderTime) {
+       List<String> rv = new ArrayList<String>();
+        List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
+        for(Object transactionId : committeeTransactions){
+            LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
+            if(transactionTime.equals(orderTime)){
+                rv = getTransactionProducts((String) transactionId);
+            }
+        }
+        return rv;
+    }
+
+    private String getTransactionUserID(String transactionID){
+        return selectSingleValue("transaction", "user_id", new Pair<>("id", transactionID));
+    }
     private List<String> getTransactionProducts(String transactionID){
         List<String> rv = new ArrayList<>();
         List<Object> transactionProducts = selectWhere("transaction", "transaction_id", transactionID).get("product_id");
@@ -446,23 +462,37 @@ public class newDatabaseInterface implements IDatabaseInterface {
         return rv;
     }
 
-    private List<Object> getUserTransactions(String userId) {
-        List<Object> committeeTransactions = selectWhere("transaction", "user_id", userId).get("id");
+    private List<Object> getCommitteeTransactions(String committeeID) {
+        List<Object> committeeTransactions = selectWhere("transaction", "committee_id", committeeID).get("id");
         return committeeTransactions;
     }
 
     @Override
-    public List<Map<LocalDateTime, List<String>>> getAllOrders(String userId) {
-        List<Object> committeeTransactions = getUserTransactions(userId);
-        List<Map<LocalDateTime, List<String>>> rv = new ArrayList<>();
+    public List<Map<LocalDateTime, String>> getAllOrders(String committeeID) {
+        List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
+         List<Map<LocalDateTime, String>>  rv = new ArrayList<>();
         for(Object transactionId : committeeTransactions){
             LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
-            Map<LocalDateTime, List<String>> map = new HashMap<>();
-            map.put(transactionTime, getTransactionProducts(userId));
+            Map<LocalDateTime, String> map = new HashMap<>();
+            map.put(transactionTime, committeeID);
             rv.add(map);
         }
         return rv;
     }
+
+    @Override
+    public List<Map<LocalDateTime, String>> getAllOrders(String committeeID, String userID) {
+        List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
+        List<Map<LocalDateTime, String>> rv = new ArrayList<>();
+        for(Object transactionId : committeeTransactions){
+            LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
+            Map<LocalDateTime, String> map = new HashMap<>();
+            map.put(transactionTime, committeeID);
+            rv.add(map);
+        }
+        return rv;
+    }
+
 
     private LocalDateTime getTransactionDateTime(String transactionId) {
         Time time = Time.valueOf(selectSingleValue("transaction", "transaction_time", new Pair<>("id",  transactionId)));
@@ -472,13 +502,14 @@ public class newDatabaseInterface implements IDatabaseInterface {
     }
 
     @Override
-    public void addOrder(String userID, LocalDateTime timeStamp, List<String> products) {
+    public void addOrder(String groupID, String userID, LocalDateTime timeStamp, List<String> products) {
         for(String product : products){
             try{
                 insert("transaction", new HashMap<>(Map.of(
                         "id", UUID.randomUUID().toString(),
                         "product_id", product,
                         "user_id", userID,
+                        "committee_id", groupID,
                         "transaction_time", timeStamp.toLocalTime(),
                         "transaction_date", timeStamp.toLocalDate())));
             }
