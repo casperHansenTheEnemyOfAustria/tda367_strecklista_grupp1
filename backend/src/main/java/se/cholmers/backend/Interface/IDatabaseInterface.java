@@ -213,16 +213,16 @@ public interface IDatabaseInterface {
     public void updateProductAmount(String productID, String amount);
 
     /**
-     * returns a list of products ordered by a committee at a certain time (an order)
+     * returns a list of products ordered by a committee at a certain time (an order) and a user for the list if not provided
      * @param committeeID
      * @param orderTime
      * @return
      */
     public Map<String, List<String>>  getOrder(String committeeID, LocalDateTime orderTime);
-    public List<String> getOrder(String committeeID, String userId, LocalDateTime orderTime)
+    public List<String> getOrder(String committeeID, String userId, LocalDateTime orderTime);
 
     /**
-     * returns a list of all orders made by a committee ordered in chunks of time
+     * returns a list of all orders made by a committee ordered in chunks of time and a user for the list if not provided
      * @param committeeID
      * @return
      */
@@ -232,8 +232,9 @@ public interface IDatabaseInterface {
 
     /**
      * Adds an order to the database
-     * precondition: The committee has to exist
+     * precondition: The committee has to exist and the products has to exist and the user has to exist and be in the committee
      * @param committeeID
+     * @param userID
      * @param orderTime
      * @param products
      * @throws NullPointerException if a committee with the given id does not exist

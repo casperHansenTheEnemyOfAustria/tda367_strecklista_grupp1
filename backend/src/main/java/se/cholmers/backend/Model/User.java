@@ -161,7 +161,13 @@ class User {
         return null;
     }
 
+    /**
+     * this method gets a users order history from all its groups
+     * @return a list of lists of orders'
+     * @throws RequestException if the user is not a member of any group
+     */
     public List<List<Order>> getOrderHistory() throws RequestException {
+        addGroupsFromDatabase();
         List<List<Order>> orderHistory = new ArrayList<>();
         for(UserGroup group : groups){
             orderHistory.add(group.getOrderHistory(id));
