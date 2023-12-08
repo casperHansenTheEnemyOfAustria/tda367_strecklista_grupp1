@@ -15,7 +15,12 @@ public class OrderHistoryTests {
 
     @BeforeAll
     void setup() {
-        tOrderHistory = new OrderHistory();
+        try {
+            tOrderHistory = new OrderHistory("test");
+        } catch (RequestException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -42,6 +47,11 @@ public class OrderHistoryTests {
 
     @Test
     void ableToGetOrderHistoryWhereOrdersAreNull() {
-        tOrderHistory.getOrderHistory();
+        try {
+            tOrderHistory.getOrderHistory();
+        } catch (RequestException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

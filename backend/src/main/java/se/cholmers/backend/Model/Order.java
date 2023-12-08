@@ -13,6 +13,11 @@ class Order {
     private List<Product> products;
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
 
+    //for testing
+    public Order(List<Product> products){
+        this.products = products;
+        this.timeStamp = LocalDateTime.now();
+    }
     /**
      * Takes a list of products and creates an order based with the current time as
      * a timestamp. This is for creating a new order.
