@@ -23,25 +23,25 @@ class Order {
      * a timestamp. This is for creating a new order.
      * 
      * @param products
-     * @param groupID
+     * @param userId
      * @throws RequestException
      */
-    public Order(List<Product> products, String groupID) throws RequestException {
-        new Order(groupID, LocalDateTime.now(), products);
+    public Order(List<Product> products, String userId) throws RequestException {
+        new Order(userId, LocalDateTime.now(), products);
     }
 
     /**
      * Takes a list of productIDs and creates an order based with the current time  
      * as a timestamp. This is for getting an existing order from the database.
-     * @param groupID
+     * @param userId
      * @param timeStamp
      */
-    public Order(String groupID, LocalDateTime timeStamp) {
+    public Order(String userId, LocalDateTime timeStamp) {
 
     this.timeStamp = timeStamp;
-    List<String> productIds = dbi.getOrder(groupID, timeStamp);
+    List<String> productIds = dbi.getOrder(userId, timeStamp);
     for (String id: productIds) {
-        products.add(new Product(id, groupID));
+        products.add(new Product(id, userId));
     }
     }
 
@@ -49,16 +49,16 @@ class Order {
     /**
      * Takes a list of productIDs and creates an order based with the current time  
      * as a timestamp. This is for creating a new order.
-     * @param groupID
+     * @param userId
      * @param timeStamp
      * @throws RequestException
      */
-    public Order(String groupID, List<String> productIDs, LocalDateTime timeStamp) throws RequestException {
+    public Order(String userId, List<String> productIDs, LocalDateTime timeStamp) throws RequestException {
         this.timeStamp = timeStamp;
         for (String id: productIDs) {
-            products.add(new Product(id, groupID));
+            products.add(new Product(id, userId));
         }
-        new Order(groupID, timeStamp, products);
+        new Order(userId, timeStamp, products);
     }
 
     /**
@@ -66,11 +66,11 @@ class Order {
      * a timestamp. This is for creating a new order.
      * 
      * @param products
-     * @param groupID
+     * @param userId
      * @param timeStamp
      * @throws RequestException
      */
-    public Order(String groupID, LocalDateTime timeStamp, List<Product> products) throws RequestException {
+    public Order(String userId, LocalDateTime timeStamp, List<Product> products) throws RequestException {
         this.products = products;
         this.timeStamp = timeStamp;
         List<String> productIDs = new ArrayList<>();
@@ -78,7 +78,7 @@ class Order {
             productIDs.add(product.getID());
         }
         try {
-            dbi.addOrder(groupID, timeStamp, productIDs);
+            dbi.addOrder(userId, timeStamp, productIDs);
         } catch (NullPointerException e) {
             throw new RequestException("could not add order to database due to" + e.getMessage());
         }

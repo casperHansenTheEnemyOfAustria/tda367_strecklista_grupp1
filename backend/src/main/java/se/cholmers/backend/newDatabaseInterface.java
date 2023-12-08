@@ -425,10 +425,10 @@ public class newDatabaseInterface implements IDatabaseInterface {
     }
 
     @Override
-    public List<String> getOrder(String committeeID, LocalDateTime orderTime) {
+    public List<String> getOrder(String userId, LocalDateTime orderTime) {
         List<String> rv = new ArrayList<>();
-        List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
-        for(Object transactionId : committeeTransactions){
+        List<Object> userTransactions = getUserTransactions(userId);
+        for(Object transactionId : userTransactions){
             LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
 
             rv = getTransactionProducts((String) transactionId);
@@ -446,19 +446,19 @@ public class newDatabaseInterface implements IDatabaseInterface {
         return rv;
     }
 
-    private List<Object> getCommitteeTransactions(String committeeID) {
-        List<Object> committeeTransactions = selectWhere("transaction", "committee_id", committeeID).get("id");
+    private List<Object> getUserTransactions(String userId) {
+        List<Object> committeeTransactions = selectWhere("transaction", "user_id", userId).get("id");
         return committeeTransactions;
     }
 
     @Override
-    public List<Map<LocalDateTime, List<String>>> getAllOrders(String committeeID) {
-        List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
+    public List<Map<LocalDateTime, List<String>>> getAllOrders(String userId) {
+        List<Object> committeeTransactions = getUserTransactions(userId);
         List<Map<LocalDateTime, List<String>>> rv = new ArrayList<>();
         for(Object transactionId : committeeTransactions){
             LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
             Map<LocalDateTime, List<String>> map = new HashMap<>();
-            map.put(transactionTime, getTransactionProducts(committeeID));
+            map.put(transactionTime, getTransactionProducts(userId));
             rv.add(map);
         }
         return rv;
@@ -472,13 +472,13 @@ public class newDatabaseInterface implements IDatabaseInterface {
     }
 
     @Override
-    public void addOrder(String groupID, LocalDateTime timeStamp, List<String> products) {
+    public void addOrder(String userID, LocalDateTime timeStamp, List<String> products) {
         for(String product : products){
             try{
                 insert("transaction", new HashMap<>(Map.of(
                         "id", UUID.randomUUID().toString(),
                         "product_id", product,
-                        "committee_id", groupID,
+                        "user_id", userID,
                         "transaction_time", timeStamp.toLocalTime(),
                         "transaction_date", timeStamp.toLocalDate())));
             }

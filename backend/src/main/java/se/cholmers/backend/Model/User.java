@@ -1,5 +1,6 @@
 package se.cholmers.backend.Model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,7 @@ class User {
     private Map<String, Float> saldo = new HashMap<>();
     private Set<UserGroup> groups = new HashSet<>();
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
+    private OrderHistory orderHistory;
 
     /**
      * This is the constructor for when recreating users from the database
@@ -35,6 +37,7 @@ class User {
         this.nick = dbi.getUserNick(userID);
         this.phoneNumber = dbi.getUserPhoneNumber(userID);
         addGroupsFromDatabase();
+        this.orderHistory = new OrderHistory(userID);
     }
 
     /**
@@ -67,6 +70,8 @@ class User {
         this.nick = nick;
         this.id = dbi.authenticateUser(nick, password);
         addGroupsFromDatabase();
+        this.orderHistory = new OrderHistory(this.id);
+        
 
     }
 
@@ -109,7 +114,7 @@ class User {
 
         try{
             dbi.updateUserSaldo(id, product.getGroupID(), currentSaldo.toString());
-            product.decreaseAmount(numberOfProducts);
+            product.decreaseAmount(numberOfProducts);;
         }catch(NullPointerException e){
             throw new RequestException(id + "does not exist or" + product.getGroupID() + "does not exist");
         }catch(IllegalArgumentException e){
@@ -151,4 +156,26 @@ class User {
         }
         return null;
     }
+
+        //TODO add to db
+    /**
+     * Adds an order to the group's orderhistory
+     * 
+     * @param order
+     */
+    public void addOrderToHistory(Order order) {
+        orderHistory.addOrderToHistory(order);
+    }
+
+    /**
+     * First updates the history from the database.
+     * 
+     * @return the order history for a group
+     * @throws RequestException
+     */
+    public List<Order> getOrderHistory() throws RequestException {
+        
+        return orderHistory.getOrderHistory();
+    }
+
 }

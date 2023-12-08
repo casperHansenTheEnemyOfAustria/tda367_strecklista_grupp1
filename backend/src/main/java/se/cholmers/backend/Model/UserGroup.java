@@ -19,7 +19,6 @@ class UserGroup {
     private Year year;
     private String name;
     private String groupID;
-    private OrderHistory orderHistory;
 
     /**
      * Creates a new UserGroup with a given name and year.
@@ -37,7 +36,7 @@ class UserGroup {
         //TODO: Remove and handle in DB
         this.groupID = UUID.randomUUID().toString();
 
-        this.orderHistory = new OrderHistory(this.groupID);
+
         // code that initializes the object from the database
     }
 
@@ -54,7 +53,7 @@ class UserGroup {
         this.name = name;
         this.year = year;
         this.groupID = groupID;
-        this.orderHistory = new OrderHistory(groupID);
+
     }
 
     /**
@@ -85,26 +84,6 @@ class UserGroup {
     }
 
 
-    //TODO add to db
-    /**
-     * Adds an order to the group's orderhistory
-     * 
-     * @param order
-     */
-    public void addOrderToHistory(Order order) {
-        orderHistory.addOrderToHistory(order);
-    }
-
-    /**
-     * First updates the history from the database.
-     * 
-     * @return the order history for a group
-     * @throws RequestException
-     */
-    public List<Order> getOrderHistory() throws RequestException {
-        
-        return orderHistory.getOrderHistory();
-    }
 
     /**
      * 
