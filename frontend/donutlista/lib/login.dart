@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'homescreen.dart';
+import 'package:http/http.dart' as http;
+
 
 
 class LoginPage extends StatefulWidget {
@@ -14,18 +18,18 @@ class LoginPage extends StatefulWidget {
 class LoginState extends State<LoginPage> { 
   final apiUrl = "localhost:8080";
 
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
   final snackBar = SnackBar(
     content: Text('Failed to login!'),
 );
 
 
  Future<void> sendPostRequest() async {
+    var usernameController = UsernameField;
+    var passwordController = PasswordField;
+    
     var content = {
-        "userName": usernameController.text,
-        "password": passwordController.text
+        "userName": usernameController,
+        "password": passwordController
       };
     final response = await http.post(
       
@@ -64,25 +68,13 @@ class LoginState extends State<LoginPage> {
             const Padding(
               //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
               padding: EdgeInsets.symmetric(horizontal: 15),
-              child: TextField(
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Email',
-                    hintText: 'Enter valid email id as abc@gmail.com'),
-              ),
+              child: UsernameField(),
             ),
             const Padding(
               padding: EdgeInsets.only(
                   left: 15.0, right: 15.0, top: 15, bottom: 0),
               //padding: EdgeInsets.symmetric(horizontal: 15),
-              child: TextField(
-
-                obscureText: true,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Password',
-                    hintText: 'Enter secure password'),
-              ),
+              child: PasswordField(),
             ),
             TextButton(
               onPressed: (){
@@ -100,11 +92,7 @@ class LoginState extends State<LoginPage> {
               //    color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: TextButton(
                 onPressed: () {
-                  Navigator.push(
-                      
-                      // TODO: Add if correct login & password. Else: Reload page? 
-
-                      context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+                  sendPostRequest();
                 },
                 child: const Text(
                   'Login',
@@ -119,6 +107,55 @@ class LoginState extends State<LoginPage> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class PasswordField extends StatefulWidget {
+  const PasswordField({
+    super.key,
+  });
+
+  @override
+  State<PasswordField> createState() => _PasswordFieldState();
+}
+
+class _PasswordFieldState extends State<PasswordField> {
+  final passwordController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: passwordController, 
+      obscureText: true,
+      decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Lösenord',
+          hintText: 'Skriv in ditt lösenord'),
+    );
+  }
+}
+
+class UsernameField extends StatefulWidget {
+  const UsernameField({
+    super.key,
+  });
+
+  @override
+  State<UsernameField> createState() => _UsernameFieldState();
+}
+
+class _UsernameFieldState extends State<UsernameField> {
+  final usernameController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: usernameController, 
+      decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Nick',
+          hintText: 'Skriv in ditt nickname'),      
     );
   }
 }
