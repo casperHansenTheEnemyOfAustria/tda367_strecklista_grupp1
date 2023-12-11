@@ -20,7 +20,7 @@ class PurchaseButtons extends StatelessWidget {
             child: TextButton(
               
               style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll<Color>(const Color.fromARGB(255, 183, 110, 0)),
+                backgroundColor: MaterialStatePropertyAll<Color>(Color.fromARGB(255, 98, 98, 98)),
                 foregroundColor: MaterialStateProperty.all<Color>(Colors.white)
                 
                 ),
@@ -32,7 +32,7 @@ class PurchaseButtons extends StatelessWidget {
           Expanded(
             child:TextButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll<Color>(Colors.green),
+                backgroundColor: MaterialStatePropertyAll<Color>(Color.fromARGB(255, 76, 175, 172)),
                 foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
               ),
               onPressed: () { },
