@@ -37,8 +37,18 @@ class BackendApplicationTests {
 	}
 
 	@Test
+	void createUser() throws Exception {
+		
+		mvc.perform(post("/createUser/1234/1234")).andExpect(status().isOk());
+
+	}
+
+
+	@Test
 	void testLogin() throws Exception {
+		
 		mvc.perform(get("/login/1234/1234")).andExpect(status().isOk());
+
 	}
 
 }

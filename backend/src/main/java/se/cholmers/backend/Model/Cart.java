@@ -2,9 +2,11 @@ package se.cholmers.backend.Model;
 
 import java.util.HashMap;
 import java.util.Map;
+import se.cholmers.backend.Model.Interfaces.ICart;
+import se.cholmers.backend.Model.Interfaces.IProduct;
 
-class Cart {
-    private Map<Product, Integer> itemsInCart;
+class Cart implements ICart {
+    private Map<IProduct, Integer> itemsInCart;
 
     /**
      * Constructor for Cart, initializes the internal Map.
@@ -13,12 +15,8 @@ class Cart {
         itemsInCart = new HashMap<>();
     }
 
-    /**
-     * Adds a given product to the cart
-     * 
-     * @throws NullPointerException
-     */
-    public void addToCart(Product product) {
+    @Override
+    public void addToCart(IProduct product) {
         Integer currentInCart;
         currentInCart = itemsInCart.get(product);
         try {
@@ -28,21 +26,13 @@ class Cart {
         }
     }
 
-    /**
-     * Returns a map of all the products and amount of each contained in the cart.
-     * 
-     * @return
-     */
-    public Map<Product, Integer> getCart() {
+    @Override
+    public Map<IProduct, Integer> getCart() {
         return itemsInCart;
     }
 
-    /**
-     * Removes a given product from the cart.
-     * 
-     * @param product
-     */
-    public void removeFromCart(Product product) {
+    @Override
+    public void removeFromCart(IProduct product) {
         Integer currentInCart = itemsInCart.get(product);
         try {
             if (currentInCart > 0) {
@@ -54,16 +44,12 @@ class Cart {
 
     }
 
-    /**
-     * Returns a map of products ans their amount in the cart as a string map.
-     * 
-     * @return map of product name and amount
-     */
     public Map<String, String> toStringMap() {
         Map<String, String> output = new HashMap<String, String>();
-        for (Product p : itemsInCart.keySet()) {
+        for (IProduct p : itemsInCart.keySet()) {
             try {
                 output.put(p.getName(), itemsInCart.get(p).toString());
+                System.out.println(p.getName() + " " + itemsInCart.get(p).toString());
             } catch (NullPointerException e) {
                 // TODO: handle exception
             }
@@ -71,9 +57,7 @@ class Cart {
         return output;
     }
 
-    /**
-     * Clears the cart from all items.
-     */
+    @Override
     public void empty() {
         this.itemsInCart = new HashMap<>();
     }

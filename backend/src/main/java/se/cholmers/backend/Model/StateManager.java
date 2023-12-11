@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import se.cholmers.backend.Model.Interfaces.IProgramState;
+import se.cholmers.backend.Model.Interfaces.IUser;
 import se.cholmers.backend.RequestException;
 
 public class StateManager {
-    private Map<String, ProgramState> states;
+    private Map<String, IProgramState> states;
     private static StateManager instance;
 
     /**
@@ -38,8 +40,8 @@ public class StateManager {
      * @throws RequestException if the user login fails
      */
     public String login(String userName, String password) throws RequestException{
-        User user = new User(userName, userName, password);
-        ProgramState state = new ProgramState(user);
+        IUser user = new User(userName, userName, password);
+        IProgramState state = new ProgramState(user);
 
         String stateID = UUID.randomUUID().toString();
         states.put(stateID, state);
@@ -125,7 +127,7 @@ public class StateManager {
      * @return a list of the product ids
      * @throws RequestException
      */
-    public List<Map<String,String>> getAvaliableProducts(String stateID) throws RequestException {
+    public List<Map<String,String>> getAvalaiableProducts(String stateID) throws RequestException {
         return states.get(stateID).getAllProducts();
     } 
 

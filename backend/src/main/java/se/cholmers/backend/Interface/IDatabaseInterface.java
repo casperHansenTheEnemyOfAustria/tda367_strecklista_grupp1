@@ -34,6 +34,20 @@ public interface IDatabaseInterface {
     public String createProduct(String productName, Float price, String committeeid, Integer amount)
             throws RequestException;
 
+        
+        /**
+         * Deletes a row from a table in the database
+         * precondition: There has to be a database and the row has to exist
+         * 
+         * @param tableName
+         * @param columnValuePair
+         * @throws RequestException if the row does not exist
+         */
+
+    public void delete(String tableName, Pair<String, String> columnValuePair) 
+                throws RequestException;
+
+
     /**
      * Creates a user in the database
      * precondition: There has to be a database and the user has to not exist
@@ -88,7 +102,7 @@ public interface IDatabaseInterface {
      * @param nick
      * @param password
      * @return userID
-     * @throws NullPointerException if a user with the given name and password does
+     * @throws RequestException if a user with the given name and password does
      *                              not exist
      */
     public String authenticateUser(String nick, String password) throws RequestException;
@@ -186,7 +200,7 @@ public interface IDatabaseInterface {
      * @throws NullPointerException if a user with the given id does not exist or
      *                              the committee does not exist
      */
-    public void putUserInCommittee(String username, String committeeID, Float saldo) throws RequestException;
+    public void putUserInCommittee(String username, String committeeID, float saldo) throws RequestException;
 
     /**
      * Updates the saldo of a user in a committee
@@ -200,7 +214,7 @@ public interface IDatabaseInterface {
      *                                  or the committee does not exist
      * @throws IllegalArgumentException if the user is not in the committee
      */
-    public void updateUserSaldo(String id, String committeeId, String saldo);
+    public void updateUserSaldo(String id, String committeeId, String saldo) throws NullPointerException, IllegalArgumentException;
 
     /**
      * Updates the amount of a product

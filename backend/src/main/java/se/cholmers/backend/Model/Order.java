@@ -1,5 +1,7 @@
 package se.cholmers.backend.Model;
 
+import se.cholmers.backend.Model.Interfaces.IProduct;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,13 +10,13 @@ import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
-class Order {
+public class Order {
     private LocalDateTime timeStamp;
-    private List<Product> products;
+    private List<IProduct> products;
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
 
     //for testing
-    public Order(List<Product> products){
+    public Order(List<IProduct> products){
         this.products = products;
         this.timeStamp = LocalDateTime.now();
     }
@@ -26,7 +28,7 @@ class Order {
      * @param userId
      * @throws RequestException
      */
-    public Order(List<Product> products, String groupId, String userId) throws RequestException {
+    public Order(List<IProduct> products, String groupId, String userId) throws RequestException {
         new Order(groupId, userId, LocalDateTime.now(), products);
     }
 
@@ -70,11 +72,11 @@ class Order {
      * @param timeStamp
      * @throws RequestException
      */
-    public Order(String groupID, String userId, LocalDateTime timeStamp, List<Product> products) throws RequestException {
+    public Order(String groupID, String userId, LocalDateTime timeStamp, List<IProduct> products) throws RequestException {
         this.products = products;
         this.timeStamp = timeStamp;
         List<String> productIDs = new ArrayList<>();
-        for (Product product : products) {
+        for (IProduct product : products) {
             productIDs.add(product.getID());
         }
         try {
@@ -91,7 +93,7 @@ class Order {
         return timeStamp.toString();
     }
 
-    public List<Product> getProducts() {
+    public List<IProduct> getProducts() {
         return products;
     }
 }

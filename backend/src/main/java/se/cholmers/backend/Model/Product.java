@@ -8,8 +8,9 @@ import se.cholmers.backend.DatabaseInterface;
 import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
+import se.cholmers.backend.Model.Interfaces.IProduct;
 
-class Product {
+public class Product implements IProduct {
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
     private Integer amount;
     private String name;
@@ -29,10 +30,15 @@ class Product {
         this.cost = cost;
         this.groupID = groupID;
         this.amount = 0;
+    
+        
 
         //catches the already exists error and does nothing since its already been created
-      
+        try {
             dbi.createProduct(name, cost, groupID, 0);
+        } catch (NullPointerException e){
+            throw new RequestException("Product can't contatin null values");
+        }
         
     }
 
@@ -49,29 +55,17 @@ class Product {
         this.amount = dbi.getProductAmount(productID);    
     }
 
-    /**
-     * 
-     * @return the groupID of the UserGroup a certain product belongs to.
-     */
+    @Override
     public String getGroupID() {
         return groupID;
     }
 
-    /**
-     * 
-     * @return the cost of a certain product.
-     */
+    @Override
     public Float getCost() {
         return cost;
     }
  
-    /**
-     * Increases the amount of a product by a certain amount.
-     * precondition: The amount has to be positive
-     * @param amount
-     * @throws RequestException
-     * postcondition: The amount of the product is increased by the given amount
-     */
+    @Override
     public void increaseAmount(int amount) throws RequestException {
         if (amount < 0) {
             throw new RequestException("Amount cannot be negative");
@@ -80,13 +74,7 @@ class Product {
         dbi.updateProductAmount(productID, this.amount.toString());
     }
 
-    /**
-     * Decreases the amount of a product by a certain amount. Should be called upon purchase.
-     * precondition: The amount has to be positive
-     * @param amount
-     * @throws RequestException
-     * postcondition: The amount of the product is decreased by the given amount
-     */
+    @Override
     public void decreaseAmount(int amount) throws RequestException {
         if (amount < 0) {
             throw new RequestException("Amount cannot be negative");
@@ -95,29 +83,23 @@ class Product {
         dbi.updateProductAmount(productID, this.amount.toString());
     }
 
+    @Override
     public void increaseAmount() {
         amount++;
         dbi.updateProductAmount(amount.toString(), productID);
     }
 
-    /**
-     * Gets the ID of a product
-     * 
-     * @return the ID of the product
-     */
+    @Override
     public String getID() {
         return productID;
     }
 
-    /**
-     * Gets the name of a product
-     * 
-     * @return the name of the product
-     */
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getAmount(){
         dbi.updateProductAmount(productID, amount.toString());
         return amount.toString();

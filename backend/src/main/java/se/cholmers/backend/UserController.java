@@ -49,11 +49,17 @@ public class UserController {
      */
     @RequestMapping(value  = "/getSaldo", method = RequestMethod.POST)
     @ResponseBody
+<<<<<<< HEAD
     public ResponseEntity<String>getSaldo(@RequestBody LoggedInUserRequest freq) {   
         try{
             String sessionID = freq.getSessionID();
             String groupId = freq.getData("groupId");
             ResponseEntity<String> saldo = new ResponseEntity<String>(stateManager.getSaldo(sessionID, groupId), HttpStatus.OK);
+=======
+    public Response<String>getSaldo(@PathVariable("sessionID") String sessionID, @PathVariable("groupID") String groupID) {
+        try{
+            Response<String> saldo = new Response<String>(stateManager.getSaldo(sessionID, groupID));
+>>>>>>> origin/testing-and-contracts
      
             return saldo;
         }catch(RequestException e){
@@ -223,11 +229,18 @@ public class UserController {
         String sessionID = freq.getSessionID();
         
         try{
+<<<<<<< HEAD
             ResponseEntity<List<Map<String,String>>> ResponseEntity = new ResponseEntity<List<Map<String,String>>>(stateManager.getAvaliableProducts(sessionID),HttpStatus.OK);
             // ResponseEntity<Map<String, String>> ResponseEntity = new ResponseEntity<Map<String, String>>(stateManager.getProducts(sessionID));
             return ResponseEntity;
         }catch(RequestException e){
             return new ResponseEntity<List<Map<String, String>>>(HttpStatus.BAD_REQUEST);
+=======
+            Response<Map<String, String>> response = new Response<Map<String, String>>(stateManager.getProducts(sessionID));
+            return response;
+        // }catch(RequestException e){
+        //     return new Response<Map<String, String>>(null, e.getMessage());
+>>>>>>> origin/testing-and-contracts
         }finally{
 
         }
