@@ -7,6 +7,8 @@ Planned improvements are:
 - Better tracking of inventory
 - TBD
 
+## -- Checkout DEV branch, main only used for project structure initialization. --
+
 ## Group members:
 - Simon Westlin Green
 - Casper Hansen
