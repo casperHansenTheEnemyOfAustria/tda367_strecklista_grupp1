@@ -127,7 +127,7 @@ public class StateManager {
      * @return a list of the product ids
      * @throws RequestException
      */
-    public List<Map<String,String>> getAvalaiableProducts(String stateID) throws RequestException {
+    public List<Map<String,String>> getAvailableProducts(String stateID) throws RequestException {
         return states.get(stateID).getAllProducts();
     } 
 
