@@ -1,6 +1,8 @@
+// ignore: file_names
 //TODO: Remove unused imports
 // ignore_for_file: unused_import
 
+import 'package:donutlista/transactionList.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
@@ -15,9 +17,8 @@ class _TransactionState extends State<TransactionPage> {
  return Scaffold(
  drawer: NavDrawer(),
  appBar: AppBar(
- title: Text("Transactions"),
+ title: const Text("Transactions"),
  ),
- body: Center(child: Text("Transactions")),
- );
+ body: const TransactionList());
  }
 }
