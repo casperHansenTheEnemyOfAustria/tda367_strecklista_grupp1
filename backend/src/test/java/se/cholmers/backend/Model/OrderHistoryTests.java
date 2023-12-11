@@ -13,17 +13,12 @@ import se.cholmers.backend.RequestException;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class OrderHistoryTests {
-    IOrderHistory tIOrderHistory;
+    IOrderHistory tOrderHistory;
 
     @BeforeAll
     void setup() {
-<<<<<<< HEAD
-     
-            tOrderHistory = new OrderHistory("test");
+        tOrderHistory = new OrderHistory("test");
 
-=======
-        tIOrderHistory = new OrderHistory();
->>>>>>> origin/testing-and-contracts
     }
 
     @Test
@@ -34,7 +29,7 @@ public class OrderHistoryTests {
               List<IProduct> tProductList = new ArrayList<>();
         tProductList.add(tProduct);
         Order tOrder = new Order(tProductList);
-        tIOrderHistory.addOrderToHistory(tOrder);
+        tOrderHistory.addOrderToHistory(tOrder);
         } catch (RequestException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -45,20 +40,16 @@ public class OrderHistoryTests {
     @Test
     void ableToAddOrdersToHistoryWithNullProducts() {
         Order tOrder = new Order(null);
-        tIOrderHistory.addOrderToHistory(tOrder);
+        tOrderHistory.addOrderToHistory(tOrder);
     }
 
     @Test
     void ableToGetOrderHistoryWhereOrdersAreNull() {
-<<<<<<< HEAD
         try {
             tOrderHistory.getOrderHistory();
         } catch (RequestException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-=======
-        tIOrderHistory.getOrderHistory();
->>>>>>> origin/testing-and-contracts
     }
 }

@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import se.cholmers.backend.Model.Interfaces.IOrder;
 import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
-import se.cholmers.backend.Model.Interfaces.IOrder;
 import se.cholmers.backend.Model.Interfaces.IOrderHistory;
 import se.cholmers.backend.Model.Interfaces.IProduct;
 
@@ -46,15 +46,17 @@ class OrderHistory implements IOrderHistory{
     }
 
     /**
-     * @return a list of orders.
+     * @return
      * @throws RequestException
      */
-    public void getOrderHistory(String userId) throws RequestException {
+    @Override
+    public List<IOrder> getOrderHistory(String userId) throws RequestException {
         List<Map<LocalDateTime, String>> orderHistoryFromDB = dbi.getAllOrders(groupID, userId);
         for (Map<LocalDateTime, String> order : orderHistoryFromDB) {
             for(LocalDateTime time : order.keySet())
                 addOrderToHistory(new Order(groupID, order.get(time), dbi.getOrder(groupID, userId, time), time));
         }
+        return null;
     }
 
     @Override

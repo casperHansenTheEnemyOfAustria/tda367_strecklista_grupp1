@@ -13,11 +13,12 @@ public interface IOrderHistory {
      */
     void addOrderToHistory(Order order);
 
+    List<Order> getOrderHistory() throws RequestException;
+
     /**
      * @return a list of orders.
      * @throws RequestException
      */
-    List<Order> getOrderHistory() throws RequestException;
 
     List<String> toStringList();
 
