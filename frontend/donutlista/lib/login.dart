@@ -10,7 +10,39 @@ class LoginPage extends StatefulWidget {
   LoginState createState() => LoginState();
 }
 
-class LoginState extends State<LoginPage> {
+
+class LoginState extends State<LoginPage> { 
+  final apiUrl = "localhost:8080";
+
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  final snackBar = SnackBar(
+    content: Text('Failed to login!'),
+);
+
+
+ Future<void> sendPostRequest() async {
+    var content = {
+        "userName": usernameController.text,
+        "password": passwordController.text
+      };
+    final response = await http.post(
+      
+      Uri.http(apiUrl, '/login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(content),
+      );
+  
+    if (response.statusCode == 200) {
+      Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+      print(response.body);
+    } else {
+      snackBar;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

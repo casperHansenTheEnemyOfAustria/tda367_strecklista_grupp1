@@ -1,7 +1,10 @@
 package se.cholmers.backend.Interface;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
+import javafx.util.Pair;
 import se.cholmers.backend.RequestException;
 
 public interface IDatabaseInterface {
@@ -207,5 +210,34 @@ public interface IDatabaseInterface {
      * @param amount
      * @throws NullPointerException if a product with the given id does not exist
      */
-    public void updateProductAmount(int productID, String amount);
+    public void updateProductAmount(String productID, String amount);
+
+    /**
+     * returns a list of products ordered by a committee at a certain time (an order) and a user for the list if not provided
+     * @param committeeID
+     * @param orderTime
+     * @return
+     */
+    public Map<String, List<String>>  getOrder(String committeeID, LocalDateTime orderTime);
+    public List<String> getOrder(String committeeID, String userId, LocalDateTime orderTime);
+
+    /**
+     * returns a list of all orders made by a committee ordered in chunks of time and a user for the list if not provided
+     * @param committeeID
+     * @return
+     */
+    public List<Map<LocalDateTime, String>> getAllOrders(String committeeID);
+
+    public List<Map<LocalDateTime, String>> getAllOrders(String committeeID, String userID);
+
+    /**
+     * Adds an order to the database
+     * precondition: The committee has to exist and the products has to exist and the user has to exist and be in the committee
+     * @param committeeID
+     * @param userID
+     * @param orderTime
+     * @param products
+     * @throws NullPointerException if a committee with the given id does not exist
+     */
+    public void addOrder(String committeeID, String userID, LocalDateTime orderTime, List<String> products);
 }

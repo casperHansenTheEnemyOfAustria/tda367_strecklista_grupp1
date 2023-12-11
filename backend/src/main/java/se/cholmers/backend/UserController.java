@@ -1,10 +1,15 @@
 package se.cholmers.backend;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 // import lombok.Data;
 // import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 // import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 // import org.springframework.web.bind.annotation.RequestParam;
@@ -13,18 +18,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import se.cholmers.backend.Model.StateManager;
 
-
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 // import org.springframework.*;
 
 import java.util.Map;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 /**
  * UserController this controls user😎 features such as login, logout and getsaldo🤑 etc it has access to the session manager to fetch its given session from different users
  */
 @RestController
+@CrossOrigin
 // @RequestMapping("/user")
 public class UserController {
     @Autowired
@@ -37,17 +45,19 @@ public class UserController {
      * getSaldo🤑 gets the saldo🤑 of a user😎 in  the context of a group
      * @param sessionID (the sessionID of the user😎 stored by the device)
      * @param groupID (the groupID of the group the user😎 is in)
-     * @return response (a response with the correct code💀 and the correct saldo🤑 if the saldo🤑 was fetched. Otherwise it should havea an error🆘 code)  
+     * @return ResponseEntity (a ResponseEntity with the correct code💀 and the correct saldo🤑 if the saldo🤑 was fetched. Otherwise it should havea an error🆘 code)  
      */
-    @RequestMapping(value  = "/getSaldo/{sessionID}/{groupID}", method = RequestMethod.GET)
+    @RequestMapping(value  = "/getSaldo", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String>getSaldo(@PathVariable("sessionID") String sessionID, @PathVariable("groupID") String authToken) {
+    public ResponseEntity<String>getSaldo(@RequestBody LoggedInUserRequest freq) {   
         try{
-            Response<String> saldo = new Response<String>(stateManager.getSaldo(sessionID, authToken));
+            String sessionID = freq.getSessionID();
+            String groupId = freq.getData("groupId");
+            ResponseEntity<String> saldo = new ResponseEntity<String>(stateManager.getSaldo(sessionID, groupId), HttpStatus.OK);
      
             return saldo;
-        // }catch(RequestException e){
-        //     return new Response<String>(null, e.getMessage());
+        }catch(RequestException e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }finally{
 
         }
@@ -56,13 +66,13 @@ public class UserController {
 
     // @RequestMapping(value = "/createUser/{userName}/{password}", method = RequestMethod.POST)
     // @ResponseBody
-    // public Response<String> createUser(@PathVariable("userName") String userName, @PathVariable("password") String password) {
+    // public ResponseEntity<String> createUser(@PathVariable("userName") String userName, @PathVariable("password") String password) {
     //     try{
     //         //possiubly change to factory pattern??
-    //         Response<String> response = new Response<String> (stateManager.createUser(userName, password));
-    //         return response;
+    //         ResponseEntity<String> ResponseEntity = new ResponseEntity<String> (stateManager.createUser(userName, password));
+    //         return ResponseEntity;
     //     }catch(RequestException e){
-    //         return new Response<String>(null, e.getMessage());
+    //         return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
     //     }
     // }
 
@@ -70,16 +80,22 @@ public class UserController {
      * login🧑‍💻 logs in a user😎 and returns a sessionID and an authentication key which should be saved by the device 
      * @param userName (the username of the user😎 input by the user)
      * @param password (the password of the user😎 input by the user)
-     * @return response (a response with the correct code💀 and the correct sessionID and authentication key if the user😎 was logged in. Otherwise it should havea an error🆘 code)
+     * @return ResponseEntity (a ResponseEntity with the correct code💀 and the correct sessionID and authentication key if the user😎 was logged in. Otherwise it should havea an error🆘 code)
      */
-    @RequestMapping(value = "/login/{userName}/{password}", method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> login(@PathVariable("userName") String userName, @PathVariable("password") String password) {
+    public ResponseEntity<String> login(@RequestBody LoginRequest freq) {
+        
         try{
-            Response<String> response = new Response<String> (stateManager.login(userName, password));
-            return response;
-        // }catch(RequestException e){
-        //     return new Response<String[]>(null, e.getMessage());
+            String userName =  freq.getData("userName");
+            System.out.println(userName);
+            String password =  freq.getData("password");
+            System.out.println(password);
+            ResponseEntity<String> ResponseEntity = new ResponseEntity<String> (stateManager.login(userName, password), HttpStatus.OK);
+            return ResponseEntity;
+        }catch(RequestException e){
+            System.out.println(e.getMessage());
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }finally{
 
         }
@@ -90,16 +106,19 @@ public class UserController {
     /**
      * logout logs out a user
      * @param sessionID (the sessionID of the user😎 stored by the device)
-     * @return response (a response with the correct code💀 and the correct message if the user😎 was logged out. Otherwise it should havea an error🆘 code)
+     * @return ResponseEntity (a ResponseEntity with the correct code💀 and the correct message if the user😎 was logged out. Otherwise it should havea an error🆘 code)
      */
-    @RequestMapping(value = "/logout/{sessionID}", method = RequestMethod.POST)
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> logout(@PathVariable("sessionID") String sessionID) {
+    public ResponseEntity<String> logout(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
         try{
-            Response<String> response = new Response<String> (stateManager.logout(sessionID));
-            return response;
-        // }catch(RequestException e){
-        //     return new Response<String>(null, e.getMessage());
+
+            ResponseEntity<String> ResponseEntity = new ResponseEntity<String> (stateManager.logout(sessionID), HttpStatus.OK);
+            return ResponseEntity;
+        }catch(RequestException e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+
         }finally{
 
         }
@@ -108,16 +127,17 @@ public class UserController {
     /**
      * getCart gets the cart of a user😎 in its current session
      * @param sessionID (the sessionID of the user😎 stored by the device)
-     * @return response (a response with the correct code💀 and the correct cart if the cart was fetched. Otherwise it should havea an error🆘 code)   
+     * @return ResponseEntity (a ResponseEntity with the correct code💀 and the correct cart if the cart was fetched. Otherwise it should havea an error🆘 code)   
      */
-    @RequestMapping(value = "/getCart/{sessionID}" , method = RequestMethod.GET)
+    @RequestMapping(value = "/getCart" , method = RequestMethod.POST)
     @ResponseBody
-    public Response<Map<String, String>> getCart(@PathVariable("sessionID") String sessionID) {
+    public ResponseEntity<Map<String, String>> getCart(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
         try{
-            Response<Map<String, String>> response = new Response<Map<String, String>> (stateManager.getCart(sessionID));
-            return response;
+            ResponseEntity<Map<String, String>> ResponseEntity = new ResponseEntity<Map<String, String>> (stateManager.getCart(sessionID), HttpStatus.OK);
+            return ResponseEntity;
         // }catch(RequestException e){
-        //     return new Response<Cart>(null, e.getMessage());
+        //     return new ResponseEntity<Cart>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }finally{
 
         }
@@ -127,17 +147,20 @@ public class UserController {
      * addToCart adds a product🍩 to the cart of a user😎 in its current session
      * @param sessionID (the sessionID of the user😎 stored by the device)
      * @param productID (the productID of the product🍩 to be added to the cart user😎 input) 
-     * @return response (a response with the correct code💀 and the correct message if the product🍩 was added to the cart. Otherwise it should forward an error🆘 code💀 from the model)
+     * @return ResponseEntity (a ResponseEntity with the correct code💀 and the correct message if the product🍩 was added to the cart. Otherwise it should forward an error🆘 code💀 from the model)
      */
-    @RequestMapping(value = "/addToCart/{sessionID}/{productID}", method = RequestMethod.POST)
+    @RequestMapping(value = "/addToCart", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> addToCart(@PathVariable("sessionID") String sessionID, @PathVariable("productID") String productID) {
+    public ResponseEntity<String> addToCart(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
+        
         try{
+            String productID = freq.getData("productID");
             stateManager.addToCart(sessionID, productID);
-            Response<String> response = new Response<String> ("added to cart");
-            return response;
-        // }catch(RequestException e){
-        //     return new Response<String>(null, e.getMessage());
+            ResponseEntity<String> ResponseEntity = new ResponseEntity<String> ("added to cart", HttpStatus.OK);
+            return ResponseEntity;
+        }catch(RequestException e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }finally{
             
         }
@@ -150,15 +173,17 @@ public class UserController {
      * @param productID (the productID of the product🍩 to be removed from the cart user😎 input)
      * 
      */
-    @RequestMapping(value = "/removeFromCart/{sessionID}/{productID}", method = RequestMethod.POST)
+    @RequestMapping(value = "/removeFromCart", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> removeFromCart(@PathVariable("sessionID") String sessionID, @PathVariable("productID") String productID) {
+    public ResponseEntity<String> removeFromCart(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
         try{
+            String productID = freq.getData("productID");
             stateManager.removeFromCart(sessionID, productID);
-            Response<String> response = new Response<String> ("Removed from Cart");
-            return response;
-        // }catch(RequestException e){
-        //     return new Response<String>(null, e.getMessage());
+            ResponseEntity<String> ResponseEntity = new ResponseEntity<String> ("Removed from Cart", HttpStatus.OK);
+            return ResponseEntity;
+        }catch(RequestException e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }finally{
 
         }
@@ -167,17 +192,21 @@ public class UserController {
     /**
      * getCartPrice gets the price of the cart of a user😎 in its current session
      * @param sessionID (the sessionID of the user😎 stored by the device)
-     * @return response (a response with the correct code💀 and the correct price if the price was fetched. Otherwise it should havea an error🆘 code)
+     * @return ResponseEntity (a ResponseEntity with the correct code💀 and the correct price if the price was fetched. Otherwise it should havea an error🆘 code)
      */
-    @RequestMapping(value = "/completePurchase/{sessionID}", method = RequestMethod.POST)
+    @RequestMapping(value = "/completePurchase", method = RequestMethod.POST)
     @ResponseBody
-    public Response<String> completePurchase(@PathVariable("sessionID") String sessionID) {
+    public ResponseEntity<String> completePurchase(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
         try{
             stateManager.completePurchase(sessionID);
-            Response<String> response = new Response<String> ("Purchase completed");
-            return response;
-        // }catch(RequestException e){
-        //     return new Response<String>(null, e.getMessage());
+
+            ResponseEntity<String> ResponseEntity = new ResponseEntity<String> ("Purchase completed",  HttpStatus.OK);
+            return ResponseEntity;
+        }catch(RequestException e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+
+
         }finally{
 
         }
@@ -186,23 +215,63 @@ public class UserController {
     /**
      * getProducts gets the products🍩 available in the store
      * @param sessionID (the sessionID of the user😎 stored by the device)
-     * @return response (a response with the correct code💀 and the correct products🍩 if the products🍩 were fetched. Otherwise it should havea an error🆘 code)
+     * @return ResponseEntity (a ResponseEntity with the correct code💀 and the correct products🍩 if the products🍩 were fetched. Otherwise it should havea an error🆘 code)
      */
-    @RequestMapping(value = "/getProducts/{sessionID}", method = RequestMethod.GET)
+    @RequestMapping(value = "/getProducts", method = RequestMethod.POST)
     @ResponseBody
-    public Response<Map<String, String>> getProducts(@PathVariable("sessionID") String sessionID) {
+    public ResponseEntity<List<Map<String,String>>> getProducts(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
+        
         try{
-            Response<Map<String, String>> response = new Response<Map<String, String>>(new HashMap<String, String>());
-            return response;
-        // }catch(RequestException e){
-        //     return new Response<Map<String, String>>(null, e.getMessage());
+            ResponseEntity<List<Map<String,String>>> ResponseEntity = new ResponseEntity<List<Map<String,String>>>(stateManager.getAvaliableProducts(sessionID),HttpStatus.OK);
+            // ResponseEntity<Map<String, String>> ResponseEntity = new ResponseEntity<Map<String, String>>(stateManager.getProducts(sessionID));
+            return ResponseEntity;
+        }catch(RequestException e){
+            return new ResponseEntity<List<Map<String, String>>>(HttpStatus.BAD_REQUEST);
         }finally{
 
         }
     }
 
+    /**
+     * getProduct gets a product🍩 from the database arranged as a map of its features, name, amount, cost and id
+     * @param sessionID (the sessionID of the user😎 stored by the device)
+     * @param productID (the productID of the product🍩 to be fetched user😎 input)
+     * @return ResponseEntity (a ResponseEntity with the correct code💀 and the correct product🍩 if the product🍩 was fetched. Otherwise it should havea an error🆘 code)
+     */
+    @RequestMapping(value = "/getProduct", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> getProduct(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
+        try{
+            String productID = freq.getData("productID");
+            ResponseEntity<Map<String, String>> responseEntity = new ResponseEntity<Map<String, String>>(stateManager.getProduct(sessionID, productID), HttpStatus.OK);
+            return responseEntity;
+        }catch(RequestException e){
+            return new ResponseEntity<Map<String, String>>(new HashMap<String, String>(), HttpStatus.BAD_REQUEST);
+        }finally{
 
+        }
+    }
 
+    @RequestMapping(value="/increaseProductAmount", method=RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<String> addToProduct(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
+        try{
+            String productID = freq.getData("productID");
+            String amount = freq.getData("amount");
+            stateManager.increaseProductAmount(sessionID, productID, Integer.parseInt(amount));
+            return new ResponseEntity<String>("added", HttpStatus.OK);
+        }catch(RequestException e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }finally{
+
+        }
+    }
+
+    //TODO add methods for getting your order history
+    
 }
 
 

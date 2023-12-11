@@ -1,12 +1,15 @@
 package se.cholmers.backend.Model;
 
+import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import se.cholmers.backend.DatabaseInterface;
+import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
@@ -20,17 +23,21 @@ class UserGroup {
 
     /**
      * Creates a new UserGroup with a given name and year.
+     * this is only used for testing
      * 
      * @param name
      * @param year
+     * @throws RequestException
      */
-    public UserGroup(String name, Year year) {
+    public UserGroup(String name, Year year) throws RequestException {
         this.name = name;
         this.year = year;
-        this.orderHistory = new OrderHistory();
+        
 
         //TODO: Remove and handle in DB
         this.groupID = UUID.randomUUID().toString();
+
+        this.orderHistory = new OrderHistory(groupID);
         // code that initializes the object from the database
     }
 
@@ -38,15 +45,17 @@ class UserGroup {
      * Fetches a UserGroup from the database given a groupID
      * 
      * @param groupID
+     * @throws RequestException
      */
-    public UserGroup(String groupID) {
+    public UserGroup(String groupID) throws RequestException {
         String name = dbi.getCommitteeName(groupID);
         Year year = Year.parse("20" + dbi.getCommitteeYear(groupID));
         
         this.name = name;
         this.year = year;
         this.groupID = groupID;
-        this.orderHistory = new OrderHistory();
+        this.orderHistory = new OrderHistory(groupID);
+
     }
 
     /**
@@ -70,13 +79,13 @@ class UserGroup {
      * 
      * @param name
      * @param cost
+     * @throws RequestException
      */
-    public void addProduct(String name, Float cost) {
+    public void addProduct(String name, Float cost) throws RequestException {
         products.add(new Product(name, cost, groupID));
     }
 
-
-    //TODO add to db
+        //TODO add to db
     /**
      * Adds an order to the group's orderhistory
      * 
@@ -90,9 +99,11 @@ class UserGroup {
      * First updates the history from the database.
      * 
      * @return the order history for a group
+     * @throws RequestException
      */
-    public List<Order> getOrderHistory() {
-        return orderHistory.getOrderHistory();
+    public List<Order> getOrderHistory(String user) throws RequestException {
+        
+        return orderHistory.getOrderHistory(user);
     }
 
     /**

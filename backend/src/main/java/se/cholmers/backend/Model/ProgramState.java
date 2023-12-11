@@ -1,7 +1,11 @@
 package se.cholmers.backend.Model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import se.cholmers.backend.RequestException;
 
 class ProgramState {
     private User currentUser;
@@ -33,8 +37,9 @@ class ProgramState {
      * the productID as a string.
      * 
      * @param productID
+     * @throws RequestException
      */
-    public void addToCart(String productID) {
+    public void addToCart(String productID) throws RequestException {
         Product product = currentUser.getProduct(productID);
         cart.addToCart(product);
     }
@@ -44,8 +49,9 @@ class ProgramState {
      * given the productID as a string.
      * 
      * @param productID
+     * @throws RequestException
      */
-    public void removeFromCart(String productID) {
+    public void removeFromCart(String productID) throws RequestException {
         Product product = currentUser.getProduct(productID);
         cart.removeFromCart(product);
     }
@@ -61,13 +67,53 @@ class ProgramState {
 
     /**
      * Empties the cart and updates the saldo (saldo update not yet working)
+     * @throws RequestException
      */
-    public void completePurchase() {
+    public void completePurchase() throws RequestException {
         //TODO: Add logic for changing saldo
         for (Product product : cart.getCart().keySet()) {
             currentUser.purchaseItem(product, cart.getCart().get(product));
         }
         cart.empty();
         return;
+    }
+
+    /**
+     * returns a list of product maps
+     * @return
+     * @throws RequestException
+     */
+    public List<Map<String, String>> getAllProducts() throws RequestException {
+        List<Map<String, String>> allProducts = new ArrayList<>();
+        for (Product p : currentUser.getAllProducts()) {
+            allProducts.add(getProduct(p.getID()));
+        }
+        return allProducts;
+    }
+
+    /**
+     * returns a map of the product info with the structure
+     * Name
+     * Price
+     * Amount
+     * id
+     * @param productID
+     * @return
+     * @throws RequestException
+     */
+    public Map<String, String> getProduct(String productID) throws RequestException{
+        Product tempProd = currentUser.getProduct(productID);
+        Map<String, String> output = new HashMap<>();
+        output.put("Name", tempProd.getName());
+        output.put("Price", tempProd.getCost().toString());
+        output.put("Amount", tempProd.getAmount());
+        output.put("Id", productID);
+        return output;
+
+    }
+
+    public void increaseProductAmount(String productID, int amount) throws RequestException{
+        Product tempProd = currentUser.getProduct(productID);
+        tempProd.increaseAmount(amount);
     }
 }

@@ -1,8 +1,11 @@
 package se.cholmers.backend.Model;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import se.cholmers.backend.RequestException;
 
 public class StateManager {
     private Map<String, ProgramState> states;
@@ -32,14 +35,16 @@ public class StateManager {
      * @param userName
      * @param password
      * @return A unique stateID for the programState.
+     * @throws RequestException if the user login fails
      */
-    public String login(String userName, String password) {
+    public String login(String userName, String password) throws RequestException{
         User user = new User(userName, userName, password);
         ProgramState state = new ProgramState(user);
 
         String stateID = UUID.randomUUID().toString();
         states.put(stateID, state);
         String output = stateID;
+        System.out.println("user login with id" + output);
         return output;
     }
 
@@ -48,9 +53,15 @@ public class StateManager {
      * 
      * @param stateID
      * @return
+     * @throws RequestException
      */
-    public String logout(String stateID) {
-        states.remove(stateID);
+    public String logout(String stateID) throws RequestException {
+        try {
+            states.remove(stateID);
+        } catch (NullPointerException e) {
+            throw new RequestException(stateID + " is not a valid stateID");
+        }
+        
         return "log out successful";
 
     }
@@ -71,8 +82,9 @@ public class StateManager {
      * 
      * @param stateID
      * @param productID
+     * @throws RequestException
      */
-    public void addToCart(String stateID, String productID) {
+    public void addToCart(String stateID, String productID) throws RequestException {
         states.get(stateID).addToCart(productID);
     }
 
@@ -81,8 +93,9 @@ public class StateManager {
      * 
      * @param stateID
      * @param productID
+     * @throws RequestException
      */
-    public void removeFromCart(String stateID, String productID) {
+    public void removeFromCart(String stateID, String productID) throws RequestException {
         states.get(stateID).removeFromCart(productID);
     }
 
@@ -100,9 +113,46 @@ public class StateManager {
      * Checks out the cart of a user given a stateID.
      * 
      * @param stateID
+     * @throws RequestException
      */
-    public void completePurchase(String stateID) {
+    public void completePurchase(String stateID) throws RequestException {
         states.get(stateID).completePurchase();
+    }
+
+    /**
+     * prerequisite: The stateID has to be valid
+     * @param stateID
+     * @return a list of the product ids
+     * @throws RequestException
+     */
+    public List<Map<String,String>> getAvaliableProducts(String stateID) throws RequestException {
+        return states.get(stateID).getAllProducts();
+    } 
+
+    /**
+     * returns a map of the product info
+     * @param stateID
+     * @param productID
+     * @return
+     * @throws RequestException
+     */
+    public Map<String, String> getProduct(String stateID, String productID) throws RequestException{
+        return states.get(stateID).getProduct(productID);
+    }
+
+    /**
+     * Adds amounts to a product in a usergroup 
+     * prerequisite: The stateID has to be valid and the user has to be in the usergroup and the product has to exist
+     * @param stateID
+     * @param productID
+     * @param amount
+     * @throws NumberFormatException
+     * @throws RequestException
+     * 
+     */
+    public void increaseProductAmount(String stateID, String productID, int amount) throws NumberFormatException, RequestException{
+        //TODO update user saldo after increasing the amount
+        states.get(stateID).increaseProductAmount(productID, amount);
     }
 
     /**
