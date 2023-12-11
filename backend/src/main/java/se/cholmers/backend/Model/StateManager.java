@@ -1,9 +1,6 @@
 package se.cholmers.backend.Model;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import se.cholmers.backend.Model.Interfaces.IProgramState;
 import se.cholmers.backend.Model.Interfaces.IUser;
@@ -127,7 +124,7 @@ public class StateManager {
      * @return a list of the product ids
      * @throws RequestException
      */
-    public List<Map<String,String>> getAvailableProducts(String stateID) throws RequestException {
+    public Set<Map<String,String>> getAvailableProducts(String stateID) throws RequestException {
         return states.get(stateID).getAllProducts();
     } 
 

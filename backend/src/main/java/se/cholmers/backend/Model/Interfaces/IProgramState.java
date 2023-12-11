@@ -4,6 +4,7 @@ import se.cholmers.backend.RequestException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface IProgramState {
     /**
@@ -64,7 +65,7 @@ public interface IProgramState {
      * @return
      * @throws RequestException
      */
-    public List<Map<String, String>> getAllProducts() throws RequestException;
+    public Set<Map<String, String>> getAllProducts() throws RequestException;
 
     void increaseProductAmount(String productID, int amount) throws RequestException;
 }

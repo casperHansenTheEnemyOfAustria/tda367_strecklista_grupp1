@@ -1,9 +1,6 @@
 package se.cholmers.backend.Model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import se.cholmers.backend.Model.Interfaces.ICart;
 import se.cholmers.backend.Model.Interfaces.IProduct;
@@ -77,8 +74,8 @@ class ProgramState implements IProgramState {
      * @throws RequestException
      */
     @Override
-    public List<Map<String, String>> getAllProducts() throws RequestException {
-        List<Map<String, String>> allProducts = new ArrayList<>();
+    public Set<Map<String, String>> getAllProducts() throws RequestException {
+        Set<Map<String, String>> allProducts = new HashSet<>();
         for (IProduct p : currentUser.getAllProducts()) {
             allProducts.add(getProduct(p.getID()));
         }
