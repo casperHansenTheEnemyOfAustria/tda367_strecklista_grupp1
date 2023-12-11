@@ -16,7 +16,7 @@ Planned improvements are:
 - Samael Pooyan
 
 ## Install and run instructions for feedback group:
-running this program is best done on linux since we have scripts prepared for testing
+running this program is best done on linux/wsl since we have scripts prepared for testing
 ### postgres
 - install postgres with the default settings and user "postgres"
 - set up a user called postgres with no password
