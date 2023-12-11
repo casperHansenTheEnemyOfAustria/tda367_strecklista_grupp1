@@ -82,8 +82,9 @@ public class StateManager {
      * 
      * @param stateID
      * @param productID
+     * @throws RequestException
      */
-    public void addToCart(String stateID, String productID) {
+    public void addToCart(String stateID, String productID) throws RequestException {
         states.get(stateID).addToCart(productID);
     }
 
@@ -92,8 +93,9 @@ public class StateManager {
      * 
      * @param stateID
      * @param productID
+     * @throws RequestException
      */
-    public void removeFromCart(String stateID, String productID) {
+    public void removeFromCart(String stateID, String productID) throws RequestException {
         states.get(stateID).removeFromCart(productID);
     }
 
@@ -121,8 +123,9 @@ public class StateManager {
      * prerequisite: The stateID has to be valid
      * @param stateID
      * @return a list of the product ids
+     * @throws RequestException
      */
-    public List<Map<String,String>> getAvaliableProducts(String stateID) {
+    public List<Map<String,String>> getAvaliableProducts(String stateID) throws RequestException {
         return states.get(stateID).getAllProducts();
     } 
 
@@ -131,8 +134,9 @@ public class StateManager {
      * @param stateID
      * @param productID
      * @return
+     * @throws RequestException
      */
-    public Map<String, String> getProduct(String stateID, String productID){
+    public Map<String, String> getProduct(String stateID, String productID) throws RequestException{
         return states.get(stateID).getProduct(productID);
     }
 

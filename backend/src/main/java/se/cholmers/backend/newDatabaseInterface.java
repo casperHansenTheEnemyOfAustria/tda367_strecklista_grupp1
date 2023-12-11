@@ -4,6 +4,7 @@ import javafx.util.Pair;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -420,6 +421,101 @@ public class newDatabaseInterface implements IDatabaseInterface {
             statement.executeUpdate("DELETE FROM transaction");
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Map<String, List<String>> getOrder(String committeeID, LocalDateTime orderTime) {
+        Map<String, List<String>> rv = new HashMap<>();
+        List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
+        for(Object transactionId : committeeTransactions){
+            LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
+            if(transactionTime.equals(orderTime)){
+                rv.put(getTransactionUserID((String) transactionId), getTransactionProducts((String) transactionId));
+            }
+        }
+        return rv;
+    }
+
+    @Override
+    public List<String> getOrder(String committeeID, String userId, LocalDateTime orderTime) {
+       List<String> rv = new ArrayList<String>();
+        List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
+        for(Object transactionId : committeeTransactions){
+            LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
+            if(transactionTime.equals(orderTime)){
+                rv = getTransactionProducts((String) transactionId);
+            }
+        }
+        return rv;
+    }
+
+    private String getTransactionUserID(String transactionID){
+        return selectSingleValue("transaction", "user_id", new Pair<>("id", transactionID));
+    }
+    private List<String> getTransactionProducts(String transactionID){
+        List<String> rv = new ArrayList<>();
+        List<Object> transactionProducts = selectWhere("transaction", "transaction_id", transactionID).get("product_id");
+        for(Object product : transactionProducts){
+            rv.add((String) product);
+        }
+        return rv;
+    }
+
+    private List<Object> getCommitteeTransactions(String committeeID) {
+        List<Object> committeeTransactions = selectWhere("transaction", "committee_id", committeeID).get("id");
+        return committeeTransactions;
+    }
+
+    @Override
+    public List<Map<LocalDateTime, String>> getAllOrders(String committeeID) {
+        List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
+         List<Map<LocalDateTime, String>>  rv = new ArrayList<>();
+        for(Object transactionId : committeeTransactions){
+            LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
+            Map<LocalDateTime, String> map = new HashMap<>();
+            map.put(transactionTime, committeeID);
+            rv.add(map);
+        }
+        return rv;
+    }
+
+    @Override
+    public List<Map<LocalDateTime, String>> getAllOrders(String committeeID, String userID) {
+        List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
+        List<Map<LocalDateTime, String>> rv = new ArrayList<>();
+        for(Object transactionId : committeeTransactions){
+            LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
+            Map<LocalDateTime, String> map = new HashMap<>();
+            map.put(transactionTime, committeeID);
+            rv.add(map);
+        }
+        return rv;
+    }
+
+
+    private LocalDateTime getTransactionDateTime(String transactionId) {
+        Time time = Time.valueOf(selectSingleValue("transaction", "transaction_time", new Pair<>("id",  transactionId)));
+        Date date = Date.valueOf(selectSingleValue("transaction", "transaction_date", new Pair<>("id",  transactionId)));
+        LocalDateTime transactionTime = LocalDateTime.of(date.toLocalDate(), time.toLocalTime());
+        return transactionTime;
+    }
+
+    @Override
+    public void addOrder(String groupID, String userID, LocalDateTime timeStamp, List<String> products) {
+        for(String product : products){
+            try{
+                insert("transaction", new HashMap<>(Map.of(
+                        "id", UUID.randomUUID().toString(),
+                        "product_id", product,
+                        "user_id", userID,
+                        "committee_id", groupID,
+                        "transaction_time", timeStamp.toLocalTime(),
+                        "transaction_date", timeStamp.toLocalDate())));
+            }
+            catch (SQLException e){
+                throw new NullPointerException(e.getMessage());
+            }
         }
     }
 }

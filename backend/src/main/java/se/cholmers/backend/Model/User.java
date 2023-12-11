@@ -1,5 +1,6 @@
 package se.cholmers.backend.Model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,12 +24,14 @@ class User {
     private Set<UserGroup> groups = new HashSet<>();
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
 
+
     /**
      * This is the constructor for when recreating users from the database
      * 
      * @param userID
+     * @throws RequestException
      */
-    public User(String userID) {
+    public User(String userID) throws RequestException {
         this.id = userID;
         this.name = dbi.getUserName(userID);
         this.nick = dbi.getUserNick(userID);
@@ -40,9 +43,10 @@ class User {
      * This method adds the user's groups to the user from the database
      * 
      * @param userID
+     * @throws RequestException
      * 
      */
-    private void addGroupsFromDatabase() {
+    private void addGroupsFromDatabase() throws RequestException {
         // TODO add a catch for if there are no groups
         List<String> comitteeIds = dbi.getCommitteesOfUser(id);
         for (String param : comitteeIds) {
@@ -65,6 +69,8 @@ class User {
         this.nick = nick;
         this.id = dbi.authenticateUser(nick, password);
         addGroupsFromDatabase();
+      
+        
 
     }
 
@@ -108,6 +114,11 @@ class User {
         try{
             dbi.updateUserSaldo(id, product.getGroupID(), currentSaldo.toString());
             product.decreaseAmount(numberOfProducts);
+            List<Product> products = new ArrayList<>();
+            for (int i = 0; i < numberOfProducts; i++) {
+                products.add(product);
+            }
+            new Order(products, product.getGroupID(), id);
         }catch(NullPointerException e){
             throw new RequestException(id + "does not exist or" + product.getGroupID() + "does not exist");
         }catch(IllegalArgumentException e){
@@ -121,9 +132,10 @@ class User {
      * 
      * @return returns a set of all products the user has access to in all its
      *         usergorups
+     * @throws RequestException
      * @throws NullPointerException if the user is not a member of any group
      */
-    public Set<Product> getAllProducts() {
+    public Set<Product> getAllProducts() throws RequestException {
         Set<Product> allProducts = new HashSet<>();
         addGroupsFromDatabase();
         for (UserGroup userGroup : groups) {
@@ -137,9 +149,10 @@ class User {
      * @param productID
      * @return the product with the given productID logged in its usergroup's
      *         database
+     * @throws RequestException
      * @throws NullPointerException if the user is not a member of any group
      */
-    public Product getProduct(String productID) {
+    public Product getProduct(String productID) throws RequestException {
         for (Product product : getAllProducts()) {
             if (product.getID() == productID) {
                 return product;
@@ -147,4 +160,23 @@ class User {
         }
         return null;
     }
+
+    /**
+     * this method gets a users order history from all its groups
+     * @return a list of lists of orders'
+     * @throws RequestException if the user is not a member of any group
+     */
+    public List<List<Order>> getOrderHistory() throws RequestException {
+        addGroupsFromDatabase();
+        List<List<Order>> orderHistory = new ArrayList<>();
+        for(UserGroup group : groups){
+            orderHistory.add(group.getOrderHistory(id));
+        }
+        return orderHistory;
+    }
+
+    public String getID() {
+        return id;
+    }
+
 }
