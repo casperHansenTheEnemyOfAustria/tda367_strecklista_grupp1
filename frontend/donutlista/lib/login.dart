@@ -34,7 +34,8 @@ class LoginState extends State<LoginPage> {
     );
 
     if (response.statusCode == 200) {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (_) => HomeScreen(userID: response.body)));
       print(response.body);
     } else {
       snackBar;
