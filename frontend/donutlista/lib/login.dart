@@ -57,7 +57,8 @@ class LoginState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.only(top: 60.0),
               child: Center(
-                child: SizedBox(
+                // ignore: sized_box_for_whitespace
+                child: Container( //Container is used instead of sizedBox to have the logo
                     width: 200,
                     height: 150,
                     /*decoration: BoxDecoration(
