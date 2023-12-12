@@ -75,7 +75,7 @@ class _PurchaseButtonsState extends State<PurchaseButtons> {
                 onPressed: () { //TODO: onPressed: (reset all counters)
                   ScaffoldMessenger.of(context).showSnackBar(cancelSnackBar);
                  },
-              child: const Text('Cancel'),
+              child: const Text('Avbryt'),
             ),
           ), 
           
@@ -87,7 +87,7 @@ class _PurchaseButtonsState extends State<PurchaseButtons> {
               ),
               onPressed: sendBuyPostRequest,
               // ignore: prefer_const_constructors
-              child: Text('Buy'),// TODO: Add sum(price*multipier):- here
+              child: Text('Köp'),// TODO: Add sum(price*multipier):- here
             )
           )
         ],

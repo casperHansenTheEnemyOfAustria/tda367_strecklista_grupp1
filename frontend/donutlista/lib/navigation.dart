@@ -15,11 +15,7 @@ class NavDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const drawerHeader = UserAccountsDrawerHeader( //Change drawerhead to Nick + dropdown to change active in kommitté
-      accountName: Text('Username'), //TODO: add userName
-      accountEmail: Text('Email'), //TODO: add email
-      // TODO: Add saldo here
-    );
+    
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.7,
       child: Drawer(
@@ -28,7 +24,9 @@ class NavDrawer extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.all(8),
             children: <Widget>[
-              drawerHeader,
+              const DrawerHeader(child: DropDown(), 
+
+              ),
               ListTile(
                 title: const Text('Strecklista'), //TODO: add path
                 leading: const Icon(Icons.apps),
@@ -85,5 +83,72 @@ class NavDrawer extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class DropDown extends StatefulWidget {
+  const DropDown({super.key, 
+  });
+
+  @override
+  State<DropDown> createState() => _DropDownState();
+}
+
+class _DropDownState extends State<DropDown> {
+  
+
+List<DropdownMenuItem<String>> get dropdownItems{
+  List<DropdownMenuItem<String>> menuItems = [
+    DropdownMenuItem(child: Text("Humlan"),value: "Humlan"),
+    DropdownMenuItem(child: Text("Skepparn"),value: "Skepparn"),
+    DropdownMenuItem(child: Text("Casino"),value: "Casino"),
+    DropdownMenuItem(child: Text("Jawadre"),value: "Jawadre"),
+    DropdownMenuItem(child: Text("Prince"),value: "Prince"),
+
+  ];
+  return menuItems;
+}
+
+  String? selectedValue = 'Humlan'; //TODO: Change to userID
+  final _dropdownFormKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+        key: _dropdownFormKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children:[ 
+            DropdownButtonFormField(
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 2),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 2),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  //filled: true,
+                  //fillColor: Colors.blueAccent,
+                ),
+                validator: (value) => value == null ? "Select a country" : null,
+                //dropdownColor: Colors.blueAccent,
+                value: selectedValue,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedValue = newValue!;
+                  });
+                },
+                items: (dropdownItems),
+            ),
+
+            Text('P.R.I.T., HookIT' 
+            //TODO: Add KOMMITTÉER here as string list
+            ),
+
+            ]
+        )
+      );
   }
 }

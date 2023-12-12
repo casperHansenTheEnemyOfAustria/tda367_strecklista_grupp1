@@ -21,7 +21,7 @@ class LoginState extends State<LoginPage> {
   var password = '';
 
   final loginSnackBar = const SnackBar(
-    content: Text('Failed to login!'),
+    content: Text('Fel nickname eller lösenord'),
   );
 
   Future<void> sendLoginPostRequest() async {
@@ -73,8 +73,8 @@ class LoginState extends State<LoginPage> {
               child: TextField(
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Username',
-                    hintText: 'Enter valid username'),
+                    labelText: 'Nick',
+                    hintText: 'Fyll i ditt nickname här'),
                 onChanged: (text) {
                   userName = text;
                 },
@@ -87,22 +87,24 @@ class LoginState extends State<LoginPage> {
                 obscureText: true,
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Password',
-                    hintText: 'Enter secure password'),
+                    labelText: 'Lösenord',
+                    hintText: 'Fyll i ditt löseord här'),
                 onChanged: (text) {
                   password = text;
                 },
               ),
             ),
+            
             TextButton(
               onPressed: () {
                 //TODO FORGOT PASSWORD SCREEN GOES HERE
               },
               child: Text(
-                'Forgot Password',
+                'Visste du att smurfar är tre äpplen höga?',
                 style: TextStyle(color: HexColor('#09CDDA'), fontSize: 15),
               ),
             ),
+            
             SizedBox(
               height: 50,
               width: 250,
@@ -113,7 +115,7 @@ class LoginState extends State<LoginPage> {
                   sendLoginPostRequest();
                 },
                 child: const Text(
-                  'Login',
+                  'Logga in',
                   style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
               ),
@@ -121,7 +123,7 @@ class LoginState extends State<LoginPage> {
             const SizedBox(
               height: 130,
             ),
-            const Text('New User? Create Account')
+            const Text('Ny användare? Kontakta admin')
           ],
         ),
       ),

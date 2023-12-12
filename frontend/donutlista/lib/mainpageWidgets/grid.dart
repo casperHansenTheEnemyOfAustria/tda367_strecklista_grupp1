@@ -5,6 +5,8 @@ import 'package:donutlista/main.dart';
 
 /* Widget: Grid of Counting buttons */
 
+//TODO: If counter is over 0 Add(Name,Price,Multiplier) to SummaryList
+
 var counter = 0; 
 
 class MainItemGrid extends StatefulWidget{
@@ -95,7 +97,7 @@ class _ActiveItemTile extends State<ItemTile> {
           ),
           // ignore: prefer_const_constructors
           Text(
-            'PRIS' //TODO: Add itemName here
+            'PRIS' //TODO: Add itemPrice here
             //itemList[itemNo],
             //key: Key('text_$itemNo'),
           ),
