@@ -16,15 +16,20 @@ class SummaryList extends StatelessWidget{
 }
 }
 
-class SummaryTile extends StatelessWidget {
+// ignore: must_be_immutable
+class SummaryTile extends StatefulWidget {
   int itemNo;
 
   SummaryTile(this.itemNo,{super.key} );
-  
-  get currentCounter => null;  
-  
-  // TODO: Add getter for currentCounter 
 
+  @override
+  State<SummaryTile> createState() => _SummaryTileState();
+}
+
+class _SummaryTileState extends State<SummaryTile> {
+  get currentCounter => null;  
+
+  // TODO: Add getter for currentCounter 
   @override
   Widget build(BuildContext context) {
     
@@ -33,18 +38,17 @@ class SummaryTile extends StatelessWidget {
       child: Row(            
       children: [
       const //Remove later 
-      Text('Iteeem  '
+      Text('Item' //TODO: Add itemName here
         //itemMap[itemNo],
         //key: Key('text_$itemNo'),
         ),
       const //Remove later 
       Text(
-        'PRIS :-  '
+        'PRIS :-  ' //TODO: Add itemPrice here
         //itemList[itemNo],
         //key: Key('text_$itemNo'),
         ),
-        Text( 'multiplier  '
-          '$currentCounter() to String'
+        Text('$counter'
           ),
       ],
         )

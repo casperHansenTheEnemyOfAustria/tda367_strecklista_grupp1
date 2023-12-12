@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import 'navigation.dart';
 
+// ignore: must_be_immutable
 class UserPage extends StatefulWidget {
   final String userID;
   UserPage({super.key, required this.userID});
@@ -46,7 +47,8 @@ class _UserState extends State<UserPage> {
         widget.name = response.body;
       });
     } else {
-      print("Failed to get name");
+      // ignore: avoid_print
+      print("Failed to get name"); //TODO: Remove
     }
   }
 }

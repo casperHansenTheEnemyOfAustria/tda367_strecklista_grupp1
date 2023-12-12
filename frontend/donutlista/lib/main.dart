@@ -11,10 +11,13 @@ Map<String, String> itemMap = {
 };
 int counter = 0;
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
+  final apiUrl = "localhost:8080";
+
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +26,7 @@ class MyApp extends StatelessWidget {
           colorScheme: const ColorScheme.highContrastDark()
               .copyWith(secondary: HexColor("#09cdda"))),
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: const LoginPage(),
     );
   }
 }

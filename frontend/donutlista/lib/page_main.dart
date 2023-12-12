@@ -1,4 +1,4 @@
-import 'package:donutlista/mainpageWidgets/bottomNav.dart';
+import 'package:donutlista/mainpageWidgets/bottom_nav.dart';
 import 'package:donutlista/mainpageWidgets/grid.dart';
 import 'package:flutter/material.dart';
 
@@ -23,13 +23,13 @@ class _MainPage extends State<MainPage> {
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: Column(children: [
+        body: const Column(children: [
           SizedBox(height: 400.0, child: MainItemGrid()),
           SizedBox(
             height: 150.0,
             child: SummaryList(),
           )
         ]),
-        bottomNavigationBar: PurchaseButtons()); //TODO
+        bottomNavigationBar: const PurchaseButtons()); //TODO
   }
 }

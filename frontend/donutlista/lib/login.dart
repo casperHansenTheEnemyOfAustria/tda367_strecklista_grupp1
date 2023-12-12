@@ -5,7 +5,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'homescreen.dart';
 import 'package:http/http.dart' as http;
 
-final apiUrl = "localhost:8080";
+const apiUrl = "localhost:8080";
 
 
 class LoginPage extends StatefulWidget {
@@ -20,7 +20,7 @@ class LoginState extends State<LoginPage> {
   var userName = '';
   var password = '';
 
-  final snackBar = SnackBar(
+  final loginSnackBar = const SnackBar(
     content: Text('Failed to login!'),
   );
 
@@ -36,11 +36,15 @@ class LoginState extends State<LoginPage> {
     );
 
     if (response.statusCode == 200) {
+      // ignore: use_build_context_synchronously
       Navigator.push(context,
           MaterialPageRoute(builder: (_) => HomeScreen(userID: response.body)));
-      print(response.body);
+      // ignore: avoid_print
+      print(response.body); //TODO: Remove
     } else {
-      snackBar;
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(loginSnackBar);
+
     }
   }
 

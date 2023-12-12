@@ -22,9 +22,9 @@ class _InventoryState extends State<InventoryPage> {
         userID: widget.userID,
       ),
       appBar: AppBar(
-        title: Text("Inventory"),
+        title: const Text("Inventory"),
       ),
-      body: Center(child: Text("Inventory info")),
+      body: const Center(child: Text("Inventory info")),
     );
   }
 }

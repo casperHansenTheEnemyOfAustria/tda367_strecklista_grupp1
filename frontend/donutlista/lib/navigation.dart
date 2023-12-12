@@ -1,12 +1,10 @@
-import 'package:donutlista/pageMain.dart';
-import 'package:donutlista/pageInventory.dart';
-import 'package:donutlista/pageTransaction.dart';
-import 'package:donutlista/pageUser.dart';
+import 'package:donutlista/page_main.dart';
+import 'package:donutlista/page_inventory.dart';
+import 'package:donutlista/page_transaction.dart';
+import 'package:donutlista/page_user.dart';
 
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
-
-//Inspo: https://gallery.flutter.dev/#/demo/nav_drawer
 
 /* Press the Navigation Drawer button to the left of AppBar 
 to show a simple Drawer with two items. */
@@ -17,12 +15,12 @@ class NavDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final drawerHeader = UserAccountsDrawerHeader(
-      accountName: Text('Username'), //TODO: add username
+    const drawerHeader = UserAccountsDrawerHeader( //Change drawerhead to Nick + dropdown to change active in kommitté
+      accountName: Text('Username'), //TODO: add userName
       accountEmail: Text('Email'), //TODO: add email
       // TODO: Add saldo here
     );
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width * 0.7,
       child: Drawer(
         child: Container(
@@ -32,7 +30,7 @@ class NavDrawer extends StatelessWidget {
             children: <Widget>[
               drawerHeader,
               ListTile(
-                title: Text('Strecklista'), //TODO: add path
+                title: const Text('Strecklista'), //TODO: add path
                 leading: const Icon(Icons.apps),
                 onTap: () {
                   Navigator.push<void>(
@@ -45,7 +43,7 @@ class NavDrawer extends StatelessWidget {
                 },
               ),
               ListTile(
-                title: Text('Transaktioner'), //TODO: Add path
+                title: const Text('Transaktioner'), //TODO: Add path
                 leading: const Icon(Icons.credit_score),
                 onTap: () {
                   Navigator.push<void>(
@@ -58,7 +56,7 @@ class NavDrawer extends StatelessWidget {
                 },
               ),
               ListTile(
-                title: Text('Inventarier'), //TODO: Add path
+                title: const Text('Inventarier'), //TODO: Add path
                 leading: const Icon(Icons.analytics),
                 onTap: () {
                   Navigator.push<void>(
@@ -71,7 +69,7 @@ class NavDrawer extends StatelessWidget {
                 },
               ),
               ListTile(
-                title: Text('Användare'), //TODO: Add path
+                title: const Text('Användare'), //TODO: Add path
                 leading: const Icon(Icons.person),
                 onTap: () {
                   Navigator.push<void>(
