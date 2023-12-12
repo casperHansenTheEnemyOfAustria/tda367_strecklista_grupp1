@@ -25,7 +25,7 @@ class _PurchaseButtonsState extends State<PurchaseButtons> {
   /*action: SnackBarAction(
     label: 'Undo',
     onPressed: () {
-      // Some code to undo the change. //TODO: Add undo button to buy snackbar 
+      // Some code to undo the change. //TODO later: Add undo button to buy snackbar 
     },
   ),*/
   );

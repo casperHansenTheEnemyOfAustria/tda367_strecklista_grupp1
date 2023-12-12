@@ -7,7 +7,9 @@ import 'package:donutlista/main.dart';
 
 //TODO: If counter is over 0 Add(Name,Price,Multiplier) to SummaryList
 
+//TODO: Create getter for counter so that it updates
 var counter = 0; 
+//var counter = ActionListener(counter);
 
 class MainItemGrid extends StatefulWidget{
 
@@ -85,7 +87,7 @@ class _ActiveItemTile extends State<ItemTile> {
       child: Container(
         decoration: 
         BoxDecoration(
-        color: HexColor('#09babe'),
+        color: HexColor('#09BABE'),
             ),
         child: 
           Column(            
@@ -105,6 +107,7 @@ class _ActiveItemTile extends State<ItemTile> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             GestureDetector(
+
               onTap: () {
                       _decrementCounter();
                       //print(counter);

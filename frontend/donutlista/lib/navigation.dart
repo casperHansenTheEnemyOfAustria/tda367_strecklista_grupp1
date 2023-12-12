@@ -97,17 +97,6 @@ class DropDown extends StatefulWidget {
 class _DropDownState extends State<DropDown> {
   
 
-List<DropdownMenuItem<String>> get dropdownItems{
-  List<DropdownMenuItem<String>> menuItems = [
-    DropdownMenuItem(child: Text("Humlan"),value: "Humlan"),
-    DropdownMenuItem(child: Text("Skepparn"),value: "Skepparn"),
-    DropdownMenuItem(child: Text("Casino"),value: "Casino"),
-    DropdownMenuItem(child: Text("Jawadre"),value: "Jawadre"),
-    DropdownMenuItem(child: Text("Prince"),value: "Prince"),
-
-  ];
-  return menuItems;
-}
 
   String? selectedValue = 'Humlan'; //TODO: Change to userID
   final _dropdownFormKey = GlobalKey<FormState>();
@@ -122,11 +111,11 @@ List<DropdownMenuItem<String>> get dropdownItems{
             DropdownButtonFormField(
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue, width: 2),
+                    borderSide: const BorderSide(color: Colors.blue, width: 2),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue, width: 2),
+                    borderSide: const BorderSide(color: Colors.blue, width: 2),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   //filled: true,
@@ -151,4 +140,18 @@ List<DropdownMenuItem<String>> get dropdownItems{
         )
       );
   }
+
+  List<DropdownMenuItem<String>> get dropdownItems{
+  List<DropdownMenuItem<String>> menuItems = [
+    const DropdownMenuItem(child: Text("Humlan"),value: "Humlan"),
+    const DropdownMenuItem(child: Text("Skepparn"),value: "Skepparn"),
+    const DropdownMenuItem(child: Text("Casino"),value: "Casino"),
+    const DropdownMenuItem(child: Text("Jawadre"),value: "Jawadre"),
+    const DropdownMenuItem(child: Text("Prince"),value: "Prince"),
+
+  ];
+  return menuItems;
+}
+
+
 }
