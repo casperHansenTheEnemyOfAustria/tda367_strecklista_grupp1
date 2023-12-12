@@ -5,8 +5,6 @@ import 'package:hexcolor/hexcolor.dart';
 import 'homescreen.dart';
 import 'package:http/http.dart' as http;
 
-
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -14,32 +12,27 @@ class LoginPage extends StatefulWidget {
   LoginState createState() => LoginState();
 }
 
-
-class LoginState extends State<LoginPage> { 
+class LoginState extends State<LoginPage> {
   final apiUrl = "localhost:8080";
+
+  var userName = '';
+  var password = '';
 
   final snackBar = SnackBar(
     content: Text('Failed to login!'),
-);
+  );
 
-
- Future<void> sendPostRequest() async {
-    var usernameController = UsernameField;
-    var passwordController = PasswordField;
-    
-    var content = {
-        "userName": usernameController,
-        "password": passwordController
-      };
+  Future<void> sendPostRequest() async {
+    // Get the text from the forms
+    var content = {"userName": userName, "password": password};
     final response = await http.post(
-      
       Uri.http(apiUrl, '/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(content),
-      );
-  
+    );
+
     if (response.statusCode == 200) {
       Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen()));
       print(response.body);
@@ -47,6 +40,7 @@ class LoginState extends State<LoginPage> {
       snackBar;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,19 +59,35 @@ class LoginState extends State<LoginPage> {
                     child: Image.asset('assets/images/smurf.png')),
               ),
             ),
-            const Padding(
+            Padding(
               //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: UsernameField(),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: TextField(
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Username',
+                    hintText: 'Enter valid username'),
+                onChanged: (text) {
+                  userName = text;
+                },
+              ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(
+            Padding(
+              padding: const EdgeInsets.only(
                   left: 15.0, right: 15.0, top: 15, bottom: 0),
-              //padding: EdgeInsets.symmetric(horizontal: 15),
-              child: PasswordField(),
+              child: TextField(
+                obscureText: true,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Password',
+                    hintText: 'Enter secure password'),
+                onChanged: (text) {
+                  password = text;
+                },
+              ),
             ),
             TextButton(
-              onPressed: (){
+              onPressed: () {
                 //TODO FORGOT PASSWORD SCREEN GOES HERE
               },
               child: Text(
@@ -107,55 +117,6 @@ class LoginState extends State<LoginPage> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class PasswordField extends StatefulWidget {
-  const PasswordField({
-    super.key,
-  });
-
-  @override
-  State<PasswordField> createState() => _PasswordFieldState();
-}
-
-class _PasswordFieldState extends State<PasswordField> {
-  final passwordController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: passwordController, 
-      obscureText: true,
-      decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Lösenord',
-          hintText: 'Skriv in ditt lösenord'),
-    );
-  }
-}
-
-class UsernameField extends StatefulWidget {
-  const UsernameField({
-    super.key,
-  });
-
-  @override
-  State<UsernameField> createState() => _UsernameFieldState();
-}
-
-class _UsernameFieldState extends State<UsernameField> {
-  final usernameController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: usernameController, 
-      decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Nick',
-          hintText: 'Skriv in ditt nickname'),      
     );
   }
 }
