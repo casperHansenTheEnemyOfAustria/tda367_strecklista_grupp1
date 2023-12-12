@@ -2,24 +2,23 @@ package se.cholmers.backend.Model;
 
 import java.time.LocalDateTime;
 import java.time.Year;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
-import se.cholmers.backend.DatabaseInterface;
+import se.cholmers.backend.Model.Interfaces.IOrder;
+import se.cholmers.backend.Model.Interfaces.IOrderHistory;
+import se.cholmers.backend.Model.Interfaces.IProduct;
+import se.cholmers.backend.Model.Interfaces.IUserGroup;
 import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
-class UserGroup {
+class UserGroup implements IUserGroup{
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
-    private Set<Product> products = new HashSet<>();
+    private Set<IProduct> products = new HashSet<>();
     private Year year;
     private String name;
     private String groupID;
-    private OrderHistory orderHistory;
+    private IOrderHistory orderHistory;
 
     /**
      * Creates a new UserGroup with a given name and year.
@@ -32,7 +31,6 @@ class UserGroup {
     public UserGroup(String name, Year year) throws RequestException {
         this.name = name;
         this.year = year;
-        
 
         //TODO: Remove and handle in DB
         this.groupID = UUID.randomUUID().toString();
@@ -58,30 +56,19 @@ class UserGroup {
 
     }
 
-    /**
-     * First updates the products from the database.
-     * 
-     * @return the set of products in the usergroup
-     */
-    public Set<Product> getProducts() {
-        List<String> productsFromDB = dbi.getProductsInCommittee(groupID);
+    @Override
+    public Set<IProduct> getAllProducts() {
+        Set<String> productsFromDB = dbi.getProductsInCommittee(groupID);
+        products = new HashSet<>();
         for (String productID : productsFromDB) {
-            
             products.add(new Product(productID, groupID));
         }
-
         return products;
     }
 
-    /**
-     * Creates a new product and adds to the existing set of products.
-     * Temp solution until we have a working database interface.
-     * 
-     * @param name
-     * @param cost
-     * @throws RequestException
-     */
+    @Override
     public void addProduct(String name, Float cost) throws RequestException {
+        products = getAllProducts();
         products.add(new Product(name, cost, groupID));
     }
 
@@ -101,16 +88,14 @@ class UserGroup {
      * @return the order history for a group
      * @throws RequestException
      */
-    public List<Order> getOrderHistory(String user) throws RequestException {
-        
+    @Override
+    public List<IOrder> getOrderHistory(String user) throws RequestException {
         return orderHistory.getOrderHistory(user);
     }
 
-    /**
-     * 
-     * @return the groupID of a certain group.
-     */
+    @Override
     public String getID() {
         return this.groupID;
     }
+
 }

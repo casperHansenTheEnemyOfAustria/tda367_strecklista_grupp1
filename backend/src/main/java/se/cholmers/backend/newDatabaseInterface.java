@@ -4,12 +4,9 @@ import javafx.util.Pair;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 //todo: implement IDatabaseInterface
 
@@ -161,8 +158,8 @@ public class newDatabaseInterface implements IDatabaseInterface {
         return selectSingleValue("Users", "phone_number", new Pair<>("id", id));
     }
 
-    public List<String> getCommitteesOfUser(String id) {
-        List<String> rv = new ArrayList<>();
+    public Set<String> getCommitteesOfUser(String id) {
+        Set<String> rv = new HashSet<>();
         for (Object committeeID : selectWhere("userInCommittee", "user_id", id).get("committee_id")) {
             rv.add((String) committeeID);
         }
@@ -171,7 +168,7 @@ public class newDatabaseInterface implements IDatabaseInterface {
 
     public Float getSaldoFromUserInCommittee(String userid, String committeeID) {
         Float output = Float.parseFloat(selectSingleValue("userInCommittee", "saldo",
-                new Pair<>("(user_id, committee_id)", userid + ", " + committeeID)));
+                new Pair<>("(user_id, committee_id)", userid + "," + committeeID )));
         return output;
     }
 
@@ -183,15 +180,15 @@ public class newDatabaseInterface implements IDatabaseInterface {
         return selectSingleValue("committees", "year", new Pair<>("id", id));
     }
 
-    public List<String> getProductsInCommittee(String committeeID) {
-        List<String> rv = new ArrayList<>();
+    public Set<String> getProductsInCommittee(String committeeID) {
+        Set<String> rv = new HashSet<>();
         for (Object productID : selectWhere("productInCommittee", "committee_id", committeeID).get("product_id")) {
             rv.add((String) productID);
         }
         return rv;
     }
 
-    public void putUserInCommittee(String username, String committeeID, Float saldo) throws RequestException {
+    public void putUserInCommittee(String username, String committeeID, float saldo) throws RequestException {
         String userid = getUseridFromNick(username);
         try{
             insert("userInCommittee", new HashMap<>(Map.of(
@@ -209,7 +206,7 @@ public class newDatabaseInterface implements IDatabaseInterface {
                 new Pair<>("(user_id, committee_id)", userid + ", " + committeeID));
     }
 
-    public void updateProductAmount(String productID, String amount) {
+    public void updateProductAmount(String productID, Integer amount) {
         update("products", new Pair<>("amount", amount), new Pair<>("id", productID));
     }
 
@@ -267,7 +264,7 @@ public class newDatabaseInterface implements IDatabaseInterface {
         int i = 1;
         for (Object value : columnValueMap.values()) {
             if (value instanceof String) {
-                preparedStatement.setObject(i, value);
+                preparedStatement.setString(i, (String) value);
             }
             if (value instanceof Integer) {
                 preparedStatement.setInt(i, (Integer) value);
@@ -277,12 +274,10 @@ public class newDatabaseInterface implements IDatabaseInterface {
             }
             i++;
         }
-        System.out.println(preparedStatement.toString());
         int numExecutes = preparedStatement.executeUpdate();
         if (numExecutes == 0) {
             throw new SQLException("Insert failed, no rows affected.");
         }
-
     }
 
     // Read
@@ -318,7 +313,6 @@ public class newDatabaseInterface implements IDatabaseInterface {
                     "SELECT * FROM %s WHERE %s = ?".formatted(tableName, columnName));
             preparedStatement.setString(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
-            System.out.println(resultSet.getFetchSize());
             return ResultSetConverter.convert(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -335,13 +329,28 @@ public class newDatabaseInterface implements IDatabaseInterface {
      */
     public String selectSingleValue(String tableName, String columnName, Pair<String, String> columnValuePair) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(
+            StringBuilder statement = new StringBuilder("SELECT %s FROM %s WHERE %s = (".formatted(columnName, tableName, columnValuePair.getKey()));
+            Integer params = 0;
+            List<String> temp = new ArrayList<>();
+            for (String value: columnValuePair.getValue().split(",")) {
+                temp.add(value);
+                params++;
+            }
+            for (String value: temp) {
+                statement.append("?").append(",");
+            }
+            statement.deleteCharAt(statement.length() - 1);
+            statement.append(")");
+            /*PreparedStatement preparedStatement = connection.prepareStatement(
                     "SELECT %s FROM %s WHERE %s = ?".formatted(columnName, tableName, columnValuePair.getKey()));
-            preparedStatement.setString(1, columnValuePair.getValue());
+            preparedStatement.setString(1, columnValuePair.getValue());*/
+            PreparedStatement preparedStatement = connection.prepareStatement(statement.toString());
+            for (int i = 0; i < params; i++) {
+                preparedStatement.setString(i + 1, temp.get(i));
+            }
             String rv = null;
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                System.out.println(resultSet.getString(1));
                 rv = resultSet.getString(1);
             }
             return rv;
@@ -366,16 +375,21 @@ public class newDatabaseInterface implements IDatabaseInterface {
      *                               This contains the data to select the row to
      *                               update.
      */
-    private void update(String tableName, Pair<String, String> updatedColumnValuePair,
+    private void update(String tableName, Pair<String, Object> updatedColumnValuePair,
                         Pair<String, String> columnValuePair) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "UPDATE ? SET ? = ? WHERE ? = ?");
-            preparedStatement.setString(1, tableName);
-            preparedStatement.setString(2, updatedColumnValuePair.getKey());
-            preparedStatement.setString(3, updatedColumnValuePair.getValue());
-            preparedStatement.setString(4, columnValuePair.getKey());
-            preparedStatement.setString(5, columnValuePair.getValue());
+                    "UPDATE %s SET %s = ? WHERE %s = ?".formatted(tableName, updatedColumnValuePair.getKey(), columnValuePair.getKey()));
+            if (updatedColumnValuePair.getValue() instanceof String) {
+                preparedStatement.setString(1, (String) updatedColumnValuePair.getValue());
+            }
+            if (updatedColumnValuePair.getValue() instanceof Integer) {
+                preparedStatement.setInt(1, (Integer) updatedColumnValuePair.getValue());
+            }
+            if (updatedColumnValuePair.getValue() instanceof Float) {
+                preparedStatement.setFloat(1, (Float) updatedColumnValuePair.getValue());
+            }
+            preparedStatement.setString(2, columnValuePair.getValue());
             int numExecutes = preparedStatement.executeUpdate();
             if (numExecutes == 0) {
                 throw new SQLException("Update failed, no rows affected.");
@@ -396,10 +410,10 @@ public class newDatabaseInterface implements IDatabaseInterface {
     public void delete(String tableName, Pair<String, String> columnValuePair) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "DELETE FROM ? WHERE ? = ?");
-            preparedStatement.setString(1, tableName);
-            preparedStatement.setString(2, columnValuePair.getKey());
-            preparedStatement.setString(3, columnValuePair.getValue());
+                    "DELETE FROM %s WHERE %s = ?".formatted(tableName, columnValuePair.getKey()));
+            preparedStatement.setString(1, columnValuePair.getValue());
+            //Just for debugging
+            String debug = preparedStatement.toString();
             int numExecutes = preparedStatement.executeUpdate();
             if (numExecutes == 0) {
                 throw new SQLException("Delete failed, no rows affected.");

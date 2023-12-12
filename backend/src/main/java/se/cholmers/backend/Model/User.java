@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import se.cholmers.backend.Model.Interfaces.IOrder;
+import se.cholmers.backend.Model.Interfaces.IProduct;
+import se.cholmers.backend.Model.Interfaces.IUserGroup;
 import se.cholmers.backend.RequestException;
 import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
@@ -15,13 +18,13 @@ import se.cholmers.backend.Interface.IDatabaseInterface;
  * This class represents a user in the system. It contains information about the
  * user such as their name, nickname and phone number
  */
-class User {
+class User implements se.cholmers.backend.Model.Interfaces.IUser {
     private String id;
     private String name;
     private String nick;
     private String phoneNumber;
     private Map<String, Float> saldo = new HashMap<>();
-    private Set<UserGroup> groups = new HashSet<>();
+    private Set<IUserGroup> groups = new HashSet<>();
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
 
 
@@ -48,7 +51,8 @@ class User {
      */
     private void addGroupsFromDatabase() throws RequestException {
         // TODO add a catch for if there are no groups
-        List<String> comitteeIds = dbi.getCommitteesOfUser(id);
+        Set<String> comitteeIds = dbi.getCommitteesOfUser(id);
+        groups = new HashSet<>();
         for (String param : comitteeIds) {
             groups.add(new UserGroup(param));
         }
@@ -74,7 +78,8 @@ class User {
 
     }
 
-    public void addUserToGroup(UserGroup group) {
+    @Override
+    public void addUserToGroup(IUserGroup group) {
         try{
             dbi.putUserInCommittee(id, group.getID().toString(), 0f);
         } catch (RequestException e) {
@@ -83,30 +88,15 @@ class User {
         groups.add(group);
     }
 
-    /**
-     * 
-     * @param groupID
-     * @return the saldo of the user in the context of its groupID
-     * 
-     * @throws IllegalArgumentException if the user is not a member of the group
-     * @throws NullPointerException     if the user is not a member of any group
-     */
+    @Override
     public Float getSaldo(String groupID) {
         Float saldoFromDB = dbi.getSaldoFromUserInCommittee(id, groupID);
         saldo.put(groupID, saldoFromDB);
         return saldo.get(groupID);
     }
 
-    /**
-     * Updates the user saldo based on the price and number of the products it wants
-     * to purchase.
-     * Negative saldo is permitted.
-     * 
-     * @param product
-     * @param numberOfProducts
-     * @throws RequestException
-     */
-    public void purchaseItem(Product product, Integer numberOfProducts) throws RequestException {
+    @Override
+    public void purchaseItem(IProduct product, Integer numberOfProducts) throws RequestException {
         Float currentSaldo = saldo.get(product.getGroupID());
         currentSaldo -= product.getCost() * numberOfProducts;
         saldo.put(product.getGroupID(), currentSaldo);
@@ -114,7 +104,7 @@ class User {
         try{
             dbi.updateUserSaldo(id, product.getGroupID(), currentSaldo.toString());
             product.decreaseAmount(numberOfProducts);
-            List<Product> products = new ArrayList<>();
+            List<IProduct> products = new ArrayList<>();
             for (int i = 0; i < numberOfProducts; i++) {
                 products.add(product);
             }
@@ -135,11 +125,12 @@ class User {
      * @throws RequestException
      * @throws NullPointerException if the user is not a member of any group
      */
-    public Set<Product> getAllProducts() throws RequestException {
-        Set<Product> allProducts = new HashSet<>();
+    @Override
+    public Set<IProduct> getAllProducts() throws RequestException {
+        Set<IProduct> allProducts = new HashSet<>();
         addGroupsFromDatabase();
-        for (UserGroup userGroup : groups) {
-            allProducts.addAll(userGroup.getProducts());
+        for (IUserGroup userGroup : groups) {
+            allProducts.addAll(userGroup.getAllProducts());
         }
         return allProducts;
     }
@@ -152,8 +143,9 @@ class User {
      * @throws RequestException
      * @throws NullPointerException if the user is not a member of any group
      */
-    public Product getProduct(String productID) throws RequestException {
-        for (Product product : getAllProducts()) {
+    @Override
+    public IProduct getProduct(String productID) throws RequestException {
+        for (IProduct product : getAllProducts()) {
             if (product.getID() == productID) {
                 return product;
             }
@@ -166,10 +158,10 @@ class User {
      * @return a list of lists of orders'
      * @throws RequestException if the user is not a member of any group
      */
-    public List<List<Order>> getOrderHistory() throws RequestException {
+    public List<List<IOrder>> getOrderHistory() throws RequestException {
         addGroupsFromDatabase();
-        List<List<Order>> orderHistory = new ArrayList<>();
-        for(UserGroup group : groups){
+        List<List<IOrder>> orderHistory = new ArrayList<>();
+        for(IUserGroup group : groups){
             orderHistory.add(group.getOrderHistory(id));
         }
         return orderHistory;

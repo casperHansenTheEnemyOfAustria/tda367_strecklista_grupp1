@@ -153,7 +153,7 @@ public class AdminController {
         try {
             String productID = freq.getData("productID");
             String amount = freq.getData("amount");
-            dbi.updateProductAmount(productID, amount);
+            dbi.updateProductAmount(productID, Integer.parseInt(amount));
             ResponseEntity<String> ResponseEntity = new ResponseEntity<String>("Product amount updated", HttpStatus.OK);
             return ResponseEntity;
         } catch (RequestException e) {

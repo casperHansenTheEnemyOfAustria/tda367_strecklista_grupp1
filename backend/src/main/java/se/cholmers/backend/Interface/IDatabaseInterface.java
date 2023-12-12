@@ -3,6 +3,7 @@ package se.cholmers.backend.Interface;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javafx.util.Pair;
 import se.cholmers.backend.RequestException;
@@ -27,12 +28,25 @@ public interface IDatabaseInterface {
      *
      * @param productName
      * @param price
-     * @param committee
      * @param amount
      * @throws RequestException
      */
     public String createProduct(String productName, Float price, String committeeid, Integer amount)
             throws RequestException;
+
+        
+        /**
+         * Deletes a row from a table in the database
+         * precondition: There has to be a database and the row has to exist
+         * 
+         * @param tableName
+         * @param columnValuePair
+         * @throws RequestException if the row does not exist
+         */
+
+    public void delete(String tableName, Pair<String, String> columnValuePair) 
+                throws RequestException;
+
 
     /**
      * Creates a user in the database
@@ -88,7 +102,7 @@ public interface IDatabaseInterface {
      * @param nick
      * @param password
      * @return userID
-     * @throws NullPointerException if a user with the given name and password does
+     * @throws RequestException if a user with the given name and password does
      *                              not exist
      */
     public String authenticateUser(String nick, String password) throws RequestException;
@@ -97,7 +111,6 @@ public interface IDatabaseInterface {
      * Returns the username of a user
      * precondition: The user has to exist
      *
-     * @param nick
      * @return username
      * @throws NullPointerException if a user with the given name does not exist
      */
@@ -131,7 +144,7 @@ public interface IDatabaseInterface {
      * @return committees
      * @throws NullPointerException if a user with the given id does not exist
      */
-    public List<String> getCommitteesOfUser(String id);
+    public Set<String> getCommitteesOfUser(String id);
 
     /**
      * Returns the particular saldo of a user in that committee
@@ -174,19 +187,18 @@ public interface IDatabaseInterface {
      * @return products
      * @throws NullPointerException if a committee with the given id does not exist
      */
-    public List<String> getProductsInCommittee(String committeeID);
+    public Set<String> getProductsInCommittee(String committeeID);
 
     /**
      * Adds a user committee relationship to the database
      * precondition: The user and the committee has to exist
      *
-     * @param id
      * @param committeeID
      * @param saldo
      * @throws NullPointerException if a user with the given id does not exist or
      *                              the committee does not exist
      */
-    public void putUserInCommittee(String username, String committeeID, Float saldo) throws RequestException;
+    public void putUserInCommittee(String username, String committeeID, float saldo) throws RequestException;
 
     /**
      * Updates the saldo of a user in a committee
@@ -200,7 +212,7 @@ public interface IDatabaseInterface {
      *                                  or the committee does not exist
      * @throws IllegalArgumentException if the user is not in the committee
      */
-    public void updateUserSaldo(String id, String committeeId, String saldo);
+    public void updateUserSaldo(String id, String committeeId, String saldo) throws NullPointerException, IllegalArgumentException;
 
     /**
      * Updates the amount of a product
@@ -210,7 +222,7 @@ public interface IDatabaseInterface {
      * @param amount
      * @throws NullPointerException if a product with the given id does not exist
      */
-    public void updateProductAmount(String productID, String amount);
+    public void updateProductAmount(String productID, Integer amount);
 
     /**
      * returns a list of products ordered by a committee at a certain time (an order) and a user for the list if not provided

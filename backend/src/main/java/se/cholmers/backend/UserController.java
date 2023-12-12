@@ -18,13 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import se.cholmers.backend.Model.StateManager;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 // import org.springframework.*;
 
-import java.util.Map;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -49,12 +46,11 @@ public class UserController {
      */
     @RequestMapping(value  = "/getSaldo", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String>getSaldo(@RequestBody LoggedInUserRequest freq) {   
+    public ResponseEntity<String>getSaldo(@RequestBody LoggedInUserRequest freq) {
         try{
             String sessionID = freq.getSessionID();
             String groupId = freq.getData("groupId");
             ResponseEntity<String> saldo = new ResponseEntity<String>(stateManager.getSaldo(sessionID, groupId), HttpStatus.OK);
-     
             return saldo;
         }catch(RequestException e){
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -219,15 +215,15 @@ public class UserController {
      */
     @RequestMapping(value = "/getProducts", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<List<Map<String,String>>> getProducts(@RequestBody LoggedInUserRequest freq) {
+    public ResponseEntity<Set<Map<String,String>>> getProducts(@RequestBody LoggedInUserRequest freq) {
         String sessionID = freq.getSessionID();
         
         try{
-            ResponseEntity<List<Map<String,String>>> ResponseEntity = new ResponseEntity<List<Map<String,String>>>(stateManager.getAvaliableProducts(sessionID),HttpStatus.OK);
+            ResponseEntity<Set<Map<String,String>>> ResponseEntity = new ResponseEntity<Set<Map<String,String>>>(stateManager.getAvailableProducts(sessionID),HttpStatus.OK);
             // ResponseEntity<Map<String, String>> ResponseEntity = new ResponseEntity<Map<String, String>>(stateManager.getProducts(sessionID));
             return ResponseEntity;
         }catch(RequestException e){
-            return new ResponseEntity<List<Map<String, String>>>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Set<Map<String, String>>>(HttpStatus.BAD_REQUEST);
         }finally{
 
         }
@@ -269,8 +265,6 @@ public class UserController {
 
         }
     }
-
-    //TODO add methods for getting your order history
     
 }
 

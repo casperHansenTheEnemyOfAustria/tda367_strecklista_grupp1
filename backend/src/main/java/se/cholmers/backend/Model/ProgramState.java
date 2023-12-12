@@ -1,33 +1,28 @@
 package se.cholmers.backend.Model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import se.cholmers.backend.Model.Interfaces.ICart;
+import se.cholmers.backend.Model.Interfaces.IProduct;
+import se.cholmers.backend.Model.Interfaces.IUser;
 import se.cholmers.backend.RequestException;
+import se.cholmers.backend.Model.Interfaces.IProgramState;
 
-class ProgramState {
-    private User currentUser;
-    private Cart cart;
+class ProgramState implements IProgramState {
+    private IUser currentUser;
+    private ICart cart;
 
     /**
      * Creates a program state given a certain User.
      * 
      * @param user
      */
-    public ProgramState(User user) {
+    public ProgramState(IUser user) {
         this.currentUser = user;
         this.cart = new Cart();
     }
 
-    /**
-     * Returns the saldo as a string for use in the frontend given a groupID for the
-     * user owning the ProgramState.
-     * 
-     * @param groupID
-     * @return A string of the saldo a user has in a given group.
-     */
+    @Override
     public String getSaldo(String groupID) {
         return currentUser.getSaldo(groupID).toString();
     }
@@ -39,8 +34,9 @@ class ProgramState {
      * @param productID
      * @throws RequestException
      */
+    @Override
     public void addToCart(String productID) throws RequestException {
-        Product product = currentUser.getProduct(productID);
+        IProduct product = currentUser.getProduct(productID);
         cart.addToCart(product);
     }
 
@@ -51,27 +47,21 @@ class ProgramState {
      * @param productID
      * @throws RequestException
      */
+    @Override
     public void removeFromCart(String productID) throws RequestException {
-        Product product = currentUser.getProduct(productID);
+        IProduct product = currentUser.getProduct(productID);
         cart.removeFromCart(product);
     }
 
-    /**
-     * Returns the contents of the Cart.
-     * 
-     * @return the contents of the Cart.
-     */
+    @Override
     public Map<String, String> getCart() {
         return cart.toStringMap();
     }
 
-    /**
-     * Empties the cart and updates the saldo (saldo update not yet working)
-     * @throws RequestException
-     */
+    @Override
     public void completePurchase() throws RequestException {
         //TODO: Add logic for changing saldo
-        for (Product product : cart.getCart().keySet()) {
+        for (IProduct product : cart.getCart().keySet()) {
             currentUser.purchaseItem(product, cart.getCart().get(product));
         }
         cart.empty();
@@ -83,10 +73,17 @@ class ProgramState {
      * @return
      * @throws RequestException
      */
-    public List<Map<String, String>> getAllProducts() throws RequestException {
-        List<Map<String, String>> allProducts = new ArrayList<>();
-        for (Product p : currentUser.getAllProducts()) {
-            allProducts.add(getProduct(p.getID()));
+    @Override
+    public Set<Map<String, String>> getAllProducts() throws RequestException {
+        Set<Map<String, String>> allProducts = new HashSet<>();
+        for (IProduct p : currentUser.getAllProducts()) {
+            Map<String, String> tempMap = new HashMap<>();
+            tempMap.put("Name", p.getName());
+            tempMap.put("Price", p.getCost().toString());
+            tempMap.put("Amount", p.getAmount());
+            tempMap.put("Id", p.getID());
+            allProducts.add(tempMap);
+
         }
         return allProducts;
     }
@@ -101,8 +98,9 @@ class ProgramState {
      * @return
      * @throws RequestException
      */
+    @Override
     public Map<String, String> getProduct(String productID) throws RequestException{
-        Product tempProd = currentUser.getProduct(productID);
+        IProduct tempProd = currentUser.getProduct(productID);
         Map<String, String> output = new HashMap<>();
         output.put("Name", tempProd.getName());
         output.put("Price", tempProd.getCost().toString());
@@ -113,7 +111,7 @@ class ProgramState {
     }
 
     public void increaseProductAmount(String productID, int amount) throws RequestException{
-        Product tempProd = currentUser.getProduct(productID);
+        IProduct tempProd = currentUser.getProduct(productID);
         tempProd.increaseAmount(amount);
     }
 }
