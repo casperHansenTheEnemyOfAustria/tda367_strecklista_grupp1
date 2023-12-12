@@ -82,7 +82,13 @@ class _ActiveItemTile extends State<ItemTile> {
   Widget build(BuildContext context) {
     //final Color color = Colors.primaries[itemNo % Colors.primaries.length];
 
-    return Padding(
+    return 
+    /*
+    AnimatedBuilder(
+      animation: animation, 
+      builder: builder)
+    */
+    Padding(
       padding: const EdgeInsets.all(8.5),
       child: Container(
         decoration: 

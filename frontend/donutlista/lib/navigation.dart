@@ -143,11 +143,11 @@ class _DropDownState extends State<DropDown> {
 
   List<DropdownMenuItem<String>> get dropdownItems{
   List<DropdownMenuItem<String>> menuItems = [
-    const DropdownMenuItem(child: Text("Humlan"),value: "Humlan"),
-    const DropdownMenuItem(child: Text("Skepparn"),value: "Skepparn"),
-    const DropdownMenuItem(child: Text("Casino"),value: "Casino"),
-    const DropdownMenuItem(child: Text("Jawadre"),value: "Jawadre"),
-    const DropdownMenuItem(child: Text("Prince"),value: "Prince"),
+    const DropdownMenuItem(value: "Humlan", child: Text("Humlan")),
+    const DropdownMenuItem(value: "Skepparn", child: Text("Skepparn")),
+    const DropdownMenuItem(value: "Casino", child: Text("Casino")),
+    const DropdownMenuItem(value: "Jawadre", child: Text("Jawadre")),
+    const DropdownMenuItem(value: "Prince", child: Text("Prince")),
 
   ];
   return menuItems;

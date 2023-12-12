@@ -48,7 +48,7 @@ class _UserState extends State<UserPage> {
       });
     } else {
       // ignore: avoid_print
-      print("Failed to get name"); //TODO: Remove
+      print("Failed to get name"); //TODO: Remove print
     }
   }
 }

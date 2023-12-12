@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'homescreen.dart';
 import 'package:http/http.dart' as http;
+import 'main.dart';
 
-const apiUrl = "localhost:8080";
 
 
 class LoginPage extends StatefulWidget {
@@ -97,7 +97,6 @@ class LoginState extends State<LoginPage> {
             
             TextButton(
               onPressed: () {
-                //TODO FORGOT PASSWORD SCREEN GOES HERE
               },
               child: Text(
                 'Visste du att smurfar är tre äpplen höga?',

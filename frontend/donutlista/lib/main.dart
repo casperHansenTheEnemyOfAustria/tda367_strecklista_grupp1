@@ -4,10 +4,13 @@ import 'login.dart';
 
 /* MyApp gives theme and starts off att login page */
 
+const apiUrl = "localhost:8080";
+
+
 Map<String, String> itemMap = {
   'Item 1': 'Price 1',
   'Item 2': 'Price 2',
-  'Item 3': 'Price 3'
+  'Item 3': 'Price 3', 
 };
 int counter = 0;
 
@@ -15,9 +18,6 @@ void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  final apiUrl = "localhost:8080";
-
 
   @override
   Widget build(BuildContext context) {
