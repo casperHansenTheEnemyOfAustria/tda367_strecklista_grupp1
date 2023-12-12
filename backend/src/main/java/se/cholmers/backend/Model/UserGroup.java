@@ -2,11 +2,7 @@ package se.cholmers.backend.Model;
 
 import java.time.LocalDateTime;
 import java.time.Year;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import se.cholmers.backend.Model.Interfaces.IOrder;
 import se.cholmers.backend.Model.Interfaces.IOrderHistory;
@@ -61,18 +57,18 @@ class UserGroup implements IUserGroup{
     }
 
     @Override
-    public Set<IProduct> getProducts() {
-        List<String> productsFromDB = dbi.getProductsInCommittee(groupID);
+    public Set<IProduct> getAllProducts() {
+        Set<String> productsFromDB = dbi.getProductsInCommittee(groupID);
+        products = new HashSet<>();
         for (String productID : productsFromDB) {
-            
             products.add(new Product(productID, groupID));
         }
-
         return products;
     }
 
     @Override
     public void addProduct(String name, Float cost) throws RequestException {
+        products = getAllProducts();
         products.add(new Product(name, cost, groupID));
     }
 

@@ -20,7 +20,7 @@ public interface IProduct {
      * @param amount
      * @throws RequestException postcondition: The amount of the product is increased by the given amount
      */
-    void increaseAmount(int amount) throws RequestException;
+    void increaseAmount(Integer amount) throws RequestException;
 
     /**
      * Decreases the amount of a product by a certain amount. Should be called upon purchase.
@@ -29,7 +29,7 @@ public interface IProduct {
      * @param amount
      * @throws RequestException postcondition: The amount of the product is decreased by the given amount
      */
-    void decreaseAmount(int amount) throws RequestException;
+    void decreaseAmount(Integer amount) throws RequestException;
 
     void increaseAmount();
 

@@ -3,6 +3,7 @@ package se.cholmers.backend.Interface;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javafx.util.Pair;
 import se.cholmers.backend.RequestException;
@@ -27,7 +28,6 @@ public interface IDatabaseInterface {
      *
      * @param productName
      * @param price
-     * @param committee
      * @param amount
      * @throws RequestException
      */
@@ -111,7 +111,6 @@ public interface IDatabaseInterface {
      * Returns the username of a user
      * precondition: The user has to exist
      *
-     * @param nick
      * @return username
      * @throws NullPointerException if a user with the given name does not exist
      */
@@ -145,7 +144,7 @@ public interface IDatabaseInterface {
      * @return committees
      * @throws NullPointerException if a user with the given id does not exist
      */
-    public List<String> getCommitteesOfUser(String id);
+    public Set<String> getCommitteesOfUser(String id);
 
     /**
      * Returns the particular saldo of a user in that committee
@@ -188,13 +187,12 @@ public interface IDatabaseInterface {
      * @return products
      * @throws NullPointerException if a committee with the given id does not exist
      */
-    public List<String> getProductsInCommittee(String committeeID);
+    public Set<String> getProductsInCommittee(String committeeID);
 
     /**
      * Adds a user committee relationship to the database
      * precondition: The user and the committee has to exist
      *
-     * @param id
      * @param committeeID
      * @param saldo
      * @throws NullPointerException if a user with the given id does not exist or
@@ -224,7 +222,7 @@ public interface IDatabaseInterface {
      * @param amount
      * @throws NullPointerException if a product with the given id does not exist
      */
-    public void updateProductAmount(String productID, String amount);
+    public void updateProductAmount(String productID, Integer amount);
 
     /**
      * returns a list of products ordered by a committee at a certain time (an order) and a user for the list if not provided

@@ -66,27 +66,27 @@ public class Product implements IProduct {
     }
  
     @Override
-    public void increaseAmount(int amount) throws RequestException {
+    public void increaseAmount(Integer amount) throws RequestException {
         if (amount < 0) {
             throw new RequestException("Amount cannot be negative");
         }
         this.amount+=amount;
-        dbi.updateProductAmount(productID, this.amount.toString());
+        dbi.updateProductAmount(productID, this.amount);
     }
 
     @Override
-    public void decreaseAmount(int amount) throws RequestException {
+    public void decreaseAmount(Integer amount) throws RequestException {
         if (amount < 0) {
             throw new RequestException("Amount cannot be negative");
         }
         this.amount-=amount;
-        dbi.updateProductAmount(productID, this.amount.toString());
+        dbi.updateProductAmount(productID, this.amount);
     }
 
     @Override
     public void increaseAmount() {
         amount++;
-        dbi.updateProductAmount(amount.toString(), productID);
+        dbi.updateProductAmount(productID, amount);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class Product implements IProduct {
 
     @Override
     public String getAmount(){
-        dbi.updateProductAmount(productID, amount.toString());
+        dbi.updateProductAmount(productID, amount);
         return amount.toString();
     }
 }

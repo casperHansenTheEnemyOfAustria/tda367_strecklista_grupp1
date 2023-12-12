@@ -51,7 +51,8 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
      */
     private void addGroupsFromDatabase() throws RequestException {
         // TODO add a catch for if there are no groups
-        List<String> comitteeIds = dbi.getCommitteesOfUser(id);
+        Set<String> comitteeIds = dbi.getCommitteesOfUser(id);
+        groups = new HashSet<>();
         for (String param : comitteeIds) {
             groups.add(new UserGroup(param));
         }
@@ -128,8 +129,8 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
     public Set<IProduct> getAllProducts() throws RequestException {
         Set<IProduct> allProducts = new HashSet<>();
         addGroupsFromDatabase();
-        for (IUserGroup IUserGroup : groups) {
-            allProducts.addAll(IUserGroup.getProducts());
+        for (IUserGroup userGroup : groups) {
+            allProducts.addAll(userGroup.getAllProducts());
         }
         return allProducts;
     }

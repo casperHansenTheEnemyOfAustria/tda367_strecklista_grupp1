@@ -12,7 +12,7 @@ public interface IUserGroup {
      *
      * @return the set of products in the usergroup
      */
-    Set<IProduct> getProducts();
+    Set<IProduct> getAllProducts();
 
     /**
      * Creates a new product and adds to the existing set of products.

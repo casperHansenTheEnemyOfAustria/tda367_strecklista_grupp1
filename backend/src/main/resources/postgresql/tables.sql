@@ -18,7 +18,7 @@ CREATE TABLE Committees (
 
 CREATE TABLE Products (
     id TEXT PRIMARY KEY,
-    name TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL,
     price FLOAT NOT NULL,
     amount INT
 );

@@ -77,7 +77,13 @@ class ProgramState implements IProgramState {
     public Set<Map<String, String>> getAllProducts() throws RequestException {
         Set<Map<String, String>> allProducts = new HashSet<>();
         for (IProduct p : currentUser.getAllProducts()) {
-            allProducts.add(getProduct(p.getID()));
+            Map<String, String> tempMap = new HashMap<>();
+            tempMap.put("Name", p.getName());
+            tempMap.put("Price", p.getCost().toString());
+            tempMap.put("Amount", p.getAmount());
+            tempMap.put("Id", p.getID());
+            allProducts.add(tempMap);
+
         }
         return allProducts;
     }
