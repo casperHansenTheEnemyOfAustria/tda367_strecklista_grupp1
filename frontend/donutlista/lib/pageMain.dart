@@ -18,7 +18,7 @@ class _MainPage extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: NavDrawer(),
+        drawer: NavDrawer(userID: widget.userID),
         appBar: AppBar(
           title: Text(widget.title),
         ),
