@@ -171,4 +171,12 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
         return id;
     }
 
+    public String getName(){
+        return name;
+    }
+
+    public String getNick(){
+        return nick;
+    }
+
 }

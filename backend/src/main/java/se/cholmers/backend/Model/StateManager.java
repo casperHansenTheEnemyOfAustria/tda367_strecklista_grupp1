@@ -154,6 +154,10 @@ public class StateManager {
         states.get(stateID).increaseProductAmount(productID, amount);
     }
 
+    public String getName(String stateID){
+        return states.get(stateID).getName();
+    }
+
     /**
      * Idk
      * 
