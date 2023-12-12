@@ -5,6 +5,9 @@ import 'package:hexcolor/hexcolor.dart';
 import 'homescreen.dart';
 import 'package:http/http.dart' as http;
 
+final apiUrl = "localhost:8080";
+
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -13,7 +16,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginState extends State<LoginPage> {
-  final apiUrl = "localhost:8080";
 
   var userName = '';
   var password = '';
@@ -22,7 +24,7 @@ class LoginState extends State<LoginPage> {
     content: Text('Failed to login!'),
   );
 
-  Future<void> sendPostRequest() async {
+  Future<void> sendLoginPostRequest() async {
     // Get the text from the forms
     var content = {"userName": userName, "password": password};
     final response = await http.post(
@@ -103,7 +105,7 @@ class LoginState extends State<LoginPage> {
               //    color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: TextButton(
                 onPressed: () {
-                  sendPostRequest();
+                  sendLoginPostRequest();
                 },
                 child: const Text(
                   'Login',
