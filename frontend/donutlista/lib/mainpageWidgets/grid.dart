@@ -101,6 +101,7 @@ class _ItemGridState extends State<MainItemGrid> {
                   map["Amount"] = element["Amount"];
                   outmap+= List.from([map]);
                 });
+                print(outmap[0]);
               
               return GridView.builder(
                 itemCount: outmap.length,
@@ -109,7 +110,7 @@ class _ItemGridState extends State<MainItemGrid> {
                   mainAxisSpacing: 10,
                   crossAxisSpacing: 10,
                 ),
-                itemBuilder: (BuildContext context, int index) => ItemTile(outmap[index],),
+                itemBuilder: (BuildContext context, int index) => ItemTile(outmap[index]),
 
               );
             
@@ -134,8 +135,14 @@ class ItemTile extends StatefulWidget {
   Map<String, String> listItem;
    
   ItemTile(
+  
     this.listItem, {super.key}
+    
   );
+
+  getListItem(){
+    return listItem;
+  }
  
   @override
   State<ItemTile> createState() => _ActiveItemTile();
@@ -143,13 +150,8 @@ class ItemTile extends StatefulWidget {
 
 class _ActiveItemTile extends State<ItemTile> {
   var counter = 0;
-  Map<String, String> listItem = Map();
+  // Map<String, String> listItem = Map();
 
-
-  _ActiveItemTile(){
-    
-    listItem = widget.listItem;
-  }
   int _incrementCounter() {
     setState(() {
       //TODO api add to cart
@@ -210,14 +212,14 @@ class _ActiveItemTile extends State<ItemTile> {
           Text(//TODO: Add "productName" here
             //ItemMap[itemNo],
             //key: Key('text_$itemNo'),
-            listItem["Name"]!
+            widget.listItem["Name"]!
           ),
           // ignore: prefer_const_constructors
           Text(
             //'PRIS' //TODO: Add "productCost" here
             //itemList[itemNo],
             //key: Key('text_$itemNo'),
-            listItem["Price"]!,
+            widget.listItem["Price"]!
           ),
           Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
