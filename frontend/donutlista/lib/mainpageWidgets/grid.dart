@@ -1,4 +1,5 @@
 
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -23,11 +24,11 @@ class MainItemGrid extends StatefulWidget{
   State<MainItemGrid> createState() => _ItemGridState();
 }
 class _ItemGridState extends State<MainItemGrid> {
-  List<dynamic> itemList = List.empty();
+  Future<List<Map<String, String>>> itemList = Future(() => List.empty());
        
 
   
-  Future<List<dynamic>> sendItemsPostRequest() async {
+  Future<List<Map<String, String>>> sendItemsPostRequest() async {
     // Get the text from the forms
     var content = {"sessionID": globals.sessionID};
     final response = await http.post(
@@ -40,6 +41,8 @@ class _ItemGridState extends State<MainItemGrid> {
 
     if (response.statusCode == 200) {
       // ignore: use_build_context_synchronously, avoid_print
+      
+   
       return jsonDecode(response.body);
     } else {
       return List.empty();
@@ -48,29 +51,46 @@ class _ItemGridState extends State<MainItemGrid> {
   }
 
   @override
-  Widget build(BuildContext context){
-      List<Map<String, String>>coolerItemList = List.empty(); 
-      sendItemsPostRequest().then((value) {
-            for (var element in value) {
+  Widget build(BuildContext context) {
+      // List<Map<String, String>>coolerItemList = List.empty(); 
+      // sendItemsPostRequest().then((value) {
+      //       for (var element in value) {
+      //         print(element);
+      //         coolerItemList.add(element);
+      //       }
+      //     setState((){
+      //       itemList = coolerItemList;
+      //     });
+         
+      // });
+      // itemList = 
+      // print(itemList);
+      // print("hi");
+    
+     
+      return 
+      Scaffold(
+        body: FutureBuilder<List<Map<String, String>>>(
+          future: sendItemsPostRequest(),
+          builder: (context, snapshot) {
+            var list = snapshot!.data;
+            List<Map<String, String>>coolerItemList = List.empty(); 
+            for (var element in list!) {
               print(element);
               coolerItemList.add(element);
             }
-          setState((){
-            itemList = coolerItemList;
-          });
-         
-      });
-      
+            return GridView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) => ItemTile(snapshot.data!.elementAt(index)),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              )
+            ); 
+          },
+        )
 
-     
-      return 
-      GridView.builder(
-        itemCount: itemList.length,
-        itemBuilder: (context, index) => ItemTile(itemList.elementAt(index)),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-        ),
       );
+      
 }
 }
 
@@ -83,7 +103,7 @@ class ItemTile extends StatefulWidget {
   ItemTile(
     this.listItem, {super.key}
   );
-
+ 
   @override
   State<ItemTile> createState() => _ActiveItemTile();
 }
@@ -138,6 +158,13 @@ class _ActiveItemTile extends State<ItemTile> {
     */
     Padding(
       padding: const EdgeInsets.all(8.5),
+      
+      /*
+      child: FutureBuilder<String>(
+        future: _calculation, // a previously-obtained Future<String> or null
+        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+      */
+      
       child: Container(
         decoration: 
         BoxDecoration(
