@@ -1,6 +1,7 @@
 
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -24,11 +25,12 @@ class MainItemGrid extends StatefulWidget{
   State<MainItemGrid> createState() => _ItemGridState();
 }
 class _ItemGridState extends State<MainItemGrid> {
-  Future<List<Map<String, String>>> itemList = Future(() => List.empty());
+  Future<String> itemListJson = Future.value("");
        
 
   
-  Future<List<Map<String, String>>> sendItemsPostRequest() async {
+  Future<String> sendItemsPostRequest() async {
+    print("hihihi");
     // Get the text from the forms
     var content = {"sessionID": globals.sessionID};
     final response = await http.post(
@@ -39,13 +41,16 @@ class _ItemGridState extends State<MainItemGrid> {
       body: jsonEncode(content),
     );
 
+
     if (response.statusCode == 200) {
       // ignore: use_build_context_synchronously, avoid_print
       
    
-      return jsonDecode(response.body);
+      return response.body;
     } else {
-      return List.empty();
+      print("cock");
+      return "";
+       
       //TODO CAT
     }
   }
@@ -66,30 +71,58 @@ class _ItemGridState extends State<MainItemGrid> {
       // itemList = 
       // print(itemList);
       // print("hi");
-    
-     
+      setState((){
+            itemListJson = sendItemsPostRequest();
+        });
+        // print(itemListJson);
+        
       return 
       Scaffold(
-        body: FutureBuilder<List<Map<String, String>>>(
-          future: sendItemsPostRequest(),
+        body: FutureBuilder<String>(
+          future: itemListJson,
           builder: (context, snapshot) {
-            var list = snapshot!.data;
-            List<Map<String, String>>coolerItemList = List.empty(); 
-            for (var element in list!) {
-              print(element);
-              coolerItemList.add(element);
+            // print(snapshot.data);
+         
+            
+
+            // List<dynamic> list = jsonDecode(snapshot.data as String);
+            if (snapshot.connectionState == ConnectionState.done) {
+              if(snapshot.hasError){
+                return const Text('Error');
+              }
+                 List<Map<String, String>> outmap = List.empty();
+                List<dynamic> list =jsonDecode(snapshot.data! as String);
+                list.forEach((element) {
+                  element.toString();
+                  Map<String, String> map = Map();
+                  map["Name"] = element["Name"];
+                  map["Price"] = element["Price"];
+                  map["Id"] = element["Id"];
+                  map["Amount"] = element["Amount"];
+                  outmap+= List.from([map]);
+                });
+              
+              return GridView.builder(
+                itemCount: outmap.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                ),
+                itemBuilder: (BuildContext context, int index) => ItemTile(outmap[index],),
+
+              );
+            
+            } else if (snapshot.hasError) {
+              return const Text('Error');
             }
-            return GridView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) => ItemTile(snapshot.data!.elementAt(index)),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-              )
-            ); 
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           },
         )
-
       );
+
       
 }
 }
