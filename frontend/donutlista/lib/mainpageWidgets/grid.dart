@@ -23,8 +23,11 @@ class MainItemGrid extends StatefulWidget{
   State<MainItemGrid> createState() => _ItemGridState();
 }
 class _ItemGridState extends State<MainItemGrid> {
+  List<dynamic> itemList = List.empty();
+       
+
   
-  Future<Set<Map<String, String>>> sendItemsPostRequest() async {
+  Future<List<dynamic>> sendItemsPostRequest() async {
     // Get the text from the forms
     var content = {"sessionID": globals.sessionID};
     final response = await http.post(
@@ -37,24 +40,33 @@ class _ItemGridState extends State<MainItemGrid> {
 
     if (response.statusCode == 200) {
       // ignore: use_build_context_synchronously, avoid_print
-      print(jsonDecode(response.body));//TODO remove
       return jsonDecode(response.body);
     } else {
-      return {{"":""}};
+      return List.empty();
       //TODO CAT
     }
   }
 
   @override
   Widget build(BuildContext context){
-      Set<Map<String, String>> itemList = {{"":""}};
+      List<Map<String, String>>coolerItemList = List.empty(); 
       sendItemsPostRequest().then((value) {
-        itemList = value;
+            for (var element in value) {
+              print(element);
+              coolerItemList.add(element);
+            }
+          setState((){
+            itemList = coolerItemList;
+          });
+         
       });
+      
+
+     
       return 
       GridView.builder(
         itemCount: itemList.length,
-        itemBuilder: (context, index) => ItemTile(index, itemList.elementAt(index)),
+        itemBuilder: (context, index) => ItemTile(itemList.elementAt(index)),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
         ),
@@ -65,25 +77,26 @@ class _ItemGridState extends State<MainItemGrid> {
 
 // ignore: must_be_immutable
 class ItemTile extends StatefulWidget {
-  int itemNo; //TODO: Change to ItemID & Add itemName, ItemPrice
-  var listItem;
+//TODO: Change to ItemID & Add itemName, ItemPrice
+  Map<String, String> listItem;
    
-   
-  
-
   ItemTile(
-    this.itemNo, listItem, {super.key}
+    this.listItem, {super.key}
   );
 
   @override
-  State<ItemTile> createState() => _ActiveItemTile(listItem);
+  State<ItemTile> createState() => _ActiveItemTile();
 }
 
 class _ActiveItemTile extends State<ItemTile> {
   var counter = 0;
-  var listItem;
+  Map<String, String> listItem = Map();
 
-  _ActiveItemTile(this.listItem);
+
+  _ActiveItemTile(){
+    
+    listItem = widget.listItem;
+  }
   int _incrementCounter() {
     setState(() {
       //TODO api add to cart
@@ -113,12 +126,10 @@ class _ActiveItemTile extends State<ItemTile> {
     return counter;
   }
 
-  
 
   @override
   Widget build(BuildContext context) {
     //final Color color = Colors.primaries[itemNo % Colors.primaries.length];
-
     return 
     /*
     AnimatedBuilder(
@@ -139,14 +150,14 @@ class _ActiveItemTile extends State<ItemTile> {
           Text(//TODO: Add "productName" here
             //ItemMap[itemNo],
             //key: Key('text_$itemNo'),
-            listItem["productName"]
+            listItem["Name"]!
           ),
           // ignore: prefer_const_constructors
           Text(
             //'PRIS' //TODO: Add "productCost" here
             //itemList[itemNo],
             //key: Key('text_$itemNo'),
-            listItem["productCost"],
+            listItem["Price"]!,
           ),
           Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
