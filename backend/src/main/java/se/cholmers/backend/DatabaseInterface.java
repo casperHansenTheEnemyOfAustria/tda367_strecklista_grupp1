@@ -1,38 +1,24 @@
 package se.cholmers.backend;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
+import javafx.util.Pair;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
-public class DatabaseInterface {
+import java.sql.*;
+import java.sql.Date;
+import java.time.LocalDateTime;
+import java.util.*;
+
+//todo: implement IDatabaseInterface
+
+public class DatabaseInterface implements IDatabaseInterface {
 
     private static DatabaseInterface instance;
 
-    // Replace these with your actual database information
     private static final String DB_URL = "jdbc:postgresql:strecklista";
     private static final String DB_USER = "postgres";
     private static final String DB_PASSWORD = "";
 
     private Connection connection;
-
-    // List<String> represenation of tables
-
-    /*
-     * private static final String[] person = {"id", "phone_number", "person_name",
-     * "person_nick"};
-     * private static final String[] committee = {"id", "group_name", "year"};
-     * private static final String[] product = {"id", "name", "price"};
-     */
 
     private DatabaseInterface() {
         try {
@@ -52,562 +38,498 @@ public class DatabaseInterface {
 
     public void closeConnection() {
         try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Creates a new product using the CRUD operations.
+     *
+     * @param name   The name of the product.
+     * @param price  The price of the product.
+     * @param amount The amount of the product.
+     */
+    public String createProduct(String name, Float price, String committeeid, Integer amount) {
+        String id = UUID.randomUUID().toString();
+        try {
+            insert("products", new HashMap<>(Map.of(
+                    "id", id,
+                    "name", name,
+                    "price", price,
+                    "amount", amount)));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            insert("productInCommittee", new HashMap<>(Map.of(
+                    "product_id", id,
+                    "committee_id", committeeid)));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
+
+    public Float getProductPrice(String id) {
+        return Float.parseFloat(selectSingleValue("products", "price", new Pair<>("id", id)));
+    }
+
+    public int getProductAmount(String id) {
+        return Integer.parseInt(selectSingleValue("products", "amount", new Pair<>("id", id)));
+    }
+
+    public String getProductName(String id) {
+        return selectSingleValue("products", "name", new Pair<>("id", id));
+    }
+
+    public String authenticateUser(String nick, String password) throws RequestException {
+        Map<String, List<Object>> map = selectWhere("users", "user_nick", nick);
+        if (map.get("user_nick").isEmpty()) {
+            throw new RequestException("User does not exist");
+        }
+        if (map.get("password").get(0).equals(password)) {
+            return (String) map.get("id").get(0);
+        } else {
+            throw new RequestException("Wrong password");
+        }
+    }
+
+    private String getUseridFromNick(String nick) throws RequestException {
+        Map<String, List<Object>> map = selectWhere("users", "user_nick", nick);
+        if (map.get("user_nick").isEmpty()) {
+            throw new RequestException("User does not exist");
+        }
+        return (String) map.get("id").get(0);
+    }
+
+    /**
+     * Creates a new committee using the CRUD operations.
+     *
+     * @param group_name The name of the committee.
+     * @param year       The year of the committee.
+     * @return the id of the committee
+     * @throws RequestException if the committee already exists
+     */
+    public String createCommittee(String group_name, String year) throws RequestException {
+        String id = UUID.randomUUID().toString();
+        try{
+            insert("committees", new HashMap<>(Map.of(
+                    "id", id,
+                    "group_name", group_name,
+                    "year", year)));
+        }
+        catch (SQLException e){
+            throw new RequestException("Committee already exists or something went wrong");
+        }
+        return id;
+    }
+
+    // Creates user and puts them in a committee with a saldo. Throws
+    // RequestException if user already exists or if the committee does not exist.
+    // initializes saldo to 0.
+    public String createUser(String userName, String phoneNumber, String userNick,
+                             String password) throws RequestException {
+        String user_id = UUID.randomUUID().toString();
+        try {
+            insert("Users", new HashMap<>(Map.of(
+                    "id", user_id,
+                    "user_name", userName,
+                    "user_nick", userNick,
+                    "phone_number", phoneNumber,
+                    "password", password)));
+        } catch (SQLException e) {
+            throw new RequestException("User already exists or something idk");
+        }
+
+        return user_id;
+    }
+
+    public String getUserName(String id) {
+        return selectSingleValue("Users", "user_name", new Pair<>("id", id));
+    }
+
+    public String getUserNick(String id) {
+        return selectSingleValue("Users", "user_nick", new Pair<>("id", id));
+    }
+
+    public String getUserPhoneNumber(String id) {
+        return selectSingleValue("Users", "phone_number", new Pair<>("id", id));
+    }
+
+    public Set<String> getCommitteesOfUser(String id) {
+        Set<String> rv = new HashSet<>();
+        for (Object committeeID : selectWhere("userInCommittee", "user_id", id).get("committee_id")) {
+            rv.add((String) committeeID);
+        }
+        return rv;
+    }
+
+    public Float getSaldoFromUserInCommittee(String userid, String committeeID) {
+        Float output = Float.parseFloat(selectSingleValue("userInCommittee", "saldo",
+                new Pair<>("(user_id, committee_id)", userid + "," + committeeID )));
+        return output;
+    }
+
+    public String getCommitteeName(String id) {
+        return selectSingleValue("committees", "group_name", new Pair<>("id", id));
+    }
+
+    public String getCommitteeYear(String id) {
+        return selectSingleValue("committees", "year", new Pair<>("id", id));
+    }
+
+    public Set<String> getProductsInCommittee(String committeeID) {
+        Set<String> rv = new HashSet<>();
+        for (Object productID : selectWhere("productInCommittee", "committee_id", committeeID).get("product_id")) {
+            rv.add((String) productID);
+        }
+        return rv;
+    }
+
+    public void putUserInCommittee(String username, String committeeID, float saldo) throws RequestException {
+        String userid = getUseridFromNick(username);
+        try{
+            insert("userInCommittee", new HashMap<>(Map.of(
+                    "user_id", userid,
+                    "committee_id", committeeID,
+                    "saldo", saldo)));
+        }
+        catch (SQLException e){
+            throw new RequestException(e.getMessage());
+        }
+    }
+
+    public void updateUserSaldo(String userid, String committeeID, String saldo) {
+        update("userInCommittee", new Pair<>("saldo", saldo),
+                new Pair<>("(user_id, committee_id)", userid + ", " + committeeID));
+    }
+
+    public void updateProductAmount(String productID, Integer amount) {
+        update("products", new Pair<>("amount", amount), new Pair<>("id", productID));
+    }
+
+    /**
+     * Converts a ResultSet to a map with column names as keys and lists of values
+     * as values.
+     */
+    private static class ResultSetConverter {
+        /**
+         * Converts a ResultSet to a map with column names as keys and lists of values
+         * as values.
+         *
+         * @param resultSet The ResultSet to convert.
+         * @return A map with column names as keys and lists of values as values.
+         * @throws SQLException If the ResultSet is invalid.
+         */
+        public static Map<String, List<Object>> convert(ResultSet resultSet) throws SQLException {
+            Map<String, List<Object>> columnsWithValues = new HashMap<>();
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            // Add column names to map
+            for (int i = 1; i <= columnCount; i++) {
+                columnsWithValues.put(metaData.getColumnName(i), new ArrayList<>());
+            }
+            // Add values to map
+            while (resultSet.next()) {
+                for (int i = 1; i <= columnCount; i++) {
+                    columnsWithValues.get(metaData.getColumnName(i)).add(resultSet.getString(i));
+                }
+            }
+            return columnsWithValues;
+        }
+    }
+    // CRUD operations
+    // Create
+
+    /**
+     * Inserts a new row into the table.
+     * To avoid SQL injection, use prepared statements.
+     *
+     * @param tableName      The name of the table to insert into.
+     * @param columnValueMap A pair with column name as first and value as second.
+     */
+    public void insert(String tableName, Map<String, Object> columnValueMap) throws SQLException {
+        StringBuilder columns = new StringBuilder();
+        for (String column : columnValueMap.keySet()) {
+            columns.append(column).append(", ");
+        }
+        columns.delete(columns.length() - 2, columns.length() - 1);
+        PreparedStatement preparedStatement;
+        preparedStatement = connection.prepareStatement(
+                // Format string to have the correct number of question marks
+                // This is based on the size of columnValueMap
+                "INSERT INTO %s(%s)".formatted(tableName, columns.toString()) + "VALUES (" + "?,".repeat(columnValueMap.size() - 1) + "?)");
+        int i = 1;
+        for (Object value : columnValueMap.values()) {
+            if (value instanceof String) {
+                preparedStatement.setString(i, (String) value);
+            }
+            if (value instanceof Integer) {
+                preparedStatement.setInt(i, (Integer) value);
+            }
+            if (value instanceof Float) {
+                preparedStatement.setFloat(i, (Float) value);
+            }
+            i++;
+        }
+        int numExecutes = preparedStatement.executeUpdate();
+        if (numExecutes == 0) {
+            throw new SQLException("Insert failed, no rows affected.");
+        }
+    }
+
+    // Read
+
+    /**
+     * Selects all rows from the table.
+     *
+     * @param tableName The name of the table to select from.
+     * @return A map with column names as keys and lists of values as values.
+     */
+    public Map<String, List<Object>> selectAll(String tableName) {
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + tableName);
+            return ResultSetConverter.convert(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Selects all rows from the table where the column has the specified value.
+     *
+     * @param tableName  The name of the table to select from.
+     * @param columnName The name of the column to select from.
+     * @param value      The value to select.
+     * @return A map with column names as keys and lists of values as values.
+     */
+    public Map<String, List<Object>> selectWhere(String tableName, String columnName, String value) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "SELECT * FROM %s WHERE %s = ?".formatted(tableName, columnName));
+            preparedStatement.setString(1, value);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return ResultSetConverter.convert(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Selects a single value from a cell in the table.
+     *
+     * @param tableName       The name of the table to select from.
+     * @param columnName      The name of the column to select from.
+     * @param columnValuePair A pair with column name as first and value as second.
+     */
+    public String selectSingleValue(String tableName, String columnName, Pair<String, String> columnValuePair) {
+        try {
+            StringBuilder statement = new StringBuilder("SELECT %s FROM %s WHERE %s = (".formatted(columnName, tableName, columnValuePair.getKey()));
+            Integer params = 0;
+            List<String> temp = new ArrayList<>();
+            for (String value: columnValuePair.getValue().split(",")) {
+                temp.add(value);
+                params++;
+            }
+            for (String value: temp) {
+                statement.append("?").append(",");
+            }
+            statement.deleteCharAt(statement.length() - 1);
+            statement.append(")");
+            /*PreparedStatement preparedStatement = connection.prepareStatement(
+                    "SELECT %s FROM %s WHERE %s = ?".formatted(columnName, tableName, columnValuePair.getKey()));
+            preparedStatement.setString(1, columnValuePair.getValue());*/
+            PreparedStatement preparedStatement = connection.prepareStatement(statement.toString());
+            for (int i = 0; i < params; i++) {
+                preparedStatement.setString(i + 1, temp.get(i));
+            }
+            String rv = null;
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                rv = resultSet.getString(1);
+            }
+            return rv;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Update
+
+    /**
+     * Updates a row in the table.
+     *
+     * @param tableName              The name of the table to update.
+     * @param updatedColumnValuePair A pair with column name as first and value as
+     *                               second.
+     *                               This contains the column to update and the new
+     *                               value.
+     * @param columnValuePair        A pair with column name as first and value as
+     *                               second.
+     *                               This contains the data to select the row to
+     *                               update.
+     */
+    private void update(String tableName, Pair<String, Object> updatedColumnValuePair,
+                        Pair<String, String> columnValuePair) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "UPDATE %s SET %s = ? WHERE %s = ?".formatted(tableName, updatedColumnValuePair.getKey(), columnValuePair.getKey()));
+            if (updatedColumnValuePair.getValue() instanceof String) {
+                preparedStatement.setString(1, (String) updatedColumnValuePair.getValue());
+            }
+            if (updatedColumnValuePair.getValue() instanceof Integer) {
+                preparedStatement.setInt(1, (Integer) updatedColumnValuePair.getValue());
+            }
+            if (updatedColumnValuePair.getValue() instanceof Float) {
+                preparedStatement.setFloat(1, (Float) updatedColumnValuePair.getValue());
+            }
+            preparedStatement.setString(2, columnValuePair.getValue());
+            int numExecutes = preparedStatement.executeUpdate();
+            if (numExecutes == 0) {
+                throw new SQLException("Update failed, no rows affected.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void executeUpdate(String sql, Map<String, String> parameters) {
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            List<String> params = new ArrayList<>();
-            for (String key : parameters.keySet()) {
-                params.add(parameters.get(key));
-            }
-            setParameters(statement, params);
-            System.out.println(statement.toString());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
+    // Delete
 
-    public void executeUpdate(String sql, List<String> parameters) {
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            setParameters(statement, parameters);
-            System.out.println(statement.toString());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-
-    public List<Map<String, String>> executeQuery(String sql, List<String> parameters) {
-        List<Map<String, String>> results = null;
-
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            setParameters(statement, parameters);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                System.out.println("Resultset" + resultSet.toString());
-                results = ResultSetConverter.convertResultSetToList(resultSet);
+    /**
+     * Deletes a row from the table.
+     *
+     * @param tableName       The name of the table to delete from.
+     * @param columnValuePair A pair with column name as first and value as second.
+     */
+    public void delete(String tableName, Pair<String, String> columnValuePair) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "DELETE FROM %s WHERE %s = ?".formatted(tableName, columnValuePair.getKey()));
+            preparedStatement.setString(1, columnValuePair.getValue());
+            //Just for debugging
+            String debug = preparedStatement.toString();
+            int numExecutes = preparedStatement.executeUpdate();
+            if (numExecutes == 0) {
+                throw new SQLException("Delete failed, no rows affected.");
             }
         } catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            e.printStackTrace();
         }
-
-        return results;
     }
 
-    private void setParameters(PreparedStatement statement, List<String> parameters) throws SQLException {
-        if (parameters != null) {
-            for (int i = 0; i < parameters.size(); i++) {
-                statement.setObject(i + 1, parameters.get(i));
+    // Clear the entire database
+    public void clearDatabase() {
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("DELETE FROM users");
+            statement.executeUpdate("DELETE FROM committees");
+            statement.executeUpdate("DELETE FROM products");
+            statement.executeUpdate("DELETE FROM userInCommittee");
+            statement.executeUpdate("DELETE FROM productincommittee");
+            statement.executeUpdate("DELETE FROM transaction");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Map<String, List<String>> getOrder(String committeeID, LocalDateTime orderTime) {
+        Map<String, List<String>> rv = new HashMap<>();
+        List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
+        for(Object transactionId : committeeTransactions){
+            LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
+            if(transactionTime.equals(orderTime)){
+                rv.put(getTransactionUserID((String) transactionId), getTransactionProducts((String) transactionId));
             }
         }
+        return rv;
     }
 
-    // Additional methods for CRUD operations
-
-    // CREATE operation
-    private void addData(String tableName, Map<String, String> data) {
-        // Generate SQL for insertion based on the data
-        String sql = generateInsertSQL(tableName, data);
-        executeUpdate(sql, data);
-    }
-
-    // READ operation
-    private List<Map<String, String>> getData(String tableName, String id) {
-        String sql = "SELECT * FROM " + tableName + " WHERE id = ?";
-        List<String> params = List.of(id);
-        return executeQuery(sql, params);
-    }
-
-    // UPDATE operation
-    private void updateData(String tableName, int id, Map<String, String> updatedData) {
-        // Generate SQL for update based on the data
-
-        String sql = generateUpdateSQL(tableName, id, updatedData);
-        executeUpdate(sql, updatedData);
-    }
-
-    // DELETE operation
-    private void deleteData(String tableName, String id) {
-        String sql = "DELETE FROM " + tableName + " WHERE id = ?";
-        List<String> params = List.of(id);
-        executeUpdate(sql, params);
-    }
-
-    // Custom CREATE methods
-    public String createCommittee(String group_name, String year) {
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("group_name", group_name);
-        parameters.put("year", year);
-        String id = UUID.randomUUID().toString();
-        parameters.put("id", id);
-        return id;
-    }
-
-    /**
-     * Creates a product in the database
-     * precondition: There has to be a database and the product has to not exist
-     * already
-     * 
-     * @param productName
-     * @param price
-     * @param committee
-     * @param amount
-     * @throws RequestException
-     */
-    public void createProduct(String productName, String price, String committee, String amount)
-            throws RequestException {
-        Map<String, String> parametersProduct = new HashMap();
-        Map<String, String> parametersProductInCommittee = new HashMap();
-        String id = UUID.randomUUID().toString();
-        parametersProduct.put("id", id);
-        parametersProduct.put("name", productName);
-        parametersProduct.put("price", price);
-        parametersProduct.put("amount", amount);
-
-        parametersProductInCommittee.put("committee_id", committee);
-        parametersProductInCommittee.put("product_id", id);
-
-        try {
-            addData("Product", parametersProduct);
-
-        } catch (IllegalArgumentException e) {
-            throw new RequestException("Product already exists");
-        }
-        try {
-            addData("ProductInCommittee", parametersProductInCommittee);
-        } catch (IllegalArgumentException e) {
-            throw new RequestException("Product already exists in committee");
-        }
-
-    }
-
-    // A committee needs the exists before a user can be inserted into it.
-
-    /**
-     * Creates a user in the database
-     * precondition: There has to be a databse
-     * 
-     * @param userName
-     * @param userNick
-     * @param phoneNumber
-     * @param committeeID
-     * @param saldo
-     * @return
-     * @throws RequestException if the userName or userNick is already taken
-     * 
-     *                          postcondition: A user is created in the database
-     * 
-     */
-    public String createUser(String userName, String password, String userNick, String phoneNumber, String committeeID,
-            String saldo)
-            throws RequestException {
-        Map<String, String> parametersUser = new HashMap();
-
-        String id = UUID.randomUUID().toString();
-
-        parametersUser.put("id", id);
-        parametersUser.put("phone_number", phoneNumber);
-        parametersUser.put("person_name", userName);
-        parametersUser.put("person_nick", userNick);
-        parametersUser.put("password", password);
-
-        try {
-            addData("Person", parametersUser);
-        } catch (IllegalArgumentException e) {
-            throw new RequestException("Username or nick is already taken");
-        }
-
-        return id;
-
-    }
-
-    // READS
-
-    // PRODUCT
-
-    /**
-     * Returns a list of attributes of a product
-     * 
-     * @param id product id
-     * @return {id, name, price, amount}
-     * @throws IllegalArgumentException if product does not exist
-     */
-    private List<String> getProduct(String id) {
-        try {
-            return extractAttributes(getData("Product", id));
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Product does not exist");
-        }
-
-    }
-
-    /**
-     * Returns the price of a Product
-     * Precondition: product exists
-     * 
-     * @param id product id
-     * @return the price
-     * @throws IllegalArgumentException if product does not exist
-     */
-    public Float getProductPrice(String id) {
-        return Float.parseFloat(getProduct(id).get(2));
-    }
-
-    /**
-     * Returns the amount of a product
-     * precondition: product exists
-     * 
-     * @param id the product id
-     * @return the amount
-     * @throws IllegalArgumentException if product does not exist
-     */
-    public int getProductAmount(String id) {
-        return Integer.parseInt(getProduct(id).get(3));
-    }
-
-    /**
-     * Returns the name of a product
-     * Precondition: product exists
-     * 
-     * @param id the product id
-     * @return the name
-     * @throws IllegalArgumentException if product does not exist
-     */
-    public String getProductName(String id) {
-        return getProduct(id).get(1);
-    }
-
-    // USER
-
-    /**
-     * Returns a list of attributes of a user
-     * Precondition: user exists
-     * 
-     * @param id
-     * @return {id, phone_number, person_name, person_nick}
-     * @throws IllegalArgumentException if user does not exist
-     */
-    private List<String> getUser(String id) {
-        try {
-            return extractAttributes(getData("Person", id));
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("User does not exist");
-        }
-
-    }
-
-    // This has to return the ID not the nick
-    public String getUserIDFromName(String nick, String password) {
-
-        String sql = "SELECT * FROM Person WHERE person_nick = ?";
-        List<String> params = List.of(nick);
-        List<Map<String, String>> results = executeQuery(sql, params);
-        try {
-            if (results.size() == 0) {
-                throw new IllegalArgumentException("User does not exist");
+    @Override
+    public List<String> getOrder(String committeeID, String userId, LocalDateTime orderTime) {
+       List<String> rv = new ArrayList<String>();
+        List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
+        for(Object transactionId : committeeTransactions){
+            LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
+            if(transactionTime.equals(orderTime)){
+                rv = getTransactionProducts((String) transactionId);
             }
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException("table does not exist");
         }
-
-        List<String> user = extractAttributes(results);
-        System.out.println(user.toString());
-
-        // HARDCODED VALUE
-        String id = user.get(4);
-        return id;
-
+        return rv;
     }
 
-    /**
-     * Returns the name of a user
-     * Precondition: user exists
-     * 
-     * @param id the user id
-     * @return the name
-     * @throws IllegalArgumentException if user does not exist
-     */
-    public String getUserName(String id) {
-        return getUser(id).get(2);
+    private String getTransactionUserID(String transactionID){
+        return selectSingleValue("transaction", "user_id", new Pair<>("id", transactionID));
     }
-
-    /**
-     * Returns the nick of a user
-     * Precondition: user exists
-     * 
-     * @param id the user id
-     * @return the nick
-     * @throws IllegalArgumentException if user does not exist
-     */
-    public String getUserNick(String id) {
-        return getUser(id).get(3);
-    }
-
-    /**
-     * Returns the phone number of a user
-     * Precondition: user exists
-     * 
-     * @param id the user id
-     * @return the phone number
-     * @throws IllegalArgumentException if user does not exist
-     */
-    public String getUserPhoneNumber(String id) {
-        return getUser(id).get(1);
-    }
-
-    /**
-     * Returns the committees of a user
-     * Precondition: user exists users committees exist
-     * 
-     * @param id
-     * @return
-     * 
-     *         postcondition: returns a list of committee ids
-     */
-    public List<String> getCommitteesOfUser(String id) {
-        try {
-            String sql = "SELECT * FROM PersonInCommittee WHERE person_id = ?";
-            List<String> params = List.of(id);
-            System.out.println("getCommitteesOfUser" + id);
-            return extractAttributes(executeQuery(sql, params));
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("User does not exist");
+    private List<String> getTransactionProducts(String transactionID){
+        List<String> rv = new ArrayList<>();
+        List<Object> transactionProducts = selectWhere("transaction", "transaction_id", transactionID).get("product_id");
+        for(Object product : transactionProducts){
+            rv.add((String) product);
         }
-
+        return rv;
     }
 
-    // TODO write specific sql for two ids
-    /**
-     * Returns the saldo of a user in a committee
-     * Precondition: user exists, committee exists, user is in committee
-     * 
-     * @param userID
-     * @param committeeID
-     * @return
-     * @throws IllegalArgumentException if user or the committee does not exist
-     */
-    public Float getSaldoFromUserInCommittee(String userID, String committeeID) {
-        String sql = "SELECT saldo FROM PersonInCommittee WHERE person_id = ? AND committee_id = ?";
-        List<String> params = List.of(userID, committeeID);
-        try {
-            return Float.parseFloat(extractAttributes(executeQuery(sql, params)).get(0));
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("User or committee does not exist");
+    private List<Object> getCommitteeTransactions(String committeeID) {
+        List<Object> committeeTransactions = selectWhere("transaction", "committee_id", committeeID).get("id");
+        return committeeTransactions;
+    }
+
+    @Override
+    public List<Map<LocalDateTime, String>> getAllOrders(String committeeID) {
+        List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
+         List<Map<LocalDateTime, String>>  rv = new ArrayList<>();
+        for(Object transactionId : committeeTransactions){
+            LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
+            Map<LocalDateTime, String> map = new HashMap<>();
+            map.put(transactionTime, committeeID);
+            rv.add(map);
         }
+        return rv;
     }
 
-    // COMMITTEE
-    /**
-     * Returns a list of attributes of a committee
-     * Precondition: committee exists
-     * 
-     * @param id
-     * @return {id, name, year}
-     * @throws IllegalArgumentException if committee does not exist
-     */
-    private List<String> getCommittee(String id) {
-        try {
-            return extractAttributes(getData("Committee", id));
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Committee does not exist");
+    @Override
+    public List<Map<LocalDateTime, String>> getAllOrders(String committeeID, String userID) {
+        List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
+        List<Map<LocalDateTime, String>> rv = new ArrayList<>();
+        for(Object transactionId : committeeTransactions){
+            LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
+            Map<LocalDateTime, String> map = new HashMap<>();
+            map.put(transactionTime, committeeID);
+            rv.add(map);
         }
+        return rv;
     }
 
-    /**
-     * Returns the name of a committee
-     * 
-     * @param id the committee id
-     * @return the name
-     * @throws IllegalArgumentException if committee does not exist
-     */
-    public String getCommitteeName(String id) {
-        System.out.println("getCommitteeName " + id);
-        return getCommittee(id).get(0);
+
+    private LocalDateTime getTransactionDateTime(String transactionId) {
+        Time time = Time.valueOf(selectSingleValue("transaction", "transaction_time", new Pair<>("id",  transactionId)));
+        Date date = Date.valueOf(selectSingleValue("transaction", "transaction_date", new Pair<>("id",  transactionId)));
+        LocalDateTime transactionTime = LocalDateTime.of(date.toLocalDate(), time.toLocalTime());
+        return transactionTime;
     }
 
-    /**
-     * Returns the year of a committee
-     * 
-     * @param id the committee id
-     * @return the year
-     * @throws IllegalArgumentException if committee does not exist
-     */
-    public String getCommitteeYear(String id) {
-        return getCommittee(id).get(2);
-    }
-
-    /**
-     * Returns a list of all the products in a committee
-     * Precondition: The committee exists and the committee has products that exist
-     * 
-     * @param committeeID
-     * @return List of productIDs
-     * @throws IllegalArgumentException if committee does not exist
-     *                                  Postcondition: A list of productIDs is
-     *                                  returned
-     */
-    public List<String> getProductsInCommittee(String committeeID) {
-        String sql = "SELECT * FROM ProductInCommittee WHERE committee_id = ?";
-        List<String> params = List.of(committeeID);
-        try {
-            return extractAttributes(executeQuery(sql, params));
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Committee does not exist");
-        }
-    }
-
-    // UPDATE methods
-
-    /**
-     * Adds an existing user to a committe
-     * 
-     * Precondition: The user and committee exists
-     * 
-     * @param id
-     * @param committeeID
-     * @param saldo
-     * @throws IllegalArgumentException if user or committee does not exist
-     * 
-     *                                  Postcondition: The user is added to the
-     *                                  committee
-     */
-    public void putUserInCommittee(String id, String committeeID, String saldo) {
-        Map<String, String> parametersPersonInCommittee = new HashMap();
-        parametersPersonInCommittee.put("person_id", id);
-        parametersPersonInCommittee.put("committee_id", committeeID);
-        parametersPersonInCommittee.put("saldo", saldo);
-        try {
-            addData("PersonInCommittee", parametersPersonInCommittee);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("User or committee relation does not exist");
-        }
-    }
-
-    /**
-     * Updates the saldo of a user in a committee
-     * Precondition: The user and committee exists
-     * 
-     * @param id
-     * @param committeeId
-     * @param saldo
-     * @throws IllegalArgumentException if user or committee does not exist
-     *                                  Postcondition: The saldo of the user in the
-     *                                  committee is updated
-     */
-    public void updateUserSaldo(String id, String committeeId, String saldo) {
-        String sql = "UPDATE ProductInCommittee SET saldo = ? WHERE person_id = ? AND committee_id = ?";
-        List<String> params = List.of(saldo, id, committeeId);
-        try {
-            executeUpdate(sql, params);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("User or committee relation does not exist");
-        }
-    }
-
-    /**
-     * Updates the database amount of the product
-     * Precondition: The product exists
-     * 
-     * @param productID
-     * @param amount
-     * @throws IllegalArgumentException if product does not exist
-     *                                  Postcondition: The amount of the product is
-     *                                  updated
-     */
-    public void updateProductAmount(int productID, String amount) {
-        Map<String, String> parametersProduct = new HashMap();
-        parametersProduct.put("amount", amount);
-        try {
-            updateData("Product", productID, parametersProduct);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Product does not exist");
-        }
-    }
-
-    // SQL generators
-
-    // TODO refactor
-    private List<String> extractAttributes(List<Map<String, String>> attributes) {
-        List<String> returnList = new ArrayList<>();
-
-        Map<String, String> attributesObject = attributes.get(0);
-        for (Map.Entry<String, String> obj : attributesObject.entrySet()) {
-            returnList.add(obj.getValue().toString());
-        }
-        return returnList;
-    }
-
-    private String generateInsertSQL(String tableName, Map<String, String> data) {
-        StringBuilder sqlBuilder = new StringBuilder("INSERT INTO ");
-        sqlBuilder.append(tableName).append(" (");
-
-        // Append column names
-        for (String columnName : data.keySet()) {
-            sqlBuilder.append(columnName).append(", ");
-        }
-
-        // Remove the trailing comma and space
-        sqlBuilder.setLength(sqlBuilder.length() - 2);
-
-        sqlBuilder.append(") VALUES (");
-
-        // Append placeholders for values
-        for (int i = 0; i < data.size(); i++) {
-            // TODO FIX THIS
-            sqlBuilder.append("?, ");
-        }
-
-        // Remove the trailing comma and space
-        sqlBuilder.setLength(sqlBuilder.length() - 2);
-
-        sqlBuilder.append(")");
-
-        return sqlBuilder.toString();
-    }
-
-    private String generateUpdateSQL(String tableName, int id, Map<String, String> updatedData) {
-        StringBuilder sqlBuilder = new StringBuilder("UPDATE ");
-        sqlBuilder.append(tableName).append(" SET ");
-
-        // Append updated column names and placeholders
-        for (String columnName : updatedData.keySet()) {
-            sqlBuilder.append(columnName).append(" = ?, ");
-        }
-
-        // Remove the trailing comma and space
-        sqlBuilder.setLength(sqlBuilder.length() - 2);
-
-        sqlBuilder.append(" WHERE id = ").append(id);
-
-        return sqlBuilder.toString();
-    }
-
-    private class ResultSetConverter {
-
-        private static List<Map<String, String>> convertResultSetToList(ResultSet resultSet) throws SQLException {
-            List<Map<String, String>> resultList = new ArrayList<>();
-
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int columnCount = metaData.getColumnCount();
-
-            System.out.println(columnCount);
-            while (resultSet.next()) {
-                Map<String, String> row = new HashMap<>();
-                for (int i = 1; i <= columnCount; i++) {
-                    String columnName = metaData.getColumnName(i);
-                    String columnValue = resultSet.getString(i);
-                    row.put(columnName, columnValue);
-                }
-                resultList.add(row);
+    @Override
+    public void addOrder(String groupID, String userID, LocalDateTime timeStamp, List<String> products) {
+        for(String product : products){
+            try{
+                insert("transaction", new HashMap<>(Map.of(
+                        "id", UUID.randomUUID().toString(),
+                        "product_id", product,
+                        "user_id", userID,
+                        "committee_id", groupID,
+                        "transaction_time", timeStamp.toLocalTime(),
+                        "transaction_date", timeStamp.toLocalDate())));
             }
-
-            return resultList;
+            catch (SQLException e){
+                throw new NullPointerException(e.getMessage());
+            }
         }
     }
 }

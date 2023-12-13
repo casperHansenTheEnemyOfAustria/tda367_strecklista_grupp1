@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import se.cholmers.backend.Interface.IDatabaseInterface;
+import se.cholmers.backend.Interface.IAdminDatabaseInterface;
 import se.cholmers.backend.Model.StateManager;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AdminController {
     @Autowired
     StateManager stateManager;
-    IDatabaseInterface dbi;
+    IAdminDatabaseInterface dbi;
 
-    public AdminController(StateManager stateManager, IDatabaseInterface dbi) {
+    public AdminController(StateManager stateManager, IAdminDatabaseInterface dbi) {
         this.stateManager = stateManager;
         this.dbi = dbi;
     }
