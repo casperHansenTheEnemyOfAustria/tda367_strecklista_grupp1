@@ -5,6 +5,10 @@ import 'package:donutlista/main.dart';
 
 /* Widget: Grid of Counting buttons */
 
+//TODO: If counter is over 0 Add(Name,Price,Multiplier) to SummaryList
+
+var counter = 0; 
+
 class MainItemGrid extends StatefulWidget{
 
   const MainItemGrid({super.key});
@@ -28,8 +32,9 @@ class _ItemGridState extends State<MainItemGrid> {
 }
 
 
+// ignore: must_be_immutable
 class ItemTile extends StatefulWidget {
-  int itemNo;
+  int itemNo; //TODO: Change to ItemID & Add itemName, ItemPrice
     
 
   ItemTile(
@@ -41,6 +46,8 @@ class ItemTile extends StatefulWidget {
 }
 
 class _ActiveItemTile extends State<ItemTile> {
+
+
 
   int _incrementCounter() {
     setState(() {
@@ -65,33 +72,32 @@ class _ActiveItemTile extends State<ItemTile> {
     setState(() {
       counter = 0;
     });
-    return currentCounter;
+    return counter;
   }
 
-  int get currentCounter => counter;
-
-   
 
   @override
   Widget build(BuildContext context) {
     //final Color color = Colors.primaries[itemNo % Colors.primaries.length];
-    
+
     return Padding(
       padding: const EdgeInsets.all(8.5),
       child: Container(
         decoration: 
         BoxDecoration(
-        color: HexColor('#09cdda'),
+        color: HexColor('#09babe'),
             ),
         child: 
           Column(            
           children: [
-          Text('Item' 
+          // ignore: prefer_const_constructors
+          Text('Item' //TODO: Add itemName here
             //ItemMap[itemNo],
             //key: Key('text_$itemNo'),
           ),
+          // ignore: prefer_const_constructors
           Text(
-            'PRIS'
+            'PRIS' //TODO: Add itemPrice here
             //itemList[itemNo],
             //key: Key('text_$itemNo'),
           ),

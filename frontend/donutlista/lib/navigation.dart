@@ -1,90 +1,154 @@
-import 'package:donutlista/pageMain.dart';
-import 'package:donutlista/pageInventory.dart';
-import 'package:donutlista/pageTransaction.dart';
-import 'package:donutlista/pageUser.dart';
-
+import 'package:donutlista/page_main.dart';
+import 'package:donutlista/page_inventory.dart';
+import 'package:donutlista/page_transaction.dart';
+import 'package:donutlista/page_user.dart';
 
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
-
-//Inspo: https://gallery.flutter.dev/#/demo/nav_drawer
 
 /* Press the Navigation Drawer button to the left of AppBar 
 to show a simple Drawer with two items. */
 
 class NavDrawer extends StatelessWidget {
- @override
- Widget build(BuildContext context) {
-  final drawerHeader = UserAccountsDrawerHeader(
-      accountName: Text('Username'), //TODO: add username 
-      accountEmail: Text('Email'),   //TODO: add email
-      // TODO: Add saldo here
+  final String userID;
+  const NavDrawer({super.key, required this.userID});
+
+  @override
+  Widget build(BuildContext context) {
+    
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.7,
+      child: Drawer(
+        child: Container(
+          color: HexColor('#000000'),
+          child: ListView(
+            padding: const EdgeInsets.all(8),
+            children: <Widget>[
+              const DrawerHeader(child: DropDown(), 
+
+              ),
+              ListTile(
+                title: const Text('Strecklista'), //TODO: add path
+                leading: const Icon(Icons.apps),
+                onTap: () {
+                  Navigator.push<void>(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) =>
+                          MainPage(title: 'Strecklista', userID: userID),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                title: const Text('Transaktioner'), //TODO: Add path
+                leading: const Icon(Icons.credit_score),
+                onTap: () {
+                  Navigator.push<void>(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) =>
+                          TransactionPage(userID: userID),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                title: const Text('Inventarier'), //TODO: Add path
+                leading: const Icon(Icons.analytics),
+                onTap: () {
+                  Navigator.push<void>(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) =>
+                          InventoryPage(userID: userID),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                title: const Text('Användare'), //TODO: Add path
+                leading: const Icon(Icons.person),
+                onTap: () {
+                  Navigator.push<void>(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => UserPage(userID: userID),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
-  return Container(
-    width: MediaQuery.of(context).size.width * 0.7,
-    child: Drawer(
-    child: Container(
-    color: HexColor('#000000'),
-    child: ListView(
-      padding: const EdgeInsets.all(8),
-      children: <Widget>[
-        drawerHeader,
-        ListTile(
-          title: Text('Strecklista'
-            ), //TODO: add path
-          leading: const Icon(Icons.apps),
-          onTap: () {
-            Navigator.push<void>(
-              context,
-                MaterialPageRoute<void>(
-                  builder: (BuildContext context) => MainPage(title: 'Strecklista'),
+  }
+}
+
+class DropDown extends StatefulWidget {
+  const DropDown({super.key, 
+  });
+
+  @override
+  State<DropDown> createState() => _DropDownState();
+}
+
+class _DropDownState extends State<DropDown> {
+  
+
+List<DropdownMenuItem<String>> get dropdownItems{
+  List<DropdownMenuItem<String>> menuItems = [
+    DropdownMenuItem(child: Text("Humlan"),value: "Humlan"),
+    DropdownMenuItem(child: Text("Skepparn"),value: "Skepparn"),
+    DropdownMenuItem(child: Text("Casino"),value: "Casino"),
+    DropdownMenuItem(child: Text("Jawadre"),value: "Jawadre"),
+    DropdownMenuItem(child: Text("Prince"),value: "Prince"),
+
+  ];
+  return menuItems;
+}
+
+  String? selectedValue = 'Humlan'; //TODO: Change to userID
+  final _dropdownFormKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+        key: _dropdownFormKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children:[ 
+            DropdownButtonFormField(
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 2),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 2),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  //filled: true,
+                  //fillColor: Colors.blueAccent,
                 ),
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Transaktioner'
-          ), //TODO: Add path
-          leading: const Icon(Icons.credit_score),
-          onTap: () {
-            Navigator.push<void>(
-              context,
-                MaterialPageRoute<void>(
-                  builder: (BuildContext context) => TransactionPage(),
-                ),
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Inventarier'
-          ), //TODO: Add path
-          leading: const Icon(Icons.analytics),
-          onTap: () {
-            Navigator.push<void>(
-              context,
-                MaterialPageRoute<void>(
-                  builder: (BuildContext context) => InventoryPage(),
-                ),
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Användare'
-          ),//TODO: Add path
-          leading: const Icon(Icons.person),
-          onTap: () {
-            Navigator.push<void>(
-              context,
-                MaterialPageRoute<void>(
-                  builder: (BuildContext context) => UserPage(),
-                ),
-            );
-          },
-        ),
-      ],
-    ),
-  ),
-  ),
- );
- }
+                validator: (value) => value == null ? "Select a country" : null,
+                //dropdownColor: Colors.blueAccent,
+                value: selectedValue,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedValue = newValue!;
+                  });
+                },
+                items: (dropdownItems),
+            ),
+
+            Text('P.R.I.T., HookIT' 
+            //TODO: Add KOMMITTÉER here as string list
+            ),
+
+            ]
+        )
+      );
+  }
 }

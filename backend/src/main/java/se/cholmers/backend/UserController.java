@@ -265,7 +265,14 @@ public class UserController {
 
         }
     }
-    
+
+    @RequestMapping(value="/getName", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<String> getName(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
+        String name = stateManager.getName(sessionID);
+        return new ResponseEntity<String>(name, HttpStatus.OK);
+    }
 }
 
 

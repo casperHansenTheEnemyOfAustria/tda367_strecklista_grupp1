@@ -42,4 +42,14 @@ public interface IUser {
      * @throws NullPointerException if the user is not a member of any group
      */
     IProduct getProduct(String productID) throws RequestException;
+
+    /**
+     * @return the name of the user
+     */
+    String getName();
+
+    /**
+     * @return the nick of the user
+     */
+    String getNick();
 }

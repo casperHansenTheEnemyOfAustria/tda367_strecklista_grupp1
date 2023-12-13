@@ -67,5 +67,16 @@ public interface IProgramState {
      */
     public Set<Map<String, String>> getAllProducts() throws RequestException;
 
+    /**
+     * increases the amount of a product
+     *
+     * @throws RequestException
+     */
     void increaseProductAmount(String productID, int amount) throws RequestException;
+
+    /**
+     * returns the name of the user
+     * @return
+     */
+    String getName();
 }

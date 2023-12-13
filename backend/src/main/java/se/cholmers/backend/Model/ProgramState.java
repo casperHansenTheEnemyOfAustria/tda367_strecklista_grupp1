@@ -114,4 +114,8 @@ class ProgramState implements IProgramState {
         IProduct tempProd = currentUser.getProduct(productID);
         tempProd.increaseAmount(amount);
     }
+
+    public String getName(){
+        return currentUser.getName();
+    }
 }

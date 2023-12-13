@@ -9,12 +9,12 @@ import org.junit.jupiter.api.Test;
 import io.micrometer.core.ipc.http.HttpSender.Request;
 import javafx.util.Pair;
 import se.cholmers.backend.RequestException;
-import se.cholmers.backend.newDatabaseInterface;
+import se.cholmers.backend.DatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
 public class StateManagerTest {
 
-    private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
+    private IDatabaseInterface dbi = DatabaseInterface.getInstance();
     private StateManager sm = StateManager.getInstance();
 
     @Test
