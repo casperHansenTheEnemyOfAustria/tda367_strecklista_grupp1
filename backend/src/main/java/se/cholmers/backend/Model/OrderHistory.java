@@ -16,7 +16,7 @@ class OrderHistory implements IOrderHistory{
     private List<Order> orders;
     private String groupID;
 
-    IDatabaseInterface dbi = DatabaseInterface.getInstance();
+    private IDatabaseInterface dbi = DatabaseInterface.getInstance();
 
 
     /**
