@@ -1,14 +1,18 @@
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:donutlista/main.dart';
+import 'package:donutlista/globals.dart' as globals;
+import 'package:http/http.dart' as http;
+
+
 
 /* Widget: Grid of Counting buttons */
 
 //TODO: If counter is over 0 Add(Name,Price,Multiplier) to SummaryList
 
 //TODO: Create getter for counter so that it updates
-var counter = 0; 
 //var counter = ActionListener(counter);
 
 class MainItemGrid extends StatefulWidget{
@@ -20,12 +24,37 @@ class MainItemGrid extends StatefulWidget{
 }
 class _ItemGridState extends State<MainItemGrid> {
   
+  Future<Set<Map<String, String>>> sendItemsPostRequest() async {
+    // Get the text from the forms
+    var content = {"sessionID": globals.sessionID};
+    final response = await http.post(
+      Uri.http(globals.apiUrl, '/getProducts'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(content),
+    );
+
+    if (response.statusCode == 200) {
+      // ignore: use_build_context_synchronously, avoid_print
+      print(jsonDecode(response.body));//TODO remove
+      return jsonDecode(response.body);
+    } else {
+      return {{"":""}};
+      //TODO CAT
+    }
+  }
+
   @override
   Widget build(BuildContext context){
+      Set<Map<String, String>> itemList = {{"":""}};
+      sendItemsPostRequest().then((value) {
+        itemList = value;
+      });
       return 
       GridView.builder(
-        itemCount: itemMap.length,
-        itemBuilder: (context, index) => ItemTile(index),
+        itemCount: itemList.length,
+        itemBuilder: (context, index) => ItemTile(index, itemList.elementAt(index)),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
         ),
@@ -37,22 +66,27 @@ class _ItemGridState extends State<MainItemGrid> {
 // ignore: must_be_immutable
 class ItemTile extends StatefulWidget {
   int itemNo; //TODO: Change to ItemID & Add itemName, ItemPrice
-    
+  var listItem;
+   
+   
+  
 
   ItemTile(
-    this.itemNo, {super.key}
+    this.itemNo, listItem, {super.key}
   );
 
   @override
-  State<ItemTile> createState() => _ActiveItemTile();
+  State<ItemTile> createState() => _ActiveItemTile(listItem);
 }
 
 class _ActiveItemTile extends State<ItemTile> {
+  var counter = 0;
+  var listItem;
 
-
-
+  _ActiveItemTile(this.listItem);
   int _incrementCounter() {
     setState(() {
+      //TODO api add to cart
       counter++;
     });
     return counter;
@@ -63,6 +97,7 @@ class _ActiveItemTile extends State<ItemTile> {
       if (counter == 0) {
         counter = 0;
       } else {
+        //TODO remove from cart
         counter--;
       } 
     });
@@ -72,11 +107,13 @@ class _ActiveItemTile extends State<ItemTile> {
 
   int _resetCounter() {
     setState(() {
+      //TODO api empty cart
       counter = 0;
     });
     return counter;
   }
 
+  
 
   @override
   Widget build(BuildContext context) {
@@ -99,15 +136,17 @@ class _ActiveItemTile extends State<ItemTile> {
           Column(            
           children: [
           // ignore: prefer_const_constructors
-          Text('Item' //TODO: Add itemName here
+          Text(//TODO: Add "productName" here
             //ItemMap[itemNo],
             //key: Key('text_$itemNo'),
+            listItem["productName"]
           ),
           // ignore: prefer_const_constructors
           Text(
-            'PRIS' //TODO: Add itemPrice here
+            //'PRIS' //TODO: Add "productCost" here
             //itemList[itemNo],
             //key: Key('text_$itemNo'),
+            listItem["productCost"],
           ),
           Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

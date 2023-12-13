@@ -5,8 +5,8 @@ import 'package:donutlista/mainpageWidgets/grid.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:donutlista/globals.dart' as globals;
 
-import 'main.dart' show apiUrl;
 import 'mainpageWidgets/summary_list.dart';
 import 'navigation.dart';
 
@@ -41,7 +41,7 @@ class _MainPage extends State<MainPage> {
   Future<Map<String, String>> getProducts(String userID) async {
     var content = {"sessionID": userID};
     final response = await http.post(
-      Uri.http(apiUrl, '/getProducts'),
+      Uri.http(globals.apiUrl, '/getProducts'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

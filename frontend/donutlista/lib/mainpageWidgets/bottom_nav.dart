@@ -3,6 +3,8 @@ import 'package:donutlista/main.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
+import 'package:donutlista/globals.dart' as globals;
+
 
 
 
@@ -38,7 +40,7 @@ class _PurchaseButtonsState extends State<PurchaseButtons> {
     // Get the text from the forms
     var content = {"multiplier": counter};
     final response = await http.post(
-      Uri.http(apiUrl, '/login'), //TODO: Byt till rätt för att se om det funkar 
+      Uri.http(globals.apiUrl, ''), //TODO: Byt till rätt för att se om det funkar 
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

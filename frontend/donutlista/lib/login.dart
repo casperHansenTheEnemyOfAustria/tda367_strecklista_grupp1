@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'homescreen.dart';
 import 'package:http/http.dart' as http;
-import 'main.dart';
+import 'globals.dart';
+import 'package:donutlista/globals.dart' as globals;
+
 
 
 
@@ -41,6 +43,7 @@ class LoginState extends State<LoginPage> {
           MaterialPageRoute(builder: (_) => HomeScreen(userID: response.body)));
       // ignore: avoid_print
       print(response.body); //TODO: Remove
+      globals.sessionID = response.body;
     } else {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(loginSnackBar);

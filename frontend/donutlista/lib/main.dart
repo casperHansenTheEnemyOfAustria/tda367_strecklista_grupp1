@@ -4,7 +4,6 @@ import 'login.dart';
 
 /* MyApp gives theme and starts off att login page */
 
-const apiUrl = "localhost:8080";
 
 
 Map<String, String> itemMap = {
