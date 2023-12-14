@@ -1,12 +1,14 @@
 library donutlista.globals;
 
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 const apiUrl = "localhost:8080";
 
 String sessionID = "";
 
+final summaryOfThingsInCart = ValueNotifier<List<String>>(List.empty());
 
 Future<Map<String, String>> sendGetCartRequest() async {
     var content = {

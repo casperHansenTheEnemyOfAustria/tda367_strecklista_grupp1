@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -123,6 +124,7 @@ class ItemTile extends StatefulWidget {
   ItemTile(this.index, this.listItem, {super.key});
 
   sendAddToCartRequest(String itemId) async {
+    
     var content = {
       "sessionID": globals.sessionID,
       "data": {
@@ -184,11 +186,13 @@ class _ActiveItemTile extends State<ItemTile> {
 
   int _incrementCounter() {
     globals.sendGetCartRequest().then((value) => print(value));
+    
     setState(() {
       widget
           .sendAddToCartRequest(widget.listItem["Id"]!)
           .then((value) => counter++);
     });
+    globals.summaryOfThingsInCart.value.add(widget.listItem["Name"]!+ ": Price: " + widget.listItem["Price"]! + ", Total: "+ (double.parse(widget.listItem["Price"]!)*counter).toString());
     return counter;
   }
 
@@ -202,6 +206,7 @@ class _ActiveItemTile extends State<ItemTile> {
             .then((value) => counter--);
       }
     });
+  globals.summaryOfThingsInCart.value.add(widget.listItem["Name"]!+ ": Price: " + widget.listItem["Price"]! + ", Total: "+ (double.parse(widget.listItem["Price"]!)*counter).toString());
     return counter;
   }
 
@@ -211,6 +216,7 @@ class _ActiveItemTile extends State<ItemTile> {
         .sendResetCartRequest(widget.listItem["Id"]!) //TODO create ResetCart
         .then((value) => counter = 0);
     });
+    globals.summaryOfThingsInCart.value.add(widget.listItem["Name"]!+ ": Price: " + widget.listItem["Price"]! + ", Total: "+ (double.parse(widget.listItem["Price"]!)*counter).toString());
     return counter;
   }
 

@@ -7,22 +7,20 @@ import 'package:donutlista/globals.dart' as globals;
 
 class SummaryList extends StatelessWidget{
   const SummaryList({super.key});
+
   @override
-  Widget build(BuildContext context){
-    return FutureBuilder<Map<String,String>>(
-      future: globals.sendGetCartRequest(),
-      builder:(context, snapshot){
-        if(snapshot.connectionState == ConnectionState.done){
-          return ListView.builder(
-            itemCount: snapshot.data!.keys.length,
-            itemBuilder: (context, index ) => SummaryTile(index, snapshot.data!.keys.elementAt(index), snapshot.data!.values.elementAt(index)),
-          );
-        }else{
-          return Text("loading");
-        }
-      }
-    );
-}
+    Widget build(BuildContext context){
+        return ValueListenableBuilder(
+         
+            valueListenable: globals.summaryOfThingsInCart,
+            builder: (context, value, widget) {
+                
+            return Text(   
+                value.toString()
+            );
+        });
+  
+    }
 }
 
 // ignore: must_be_immutable
