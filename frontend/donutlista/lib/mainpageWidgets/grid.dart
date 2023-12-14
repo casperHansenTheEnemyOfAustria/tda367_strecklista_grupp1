@@ -1,19 +1,10 @@
-import 'dart:collection';
 import 'dart:convert';
-
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:donutlista/globals.dart' as globals;
 import 'package:http/http.dart' as http;
 
 /* Widget: Grid of Counting buttons */
-
-//TODO: If counter is over 0 Add(Name,Price,Multiplier) to SummaryList
-
-//TODO: Create getter for counter so that it updates
-//var counter = ActionListener(counter);
 
 class MainItemGrid extends StatefulWidget {
   const MainItemGrid({super.key});
@@ -38,7 +29,6 @@ class _ItemGridState extends State<MainItemGrid> {
     );
 
     if (response.statusCode == 200) {
-      // ignore: use_build_context_synchronously, avoid_print
 
       return response.body;
     } else {
@@ -51,67 +41,51 @@ class _ItemGridState extends State<MainItemGrid> {
 
   @override
   Widget build(BuildContext context) {
-    // List<Map<String, String>>coolerItemList = List.empty();
-    // sendItemsPostRequest().then((value) {
-    //       for (var element in value) {
-    //         print(element);
-    //         coolerItemList.add(element);
-    //       }
-    //     setState((){
-    //       itemList = coolerItemList;
-    //     });
-
-    // });
-    // itemList =
-    // print(itemList);
-    // print("hi");
     setState(() {
       itemListJson = sendItemsPostRequest();
     });
-    // print(itemListJson);
 
     return Scaffold(
-        body: FutureBuilder<String>(
-      future: itemListJson,
-      builder: (context, snapshot) {
-        // print(snapshot.data);
+      body: FutureBuilder<String>(
+        future: itemListJson,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return const Text('Error');
+            }
+            List<Map<String, String>> outmap = List.empty();
+            List<dynamic> list = jsonDecode(snapshot.data! as String);
+            list.forEach((element) {
+              element.toString();
+              Map<String, String> map = Map();
+              map["Name"] = element["Name"];
+              map["Price"] = element["Price"];
+              map["Id"] = element["Id"];
+              map["Amount"] = element["Amount"];
+              outmap += List.from([map]);
+            });
+            print(outmap[0]);
 
-        // List<dynamic> list = jsonDecode(snapshot.data as String);
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
+            return GridView.builder(
+              itemCount: outmap.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+              ),
+              itemBuilder: (BuildContext context, int index) =>
+                  ItemTile(index, outmap[index]),
+            );
+          } 
+          else if (snapshot.hasError) {
             return const Text('Error');
           }
-          List<Map<String, String>> outmap = List.empty();
-          List<dynamic> list = jsonDecode(snapshot.data! as String);
-          list.forEach((element) {
-            element.toString();
-            Map<String, String> map = Map();
-            map["Name"] = element["Name"];
-            map["Price"] = element["Price"];
-            map["Id"] = element["Id"];
-            map["Amount"] = element["Amount"];
-            outmap += List.from([map]);
-          });
-          print(outmap[0]);
-
-          return GridView.builder(
-            itemCount: outmap.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-            ),
-            itemBuilder: (BuildContext context, int index) =>
-                ItemTile(index, outmap[index]),
+          return const Center(
+            child: CircularProgressIndicator(),
           );
-        } else if (snapshot.hasError) {
-          return const Text('Error');
-        }
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    ));
+        },
+      )
+    );
   }
 }
 

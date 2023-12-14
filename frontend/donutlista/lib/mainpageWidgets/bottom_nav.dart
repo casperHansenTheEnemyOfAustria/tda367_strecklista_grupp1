@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'package:donutlista/main.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:donutlista/globals.dart' as globals;
 
-
+//TODO: Fix counter and make dynamic
 
 
 /* Navigation to purchase or delete order */
