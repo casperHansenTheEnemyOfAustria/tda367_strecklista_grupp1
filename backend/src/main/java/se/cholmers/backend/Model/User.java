@@ -56,6 +56,10 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
         for (String param : comitteeIds) {
             groups.add(new UserGroup(param));
         }
+        saldo = new HashMap<>();
+        for (IUserGroup group : groups) {
+            saldo.put(group.getID(), dbi.getSaldoFromUserInCommittee(id, group.getID()));
+        }
     }
 
     /**
