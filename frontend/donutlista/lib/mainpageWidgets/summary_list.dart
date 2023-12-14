@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:donutlista/main.dart';
 import 'package:donutlista/globals.dart' as globals;
 
 
@@ -72,10 +71,8 @@ class _SummaryTileState extends State<SummaryTile> {
 
               Text(
                 (int.parse(widget.itemCount)*int.parse(snapshot.data!["Price"]!)).toString()//TODO: Add itemPrice here
-                //itemList[itemNo],
-                //key: Key('text_$itemNo'),
                 ),
-                Text('$counter'
+                const Text('counter'
                   ),
               ],
                 )
