@@ -51,7 +51,7 @@ class Cart implements ICart {
         Map<String, String> output = new HashMap<String, String>();
         for (IProduct p : itemsInCart.keySet()) {
             try {
-                output.put(p.getName(), itemsInCart.get(p).toString());
+                output.put(p.getID(), itemsInCart.get(p).toString());
 
           
             } catch (NullPointerException e) {

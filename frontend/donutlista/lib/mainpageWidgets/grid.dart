@@ -101,7 +101,7 @@ class _ItemGridState extends State<MainItemGrid> {
               crossAxisSpacing: 10,
             ),
             itemBuilder: (BuildContext context, int index) =>
-                ItemTile(outmap[index]),
+                ItemTile(index, outmap[index]),
           );
         } else if (snapshot.hasError) {
           return const Text('Error');
@@ -118,8 +118,9 @@ class _ItemGridState extends State<MainItemGrid> {
 class ItemTile extends StatefulWidget {
 //TODO: Change to ItemID & Add itemName, ItemPrice
   Map<String, String> listItem;
+  int index;
 
-  ItemTile(this.listItem, {super.key});
+  ItemTile(this.index, this.listItem, {super.key});
 
   sendAddToCartRequest(String itemId) async {
     var content = {
@@ -154,23 +155,7 @@ class ItemTile extends StatefulWidget {
     );
     return response.statusCode == 200;
   }
-  sendGetCartRequest() async {
-    var content = {
-      "sessionID": globals.sessionID,
-    };
-    final response = await http.post(
-      Uri.http(globals.apiUrl, '/getCart'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(content),
-    );
-    if(response.statusCode == 200){
-      return jsonDecode(response.body);
-    }else{
-        print("error");
-    }
-  }
+  
 
   @override
   State<ItemTile> createState() => _ActiveItemTile();
@@ -182,7 +167,7 @@ class _ActiveItemTile extends State<ItemTile> {
   // Map<String, String> listItem = Map();
 
   int _incrementCounter() {
-    widget.sendGetCartRequest().then((value) => print(value));
+    globals.sendGetCartRequest().then((value) => print(value));
     setState(() {
       widget
           .sendAddToCartRequest(widget.listItem["Id"]!)
