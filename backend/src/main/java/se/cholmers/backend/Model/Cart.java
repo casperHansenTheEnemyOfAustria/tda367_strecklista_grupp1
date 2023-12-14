@@ -12,18 +12,21 @@ class Cart implements ICart {
      * Constructor for Cart, initializes the internal Map.
      */
     public Cart() {
-        itemsInCart = new HashMap<>();
+        itemsInCart = new ProductIntMap();
     }
 
     @Override
     public void addToCart(IProduct product) {
+   
+        
         Integer currentInCart;
         currentInCart = itemsInCart.get(product);
-        try {
+        try {   
             itemsInCart.put(product, currentInCart + 1);
         } catch (NullPointerException e) {
             itemsInCart.put(product, 1);
         }
+        // System.out.println(itemsInCart.get(product));s
     }
 
     @Override
@@ -49,9 +52,10 @@ class Cart implements ICart {
         for (IProduct p : itemsInCart.keySet()) {
             try {
                 output.put(p.getName(), itemsInCart.get(p).toString());
-                System.out.println(p.getName() + " " + itemsInCart.get(p).toString());
+
+          
             } catch (NullPointerException e) {
-                // TODO: handle exception
+     
             }
         }
         return output;

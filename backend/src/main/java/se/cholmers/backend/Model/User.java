@@ -146,7 +146,7 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
     @Override
     public IProduct getProduct(String productID) throws RequestException {
         for (IProduct product : getAllProducts()) {
-            if (product.getID() == productID) {
+            if (product.getID().equals(productID)) {
                 return product;
             }
         }

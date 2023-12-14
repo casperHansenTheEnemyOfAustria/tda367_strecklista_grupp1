@@ -79,4 +79,7 @@ public interface IProgramState {
      * @return
      */
     String getName();
+
+
+    public boolean equals(Object o);
 }

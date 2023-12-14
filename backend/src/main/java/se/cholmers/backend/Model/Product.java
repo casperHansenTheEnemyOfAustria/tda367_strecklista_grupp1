@@ -104,4 +104,15 @@ public class Product implements IProduct {
         dbi.updateProductAmount(productID, amount);
         return amount.toString();
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(o.getClass() != this.getClass()){
+            return false;
+        }
+        System.out.println("equals");
+        Product p = (Product) o;
+        return p.getID().equals(this.getID());
+
+    }
 }
