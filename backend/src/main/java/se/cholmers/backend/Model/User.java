@@ -97,6 +97,7 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
 
     @Override
     public void purchaseItem(IProduct product, Integer numberOfProducts) throws RequestException {
+        System.out.println(saldo);
         Float currentSaldo = saldo.get(product.getGroupID());
         currentSaldo -= product.getCost() * numberOfProducts;
         saldo.put(product.getGroupID(), currentSaldo);

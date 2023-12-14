@@ -15,10 +15,20 @@ class SummaryList extends StatelessWidget{
     
             valueListenable: globals.summaryOfThingsInCart,
             builder: (context, value, widget) {
-            summaryOfThingsInCart.addAll( value);
+            // summaryOfThingsInCart.addAll( value);
             print("hello");
+            String output = "";
+            for(String content in value.elementAt(0).keys){
+              output += "Name: " + content;
+              output += value.elementAt(0)[content]! + ":-";
+              output += "\n";
+              
+              List<String> temp = output.split("Total: ");
+             
+            }
+            
             return Text(   
-                summaryOfThingsInCart.toString()
+                output
             );
         });
   

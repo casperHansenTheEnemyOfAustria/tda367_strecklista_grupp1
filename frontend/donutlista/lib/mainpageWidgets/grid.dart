@@ -166,8 +166,16 @@ class _ActiveItemTile extends State<ItemTile> {
           .sendAddToCartRequest(widget.listItem["Id"]!)
           .then((value) => counter++);
     });
-    globals.summaryOfThingsInCart.value = {widget.listItem["Name"]! : ": Price: " + widget.listItem["Price"]! + ", Total: "+ (double.parse(widget.listItem["Price"]!)*counter).toString()};
+    notifyAndParseTotal();      
     return counter;
+  }
+
+  void notifyAndParseTotal() {
+    final Map<String, String> map = globals.summaryOfThingsInCart.value[0];
+    map.addAll({widget.listItem["Name"]! : " Price: " + widget.listItem["Price"]!+ ":-" + ", Total: "+ (double.parse(widget.listItem["Price"]!)*counter).toString()});
+    print(map);
+    globals.summaryOfThingsInCart.value = List.empty();
+    globals.summaryOfThingsInCart.value += List.from([map]);      
   }
 
   int _decrementCounter() {
@@ -180,7 +188,7 @@ class _ActiveItemTile extends State<ItemTile> {
             .then((value) => counter--);
       }
     });
-    globals.summaryOfThingsInCart.value = {widget.listItem["Name"]! : ": Price: " + widget.listItem["Price"]! + ", Total: "+ (double.parse(widget.listItem["Price"]!)*counter).toString()};
+    notifyAndParseTotal();       
     return counter;
   }
 
@@ -190,7 +198,7 @@ class _ActiveItemTile extends State<ItemTile> {
         .sendResetCartRequest(widget.listItem["Id"]!) //TODO create ResetCart
         .then((value) => counter = 0);
     });
-    globals.summaryOfThingsInCart.value = {widget.listItem["Name"]! : ": Price: " + widget.listItem["Price"]! + ", Total: "+ (double.parse(widget.listItem["Price"]!)*counter).toString()};
+    notifyAndParseTotal();  
     return counter;
   }
 
