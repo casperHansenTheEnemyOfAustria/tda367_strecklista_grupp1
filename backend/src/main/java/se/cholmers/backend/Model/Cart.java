@@ -47,6 +47,20 @@ class Cart implements ICart {
 
     }
 
+    @Override
+    public void resetCart(IProduct product) {
+        Integer currentInCart = itemsInCart.get(product);
+        try {
+            if (currentInCart > 0) {
+                itemsInCart.put(product, currentInCart = 0);
+            }
+        } catch (NullPointerException e) {
+            // TODO: handle exception
+        }
+
+    }
+
+
     public Map<String, String> toStringMap() {
         Map<String, String> output = new HashMap<String, String>();
         for (IProduct p : itemsInCart.keySet()) {

@@ -155,6 +155,23 @@ class ItemTile extends StatefulWidget {
     );
     return response.statusCode == 200;
   }
+
+  sendResetCartRequest(String itemId) async {
+    var content = {
+      "sessionID": globals.sessionID,
+      "data": {
+        "productID": itemId,
+      }
+    };
+    final response = await http.post(
+      Uri.http(globals.apiUrl, '/resetCart'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(content),
+    );
+    return response.statusCode == 200;
+  }
   
 
   @override
@@ -164,7 +181,6 @@ class ItemTile extends StatefulWidget {
 class _ActiveItemTile extends State<ItemTile> {
     
   var counter = 0;
-  // Map<String, String> listItem = Map();
 
   int _incrementCounter() {
     globals.sendGetCartRequest().then((value) => print(value));
@@ -181,7 +197,6 @@ class _ActiveItemTile extends State<ItemTile> {
       if (counter == 0) {
         counter = 0;
       } else {
-        //TODO remove from cart
         widget
             .sendRemoveFromCartRequest(widget.listItem["Id"]!)
             .then((value) => counter--);
@@ -191,9 +206,10 @@ class _ActiveItemTile extends State<ItemTile> {
   }
 
   int _resetCounter() {
-    setState(() {
-      //TODO api empty cart
-      counter = 0;
+    setState(() {globals.sendGetCartRequest().then((value) => print(value));
+      widget
+        .sendResetCartRequest(widget.listItem["Id"]!) //TODO create ResetCart
+        .then((value) => counter = 0);
     });
     return counter;
   }

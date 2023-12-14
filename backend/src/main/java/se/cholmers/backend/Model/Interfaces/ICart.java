@@ -24,6 +24,9 @@ public interface ICart {
      */
     void removeFromCart(IProduct product);
 
+    void resetCart(IProduct product);
+
+
     /**
      * Clears the cart from all items.
      */
@@ -35,4 +38,5 @@ public interface ICart {
      * @return map of product name and amount
      */
     Map<String, String> toStringMap();
+
 }

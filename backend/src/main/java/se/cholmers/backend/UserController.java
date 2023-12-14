@@ -186,6 +186,27 @@ public class UserController {
     }
 
     /**
+     * resetCart removes all of one product🍩 from the cart of a user😎 in its current session
+     * @param sessionID (the sessionID of the user😎 stored by the device)
+     * 
+     */
+    @RequestMapping(value = "/resetCart", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<String> resetCart(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
+        try{
+            String productID = freq.getData("productID");
+            stateManager.resetCart(sessionID, productID);
+            ResponseEntity<String> ResponseEntity = new ResponseEntity<String> ("Removed all from Cart", HttpStatus.OK);
+            return ResponseEntity;
+        }catch(RequestException e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }finally{
+
+        }
+    }
+
+    /**
      * getCartPrice gets the price of the cart of a user😎 in its current session
      * @param sessionID (the sessionID of the user😎 stored by the device)
      * @return ResponseEntity (a ResponseEntity with the correct code💀 and the correct price if the price was fetched. Otherwise it should havea an error🆘 code)
