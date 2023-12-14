@@ -37,9 +37,11 @@ class _PurchaseButtonsState extends State<PurchaseButtons> {
   
   Future<void> sendBuyPostRequest() async {
     // Get the text from the forms
-    var content = {"multiplier": counter};
+    var content = {
+      "sessionID": globals.sessionID
+      };
     final response = await http.post(
-      Uri.http(globals.apiUrl, ''), //TODO: Byt till rätt för att se om det funkar 
+      Uri.http(globals.apiUrl, '/completePurchase'), //TODO: Byt till rätt för att se om det funkar 
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
