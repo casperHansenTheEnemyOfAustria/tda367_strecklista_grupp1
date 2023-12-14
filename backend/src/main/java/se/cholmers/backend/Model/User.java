@@ -105,9 +105,9 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
         Float currentSaldo = saldo.get(product.getGroupID());
         currentSaldo -= product.getCost() * numberOfProducts;
         saldo.put(product.getGroupID(), currentSaldo);
-
-        try{
             dbi.updateUserSaldo(id, product.getGroupID(), currentSaldo.toString());
+        try{
+            
             product.decreaseAmount(numberOfProducts);
             List<IProduct> products = new ArrayList<>();
             for (int i = 0; i < numberOfProducts; i++) {

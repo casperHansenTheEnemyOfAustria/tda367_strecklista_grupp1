@@ -221,6 +221,7 @@ public class UserController {
             ResponseEntity<String> ResponseEntity = new ResponseEntity<String> ("Purchase completed",  HttpStatus.OK);
             return ResponseEntity;
         }catch(RequestException e){
+            System.out.println(e.getMessage());
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
 
 

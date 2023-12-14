@@ -202,8 +202,9 @@ public class newDatabaseInterface implements IDatabaseInterface {
     }
 
     public void updateUserSaldo(String userid, String committeeID, String saldo) {
-        update("userInCommittee", new Pair<>("saldo", saldo),
-                new Pair<>("(user_id, committee_id)", userid + ", " + committeeID));
+        Integer intSaldo = (int) Float.parseFloat(saldo);
+        update("UserInCommittee", new Pair<>("saldo", intSaldo),
+                new Pair<>("(user_id, committee_id)", userid+ ", " + committeeID));
     }
 
     public void updateProductAmount(String productID, Integer amount) {
