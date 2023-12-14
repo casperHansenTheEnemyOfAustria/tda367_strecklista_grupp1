@@ -10,13 +10,16 @@ class SummaryList extends StatelessWidget{
 
   @override
     Widget build(BuildContext context){
+      Map<String, String> summaryOfThingsInCart = Map();
         return ValueListenableBuilder(
-         
+            
+    
             valueListenable: globals.summaryOfThingsInCart,
             builder: (context, value, widget) {
-                
+            summaryOfThingsInCart.addAll( value);
+            print("hello");
             return Text(   
-                value.toString()
+                summaryOfThingsInCart.toString()
             );
         });
   

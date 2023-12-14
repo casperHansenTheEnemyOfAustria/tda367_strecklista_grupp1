@@ -8,7 +8,7 @@ const apiUrl = "localhost:8080";
 
 String sessionID = "";
 
-final summaryOfThingsInCart = ValueNotifier<List<String>>(List.empty());
+final summaryOfThingsInCart = ValueNotifier<Map<String, String>>(Map());
 
 Future<Map<String, String>> sendGetCartRequest() async {
     var content = {
