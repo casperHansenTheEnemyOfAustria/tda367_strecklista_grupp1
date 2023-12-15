@@ -223,7 +223,4 @@ there are for dorect access
     }
 }
 ```
-### frontend
 
-- navigate to the "frontend" directory
-- 
