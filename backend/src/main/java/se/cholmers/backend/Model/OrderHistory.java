@@ -7,7 +7,8 @@ import java.util.Map;
 
 import se.cholmers.backend.Model.Interfaces.IOrder;
 import se.cholmers.backend.RequestException;
-import se.cholmers.backend.DatabaseInterface;
+import se.cholmers.backend.newDatabaseInterface;
+// import se.cholmers.backend.DatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 import se.cholmers.backend.Model.Interfaces.IOrderHistory;
 import se.cholmers.backend.Model.Interfaces.IProduct;
@@ -16,7 +17,7 @@ class OrderHistory implements IOrderHistory{
     private List<Order> orders;
     private String groupID;
 
-    private IDatabaseInterface dbi = DatabaseInterface.getInstance();
+    private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
 
 
     /**

@@ -4,13 +4,14 @@ import java.util.UUID;
 
 import org.yaml.snakeyaml.events.Event.ID;
 
-import se.cholmers.backend.DatabaseInterface;
+// import se.cholmers.backend.DatabaseInterface;
 import se.cholmers.backend.RequestException;
+import se.cholmers.backend.newDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 import se.cholmers.backend.Model.Interfaces.IProduct;
 
 public class Product implements IProduct {
-    private IDatabaseInterface dbi = DatabaseInterface.getInstance();
+    private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
     private Integer amount;
     private String name;
     private String productID;

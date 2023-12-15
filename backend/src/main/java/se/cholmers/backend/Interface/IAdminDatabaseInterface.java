@@ -7,7 +7,7 @@ public interface IAdminDatabaseInterface {
 
     public String createCommittee(String group_name, String year) throws RequestException;
     
-    public void putUserInCommittee(String username, String committeeID, float saldo) throws RequestException;
+    public void putUserInCommittee(String username, String committeeID, Float saldo) throws RequestException;
 
     public String createProduct(String productName, Float price, String committeeid, Integer amount) throws RequestException;
 

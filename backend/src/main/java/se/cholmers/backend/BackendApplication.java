@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import se.cholmers.backend.Interface.IAdminDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 import se.cholmers.backend.Model.StateManager;
 
@@ -41,6 +42,11 @@ class AppConfig {
 
 	@Bean
 	public IDatabaseInterface databaseInterface() {
-		return DatabaseInterface.getInstance();
+		return newDatabaseInterface.getInstance();
+	}
+
+	@Bean
+	public IAdminDatabaseInterface adminDatabaseInterface() {
+		return newDatabaseInterface.getInstance();
 	}
 }

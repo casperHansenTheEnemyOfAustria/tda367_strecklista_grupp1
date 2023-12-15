@@ -1,6 +1,7 @@
 package se.cholmers.backend;
 
 import javafx.util.Pair;
+import se.cholmers.backend.Interface.IAdminDatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
 import java.sql.*;
@@ -10,7 +11,7 @@ import java.util.*;
 
 //todo: implement IDatabaseInterface
 
-public class newDatabaseInterface implements IDatabaseInterface {
+public class newDatabaseInterface implements IDatabaseInterface, IAdminDatabaseInterface {
 
     private static newDatabaseInterface instance;
 

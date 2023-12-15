@@ -13,7 +13,7 @@ import org.junit.Assert;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
 public class dbTests {
-    IDatabaseInterface dbi = DatabaseInterface.getInstance();
+    IDatabaseInterface dbi = newDatabaseInterface.getInstance();
 
     @Test
     void testGetUser() {
