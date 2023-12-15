@@ -85,7 +85,7 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
     @Override
     public void addUserToGroup(IUserGroup group) {
         try{
-            dbi.putUserInCommittee(id, group.getID().toString(), 0f);
+            dbi.putUserInCommittee(nick, group.getID().toString(), 0f);
         } catch (RequestException e) {
             System.out.println(e.getMessage());
         }

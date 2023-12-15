@@ -167,8 +167,21 @@ public class newDatabaseInterface implements IDatabaseInterface {
     }
 
     public Float getSaldoFromUserInCommittee(String userid, String committeeID) {
-        Float output = Float.parseFloat(selectSingleValue("userInCommittee", "saldo",
-                new Pair<>("(user_id, committee_id)", userid + "," + committeeID )));
+        //uses sql to get the saldo from the userInCommittee table where the user_id and committee_id are the ones given
+        //temp solution TODO: fix this
+        Float output = null;
+        String sql = "SELECT saldo FROM userInCommittee WHERE user_id = ? AND committee_id = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, userid);
+            preparedStatement.setString(2, committeeID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                output = resultSet.getFloat(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }     
         return output;
     }
 
@@ -188,7 +201,7 @@ public class newDatabaseInterface implements IDatabaseInterface {
         return rv;
     }
 
-    public void putUserInCommittee(String username, String committeeID, float saldo) throws RequestException {
+    public void putUserInCommittee(String username, String committeeID, Float saldo) throws RequestException {
         String userid = getUseridFromNick(username);
         try{
             insert("userInCommittee", new HashMap<>(Map.of(
@@ -202,9 +215,20 @@ public class newDatabaseInterface implements IDatabaseInterface {
     }
 
     public void updateUserSaldo(String userid, String committeeID, String saldo) {
+        //temp solution TODO: fix this
         Integer intSaldo = (int) Float.parseFloat(saldo);
-        update("UserInCommittee", new Pair<>("saldo", intSaldo),
-                new Pair<>("(user_id, committee_id)", userid+ ", " + committeeID));
+        System.out.println(intSaldo);
+        String sql = "UPDATE userInCommittee SET saldo = ? WHERE user_id = ? AND committee_id = ?";
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, intSaldo);
+            preparedStatement.setString(2, userid);
+            preparedStatement.setString(3, committeeID);
+            preparedStatement.executeUpdate();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public void updateProductAmount(String productID, Integer amount) {
@@ -391,6 +415,7 @@ public class newDatabaseInterface implements IDatabaseInterface {
                 preparedStatement.setFloat(1, (Float) updatedColumnValuePair.getValue());
             }
             preparedStatement.setString(2, columnValuePair.getValue());
+            System.out.println(preparedStatement.toString());
             int numExecutes = preparedStatement.executeUpdate();
             if (numExecutes == 0) {
                 throw new SQLException("Update failed, no rows affected.");
@@ -518,19 +543,37 @@ public class newDatabaseInterface implements IDatabaseInterface {
 
     @Override
     public void addOrder(String groupID, String userID, LocalDateTime timeStamp, List<String> products) {
+        //temp solution TODO: fix this
         for(String product : products){
+            String sql = "INSERT INTO transaction(id, product_id, user_id, committee_id, transaction_time, transaction_date) VALUES (?, ?, ?, ?, ?, ?)";
             try{
-                insert("transaction", new HashMap<>(Map.of(
-                        "id", UUID.randomUUID().toString(),
-                        "product_id", product,
-                        "user_id", userID,
-                        "committee_id", groupID,
-                        "transaction_time", timeStamp.toLocalTime(),
-                        "transaction_date", timeStamp.toLocalDate())));
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, UUID.randomUUID().toString());
+                preparedStatement.setString(2, products.get(0));
+                preparedStatement.setString(3, userID);
+                preparedStatement.setString(4, groupID);
+                preparedStatement.setTime(5, Time.valueOf(timeStamp.toLocalTime()));
+                preparedStatement.setDate(6, Date.valueOf(timeStamp.toLocalDate()));
+                preparedStatement.executeUpdate();
             }
             catch (SQLException e){
                 throw new NullPointerException(e.getMessage());
             }
         }
+        
+        // for(String product : products){
+        //     try{
+        //         insert("transaction", new HashMap<>(Map.of(
+        //                 "id", UUID.randomUUID().toString(),
+        //                 "product_id", product,
+        //                 "user_id", userID,
+        //                 "committee_id", groupID,
+        //                 "transaction_time", timeStamp.toLocalTime(),
+        //                 "transaction_date", timeStamp.toLocalDate())));
+        //     }
+        //     catch (SQLException e){
+        //         throw new NullPointerException(e.getMessage());
+        //     }
+        // }
     }
 }
