@@ -1,0 +1,13 @@
+
+psql -U postgres -d strecklista -c "DROP SCHEMA public CASCADE;"
+psql -U postgres -d strecklista -c "CREATE SCHEMA public;"
+psql -U postgres -d strecklista -c "\i ./src/main/resources/postgresql/tables.sql"
+psql -U postgres -d strecklista -c "INSERT INTO users (id, phone_number, user_name, user_nick, password) VALUES ('1337','0734111337', 'admin', 'admin', 'ADMIN');"
+psql -U postgres -d strecklista -c "INSERT INTO committees (id, group_name, year) VALUES ('1', 'admin', 16);"
+psql -U postgres -d strecklista -c "INSERT INTO userincommittee (user_id, committee_id, saldo) VALUES ('1337', '1', 0);"
+psql -U postgres -d strecklista -c "INSERT INTO products (id, name, price, amount) VALUES ('1', 'donut', 1, 1);"
+psql -U postgres -d strecklista -c "INSERT INTO products (id, name, price, amount) VALUES ('2', 'kaffe', 1, 1);"
+psql -U postgres -d strecklista -c "INSERT INTO products (id, name, price, amount) VALUES ('3', 'kaka', 1, 1);"
+psql -U postgres -d strecklista -c "INSERT INTO productincommittee (product_id, committee_id) VALUES ('1', '1');"
+psql -U postgres -d strecklista -c "INSERT INTO productincommittee (product_id, committee_id) VALUES ('2', '1');"
+psql -U postgres -d strecklista -c "INSERT INTO productincommittee (product_id, committee_id) VALUES ('3', '1');"
