@@ -54,6 +54,12 @@ class ProgramState implements IProgramState {
     }
 
     @Override
+    public void resetCart(String productID) throws RequestException {
+        IProduct product = currentUser.getProduct(productID);
+        cart.resetCart(product);
+    }
+
+    @Override
     public Map<String, String> getCart() {
         return cart.toStringMap();
     }

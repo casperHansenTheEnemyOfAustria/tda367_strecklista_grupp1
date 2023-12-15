@@ -56,6 +56,10 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
         for (String param : comitteeIds) {
             groups.add(new UserGroup(param));
         }
+        saldo = new HashMap<>();
+        for (IUserGroup group : groups) {
+            saldo.put(group.getID(), dbi.getSaldoFromUserInCommittee(id, group.getID()));
+        }
     }
 
     /**
@@ -81,7 +85,7 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
     @Override
     public void addUserToGroup(IUserGroup group) {
         try{
-            dbi.putUserInCommittee(id, group.getID().toString(), 0f);
+            dbi.putUserInCommittee(nick, group.getID().toString(), 0f);
         } catch (RequestException e) {
             System.out.println(e.getMessage());
         }
@@ -97,12 +101,13 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
 
     @Override
     public void purchaseItem(IProduct product, Integer numberOfProducts) throws RequestException {
+        System.out.println(saldo);
         Float currentSaldo = saldo.get(product.getGroupID());
         currentSaldo -= product.getCost() * numberOfProducts;
         saldo.put(product.getGroupID(), currentSaldo);
-
-        try{
             dbi.updateUserSaldo(id, product.getGroupID(), currentSaldo.toString());
+        try{
+            
             product.decreaseAmount(numberOfProducts);
             List<IProduct> products = new ArrayList<>();
             for (int i = 0; i < numberOfProducts; i++) {
@@ -146,7 +151,7 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
     @Override
     public IProduct getProduct(String productID) throws RequestException {
         for (IProduct product : getAllProducts()) {
-            if (product.getID() == productID) {
+            if (product.getID().equals(productID)) {
                 return product;
             }
         }

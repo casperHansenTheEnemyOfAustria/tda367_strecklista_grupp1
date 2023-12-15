@@ -99,6 +99,18 @@ public class StateManager {
     }
 
     /**
+     * Removes all of one productID from the cart of the given state.
+     * 
+     * @param stateID
+     * @param productID
+     * @throws RequestException
+     */
+    public void resetCart(String stateID, String productID) throws RequestException {
+        states.get(stateID).resetCart(productID);
+    }
+
+
+    /**
      * Gets the contents of a cart from the given state.
      * 
      * @param stateID

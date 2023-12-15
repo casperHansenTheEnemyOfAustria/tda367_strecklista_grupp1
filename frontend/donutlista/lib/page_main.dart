@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:donutlista/mainpageWidgets/bottom_nav.dart';
 import 'package:donutlista/mainpageWidgets/grid.dart';
 import 'package:flutter/material.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:donutlista/globals.dart' as globals;
 
 import 'mainpageWidgets/summary_list.dart';
 import 'navigation.dart';
@@ -30,6 +35,19 @@ class _MainPage extends State<MainPage> {
             child: SummaryList(),
           )
         ]),
-        bottomNavigationBar: const PurchaseButtons()); //TODO
+        bottomNavigationBar: const PurchaseButtons());
+  }
+
+  Future<Map<String, String>> getProducts(String userID) async {
+    var content = {"sessionID": userID};
+    final response = await http.post(
+      Uri.http(globals.apiUrl, '/getProducts'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(content),
+    );
+
+    return jsonDecode(response.body);
   }
 }

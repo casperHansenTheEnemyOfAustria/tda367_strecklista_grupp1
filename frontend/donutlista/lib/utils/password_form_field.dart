@@ -17,7 +17,7 @@ class _PasswordFormFieldState extends State<PasswordFormField> {
     return Form(
       key: _formKey,
       child: TextFormField(
-        obscureText: true, //TODO: Add a button to show password
+        obscureText: true,
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
           hintText: 'Enter your password',

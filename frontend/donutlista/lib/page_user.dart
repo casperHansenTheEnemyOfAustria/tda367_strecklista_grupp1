@@ -8,30 +8,11 @@ import 'navigation.dart';
 // ignore: must_be_immutable
 class UserPage extends StatefulWidget {
   final String userID;
-  UserPage({super.key, required this.userID});
+  const UserPage({super.key, required this.userID});
 
-  var name = 'loading name...';
   @override
   State<UserPage> createState() => _UserState();
-}
-
-class _UserState extends State<UserPage> {
-  var name = 'loading name...';
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: NavDrawer(
-        userID: widget.userID,
-      ),
-      appBar: AppBar(
-        title: Text(widget.name),
-      ),
-      body: Center(child: Text(widget.name)),
-    );
-  }
-
-  // THIS SHIT DON'T FUCKING WORK
-  Future<void> getNameFromID(String userID) async {
+  Future<String> getNameFromID(String userID) async {
     // Get the text from the forms
     var content = {"sessionID": userID};
     const apiUrl = "localhost:8080";
@@ -43,12 +24,49 @@ class _UserState extends State<UserPage> {
       body: jsonEncode(content),
     );
     if (response.statusCode == 200) {
-      setState(() {
-        widget.name = response.body;
-      });
+      return response.body;
     } else {
-      // ignore: avoid_print
-      print("Failed to get name"); //TODO: Remove
+      return 'error';
     }
+  }
+}
+
+class _UserState extends State<UserPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: NavDrawer(
+        userID: widget.userID,
+      ),
+      appBar: AppBar(
+        title: FutureBuilder(
+          builder: (ctx, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasError) {
+                return const Text('error');
+              } else {
+                return Text(snapshot.data.toString());
+              }
+            }
+            return const Text('loading...');
+          },
+          future: widget.getNameFromID(widget.userID),
+        ),
+      ),
+      body: FutureBuilder(
+        builder: (ctx, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return const Center(child: Text('error'));
+            } else {
+              return Center(child: Text(snapshot.data.toString()));
+            }
+          } else {
+            return const Center(child: Text('loading...'));
+          }
+        },
+        future: widget.getNameFromID(widget.userID),
+      ),
+    );
   }
 }

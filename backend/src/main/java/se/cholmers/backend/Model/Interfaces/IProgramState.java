@@ -34,6 +34,9 @@ public interface IProgramState {
      */
     void removeFromCart(String productID) throws RequestException;
 
+    void resetCart(String productID) throws RequestException;
+
+
     /**
      * Returns the contents of the Cart.
      *
@@ -79,4 +82,8 @@ public interface IProgramState {
      * @return
      */
     String getName();
+
+
+    public boolean equals(Object o);
+
 }

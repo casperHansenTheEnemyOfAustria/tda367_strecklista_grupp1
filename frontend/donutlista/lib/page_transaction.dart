@@ -1,10 +1,7 @@
 // ignore: file_names
-//TODO: Remove unused imports
-// ignore_for_file: unused_import
 
 import 'package:donutlista/transaction_list.dart';
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 
 import 'navigation.dart';
 

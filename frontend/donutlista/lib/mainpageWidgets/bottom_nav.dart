@@ -1,11 +1,12 @@
 import 'dart:convert';
-
-import 'package:donutlista/login.dart';
-import 'package:donutlista/main.dart';
+import 'dart:io';
+import 'package:donutlista/homescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
+import 'package:donutlista/globals.dart' as globals;
 
+//TODO: Fix counter and make dynamic
 
 
 /* Navigation to purchase or delete order */
@@ -25,7 +26,7 @@ class _PurchaseButtonsState extends State<PurchaseButtons> {
   /*action: SnackBarAction(
     label: 'Undo',
     onPressed: () {
-      // Some code to undo the change. //TODO: Add undo button to buy snackbar 
+      // Some code to undo the change. //TODO later: Add undo button to buy snackbar 
     },
   ),*/
   );
@@ -38,9 +39,11 @@ class _PurchaseButtonsState extends State<PurchaseButtons> {
   
   Future<void> sendBuyPostRequest() async {
     // Get the text from the forms
-    var content = {"multiplier": counter};
+    var content = {
+      "sessionID": globals.sessionID
+      };
     final response = await http.post(
-      Uri.http(apiUrl, '/login'), //TODO: Byt till rätt för att se om det funkar 
+      Uri.http(globals.apiUrl, '/completePurchase'), //TODO: Byt till rätt för att se om det funkar 
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -50,6 +53,13 @@ class _PurchaseButtonsState extends State<PurchaseButtons> {
   if (response.statusCode == 200) {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(yaySnackBar);
+      globals.summaryOfThingsInCart.value = List.filled(1, {});
+      var duration = const Duration(seconds: 1);
+      
+      await Future.delayed(const Duration(milliseconds: 500));
+ 
+      Navigator.push(context,
+          MaterialPageRoute(builder: (_) => HomeScreen(userID: globals.sessionID)));
     } else {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(naySnackBar);

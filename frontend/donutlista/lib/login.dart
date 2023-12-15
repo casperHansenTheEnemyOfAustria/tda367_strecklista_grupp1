@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'homescreen.dart';
 import 'package:http/http.dart' as http;
+import 'globals.dart';
+import 'package:donutlista/globals.dart' as globals;
 
-const apiUrl = "localhost:8080";
+
 
 
 class LoginPage extends StatefulWidget {
@@ -41,6 +43,7 @@ class LoginState extends State<LoginPage> {
           MaterialPageRoute(builder: (_) => HomeScreen(userID: response.body)));
       // ignore: avoid_print
       print(response.body); //TODO: Remove
+      globals.sessionID = response.body;
     } else {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(loginSnackBar);
@@ -97,7 +100,6 @@ class LoginState extends State<LoginPage> {
             
             TextButton(
               onPressed: () {
-                //TODO FORGOT PASSWORD SCREEN GOES HERE
               },
               child: Text(
                 'Visste du att smurfar är tre äpplen höga?',
