@@ -151,19 +151,9 @@ class _DropDownState extends State<DropDown> {
   }
 
   List<DropdownMenuItem<dynamic>> get dropdownItems{
-   Future<String> name = globals.getNameFromID(globals.sessionID);
+
   List<DropdownMenuItem<dynamic>> menuItems = [
-    DropdownMenuItem(value: "Humlan", child: FutureBuilder(
-      future:name,
-      builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        return Text(snapshot.data.toString());
-      } else if (snapshot.hasError) {
-        return Text("${snapshot.error}");
-      }
-      return const CircularProgressIndicator();
-    },),),
-      
+    DropdownMenuItem(value: "Humlan",child: Text("Humlan"),)
     
   ];
   return menuItems;
