@@ -99,4 +99,6 @@ public class Order implements se.cholmers.backend.Model.Interfaces.IOrder{
     public List<IProduct> getProducts() {
         return products;
     }
+
+    
 }

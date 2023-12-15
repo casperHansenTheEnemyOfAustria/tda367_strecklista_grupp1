@@ -130,13 +130,29 @@ class ProgramState implements IProgramState {
     public List<Map<String, String>> getOrderHistory() throws RequestException {
         List<Map<String, String>> temp = new ArrayList<>();
         for (List<IOrder> order : currentUser.getOrderHistory()) {
+            
+                
             for (IOrder o : order) {
                 Map<String, String> tempMap = new HashMap<>();
+                int productAmount = 0;
+                String prev = "";
                 for(IProduct product : o.getProducts()){
-                    tempMap.put(product.getName(), product.getAmount());
+                    // System.out.println("curr " + product.getName());
+                    // System.out.println("prev " + prev);
+
+                    if(!prev.equals(product.getName())){
+                        tempMap.put(product.getName(), "1");
+                    } else {
+                        productAmount = Integer.parseInt(tempMap.get(product.getName()));
+                        productAmount ++;
+                        tempMap.put(product.getName(), Integer.toString(productAmount));
+                    }
+                    prev = product.getName();
+                    
                 }
                 temp.add(tempMap);
             }   
+            
         }
         // System.out.println(temp);
         return temp;

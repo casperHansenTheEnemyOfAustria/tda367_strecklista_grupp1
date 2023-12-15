@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:donutlista/globals.dart' as globals;
 
 import 'navigation.dart';
 
@@ -14,20 +15,7 @@ class UserPage extends StatefulWidget {
   State<UserPage> createState() => _UserState();
   Future<String> getNameFromID(String userID) async {
     // Get the text from the forms
-    var content = {"sessionID": userID};
-    const apiUrl = "localhost:8080";
-    final response = await http.post(
-      Uri.http(apiUrl, '/getName'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(content),
-    );
-    if (response.statusCode == 200) {
-      return response.body;
-    } else {
-      return 'error';
-    }
+    return globals.getNameFromID(userID);
   }
 }
 

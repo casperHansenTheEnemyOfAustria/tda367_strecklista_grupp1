@@ -1,7 +1,10 @@
+import 'dart:js_interop';
+
 import 'package:donutlista/page_main.dart';
 import 'package:donutlista/page_inventory.dart';
 import 'package:donutlista/page_transaction.dart';
 import 'package:donutlista/page_user.dart';
+import 'package:donutlista/globals.dart' as globals;
 
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -53,19 +56,19 @@ class NavDrawer extends StatelessWidget {
                   );
                 },
               ),
-              ListTile(
-                title: const Text('Inventarier'), //TODO: Add path
-                leading: const Icon(Icons.analytics),
-                onTap: () {
-                  Navigator.push<void>(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (BuildContext context) =>
-                          InventoryPage(userID: userID),
-                    ),
-                  );
-                },
-              ),
+              // ListTile(
+              //   title: const Text('Inventarier'), //TODO: Add path
+              //   leading: const Icon(Icons.analytics),
+              //   onTap: () {
+              //     Navigator.push<void>(
+              //       context,
+              //       MaterialPageRoute<void>(
+              //         builder: (BuildContext context) =>
+              //             InventoryPage(userID: userID),
+              //       ),
+              //     );
+              //   },
+              // ),
               ListTile(
                 title: const Text('Användare'), //TODO: Add path
                 leading: const Icon(Icons.person),
@@ -95,14 +98,19 @@ class DropDown extends StatefulWidget {
 }
 
 class _DropDownState extends State<DropDown> {
-  
+  var groupName = "";
 
 
   String? selectedValue = 'Humlan'; //TODO: Change to userID
   final _dropdownFormKey = GlobalKey<FormState>();
+  _DropDownState(){
+      globals.getUserGroup().then((value) {setState((){groupName = value.toString();});});
 
+  }
   @override
   Widget build(BuildContext context) {
+    globals.getUserGroup().then((value) {setState((){groupName = value.toString();});});
+
     return Form(
         key: _dropdownFormKey,
         child: Column(
@@ -124,7 +132,7 @@ class _DropDownState extends State<DropDown> {
                 validator: (value) => value == null ? "Select a country" : null,
                 //dropdownColor: Colors.blueAccent,
                 value: selectedValue,
-                onChanged: (String? newValue) {
+                onChanged: (newValue) {
                   setState(() {
                     selectedValue = newValue!;
                   });
@@ -132,8 +140,9 @@ class _DropDownState extends State<DropDown> {
                 items: (dropdownItems),
             ),
 
-            Text('P.R.I.T., HookIT' 
-            //TODO: Add KOMMITTÉER here as string list
+            Text(
+              
+              groupName,
             ),
 
             ]
@@ -141,14 +150,21 @@ class _DropDownState extends State<DropDown> {
       );
   }
 
-  List<DropdownMenuItem<String>> get dropdownItems{
-  List<DropdownMenuItem<String>> menuItems = [
-    const DropdownMenuItem(value: "Humlan", child: Text("Humlan")),
-    const DropdownMenuItem(value: "Skepparn", child: Text("Skepparn")),
-    const DropdownMenuItem(value: "Casino", child: Text("Casino")),
-    const DropdownMenuItem(value: "Jawadre", child: Text("Jawadre")),
-    const DropdownMenuItem(value: "Prince", child: Text("Prince")),
-
+  List<DropdownMenuItem<dynamic>> get dropdownItems{
+   Future<String> name = globals.getNameFromID(globals.sessionID);
+  List<DropdownMenuItem<dynamic>> menuItems = [
+    DropdownMenuItem(value: "Humlan", child: FutureBuilder(
+      future:name,
+      builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        return Text(snapshot.data.toString());
+      } else if (snapshot.hasError) {
+        return Text("${snapshot.error}");
+      }
+      return const CircularProgressIndicator();
+    },),),
+      
+    
   ];
   return menuItems;
 }

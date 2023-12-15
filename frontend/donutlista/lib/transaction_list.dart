@@ -26,10 +26,20 @@ class TransactionList extends StatelessWidget {
                   return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
+                      String header = "";
+                      if(index>0){
+                        header = "Order: $index";
+                      }
+                      String text = "";
+                      for (var entry in snapshot.data![index].entries) {
+                        if(index>0){
+                          text += entry.key + ": " + entry.value + "\n";
+                        }
+                      }
                       return ListTile(
-                        title: Text("Order: $index"),
+                        title: Text(header),
                         subtitle:
-                            Text(snapshot.data![index].entries.toString()),
+                            Text(text),
                       );
                     },
                   );

@@ -90,4 +90,34 @@ Future<Map<String, String>> sendGetProductRequest(String productId) async {
     transactions.value = getTransactions();
   }
 
- 
+ Future<String> getNameFromID(String userID) async {
+    // Get the text from the forms
+    var content = {"sessionID": userID};
+    const apiUrl = "localhost:8080";
+    final response = await http.post(
+      Uri.http(apiUrl, '/getName'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(content),
+    );
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      return 'error';
+    }
+  }
+
+  getUserGroup() async {
+  var content = {
+    "sessionID": sessionID,
+  };
+  final response = await http.post(
+    Uri.http(apiUrl, '/getUserGroup'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(content),
+  );
+  return response.statusCode == 200;
+}

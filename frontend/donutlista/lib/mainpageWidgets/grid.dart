@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:donutlista/globals.dart' as globals;
@@ -29,7 +30,6 @@ class _ItemGridState extends State<MainItemGrid> {
     );
 
     if (response.statusCode == 200) {
-
       return response.body;
     } else {
       print("cock");
@@ -46,46 +46,44 @@ class _ItemGridState extends State<MainItemGrid> {
     });
 
     return Scaffold(
-      body: FutureBuilder<String>(
-        future: itemListJson,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return const Text('Error');
-            }
-            List<Map<String, String>> outmap = List.empty();
-            List<dynamic> list = jsonDecode(snapshot.data! as String);
-            list.forEach((element) {
-              element.toString();
-              Map<String, String> map = Map();
-              map["Name"] = element["Name"];
-              map["Price"] = element["Price"];
-              map["Id"] = element["Id"];
-              map["Amount"] = element["Amount"];
-              outmap += List.from([map]);
-            });
-            print(outmap[0]);
-
-            return GridView.builder(
-              itemCount: outmap.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-              ),
-              itemBuilder: (BuildContext context, int index) =>
-                  ItemTile(index, outmap[index]),
-            );
-          } 
-          else if (snapshot.hasError) {
+        body: FutureBuilder<String>(
+      future: itemListJson,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
             return const Text('Error');
           }
-          return const Center(
-            child: CircularProgressIndicator(),
+          List<Map<String, String>> outmap = List.empty();
+          List<dynamic> list = jsonDecode(snapshot.data! as String);
+          list.forEach((element) {
+            element.toString();
+            Map<String, String> map = Map();
+            map["Name"] = element["Name"];
+            map["Price"] = element["Price"];
+            map["Id"] = element["Id"];
+            map["Amount"] = element["Amount"];
+            outmap += List.from([map]);
+          });
+          print(outmap[0]);
+
+          return GridView.builder(
+            itemCount: outmap.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+            ),
+            itemBuilder: (BuildContext context, int index) =>
+                ItemTile(index, outmap[index]),
           );
-        },
-      )
-    );
+        } else if (snapshot.hasError) {
+          return const Text('Error');
+        }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    ));
   }
 }
 
@@ -98,7 +96,6 @@ class ItemTile extends StatefulWidget {
   ItemTile(this.index, this.listItem, {super.key});
 
   sendAddToCartRequest(String itemId) async {
-    
     var content = {
       "sessionID": globals.sessionID,
       "data": {
@@ -148,57 +145,80 @@ class ItemTile extends StatefulWidget {
     );
     return response.statusCode == 200;
   }
-  
 
   @override
   State<ItemTile> createState() => _ActiveItemTile();
 }
 
 class _ActiveItemTile extends State<ItemTile> {
-    
   var counter = 0;
+  _ActiveItemTile() {
+    globals.sendGetCartRequest().then((value) {
+      setState(() {
+        counter = int.parse(value[widget.listItem["Id"]!].toString());
+      });
+    });
+  }
 
   int _incrementCounter() {
     globals.sendGetCartRequest().then((value) => print(value));
-    
+
     setState(() {
-      widget
-          .sendAddToCartRequest(widget.listItem["Id"]!)
-          .then((value) => counter++);
+      globals.sendGetCartRequest().then((value) =>
+          counter = int.parse(value[widget.listItem["Id"]!].toString()));
+      counter++;
+      widget.sendAddToCartRequest(widget.listItem["Id"]!).then((value) =>
+          globals.sendGetCartRequest().then((value) =>
+              counter = int.parse(value[widget.listItem["Id"]!].toString())));
+      notifyAndParseTotal();
     });
-    notifyAndParseTotal();      
+
     return counter;
   }
 
   void notifyAndParseTotal() {
     final Map<String, String> map = globals.summaryOfThingsInCart.value[0];
-    map.addAll({widget.listItem["Name"]! : " Price: " + widget.listItem["Price"]!+ ":-" + ", Total: "+ (double.parse(widget.listItem["Price"]!)*counter).toString()});
+    map.addAll({
+      widget.listItem["Name"]!: " Price: " +
+          widget.listItem["Price"]! +
+          ":-" +
+          ", Total: " +
+          (double.parse(widget.listItem["Price"]!) * counter).toString()
+    });
     print(map);
     globals.summaryOfThingsInCart.value = List.empty();
-    globals.summaryOfThingsInCart.value += List.from([map]);      
+    globals.summaryOfThingsInCart.value += List.from([map]);
   }
 
   int _decrementCounter() {
     setState(() {
+      globals.sendGetCartRequest().then((value) =>
+          counter = int.parse(value[widget.listItem["Id"]!].toString()));
+
       if (counter == 0) {
-        counter = 0;
+        widget.sendResetCartRequest(widget.listItem["Id"]!);
+        notifyAndParseTotal();
       } else {
-        widget
-            .sendRemoveFromCartRequest(widget.listItem["Id"]!)
-            .then((value) => counter--);
+        counter--;
+        widget.sendRemoveFromCartRequest(widget.listItem["Id"]!).then((value) =>
+            globals.sendGetCartRequest().then((value) =>
+                counter = int.parse(value[widget.listItem["Id"]!].toString())));
       }
+      notifyAndParseTotal();
     });
-    notifyAndParseTotal();       
+
     return counter;
   }
 
   int _resetCounter() {
-    setState(() {globals.sendGetCartRequest().then((value) => print(value));
+    setState(() {
+      globals.sendGetCartRequest().then((value) => print(value));
       widget
-        .sendResetCartRequest(widget.listItem["Id"]!) //TODO create ResetCart
-        .then((value) => counter = 0);
+          .sendResetCartRequest(widget.listItem["Id"]!) //TODO create ResetCart
+          .then((value) => counter = 0);
+      notifyAndParseTotal();
     });
-    notifyAndParseTotal();  
+
     return counter;
   }
 
@@ -264,3 +284,4 @@ class _ActiveItemTile extends State<ItemTile> {
                 )));
   }
 }
+

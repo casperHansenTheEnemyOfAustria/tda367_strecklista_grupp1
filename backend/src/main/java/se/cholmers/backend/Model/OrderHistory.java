@@ -52,17 +52,14 @@ class OrderHistory implements IOrderHistory {
     @Override
     public List<IOrder> getOrderHistory(String userId) throws RequestException {
         List<Map<LocalDateTime, String>> orderHistoryFromDB = dbi.getAllOrders(groupID, userId);
-        
         orders = new ArrayList<>();
+        LocalDateTime prev = null;
         for (Map<LocalDateTime, String> order : orderHistoryFromDB) {
+            
             for (LocalDateTime time : order.keySet()){
-                try {
-                        addOrderToHistory(new Order(groupID, userId, time));
-
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                    throw new RequestException(e.getMessage());
-                }
+                if(prev != null && prev.isEqual(time)) continue;
+                addOrderToHistory(new Order(groupID, userId, time));
+                prev = time;
             }
         }
         return orders;

@@ -471,7 +471,8 @@ public class newDatabaseInterface implements IDatabaseInterface, IAdminDatabaseI
         List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
         for(Object transactionId : committeeTransactions){
             LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
-            if(transactionTime.equals(orderTime)){
+
+            if(transactionTime.isEqual(orderTime)){
                 rv.put(getTransactionUserID((String) transactionId), getTransactionProducts((String) transactionId));
             }
         }
@@ -483,9 +484,11 @@ public class newDatabaseInterface implements IDatabaseInterface, IAdminDatabaseI
        List<String> rv = new ArrayList<String>();
         List<Object> committeeTransactions = getCommitteeTransactions(committeeID);
         for(Object transactionId : committeeTransactions){
+            
             LocalDateTime transactionTime = getTransactionDateTime((String) transactionId);
-            if(transactionTime.equals(orderTime)){
-                rv = getTransactionProducts((String) transactionId);
+ 
+            if(transactionTime.isEqual(orderTime)){
+                rv.addAll(getTransactionProducts((String) transactionId));
             }
         }
         return rv;
