@@ -104,12 +104,12 @@ class _DropDownState extends State<DropDown> {
   String? selectedValue = 'Humlan'; //TODO: Change to userID
   final _dropdownFormKey = GlobalKey<FormState>();
   _DropDownState(){
-      globals.getUserGroup().then((value) {setState((){groupName = value.toString();});});
+
 
   }
   @override
   Widget build(BuildContext context) {
-    globals.getUserGroup().then((value) {setState((){groupName = value.toString();});});
+
 
     return Form(
         key: _dropdownFormKey,
