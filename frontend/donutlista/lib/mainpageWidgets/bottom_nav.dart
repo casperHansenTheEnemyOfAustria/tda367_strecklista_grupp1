@@ -56,7 +56,7 @@ class _PurchaseButtonsState extends State<PurchaseButtons> {
       globals.summaryOfThingsInCart.value = List.filled(1, {});
       var duration = const Duration(seconds: 1);
       
-      await Future.delayed(const Duration(milliseconds: 250));
+      await Future.delayed(const Duration(milliseconds: 500));
  
       Navigator.push(context,
           MaterialPageRoute(builder: (_) => HomeScreen(userID: globals.sessionID)));
