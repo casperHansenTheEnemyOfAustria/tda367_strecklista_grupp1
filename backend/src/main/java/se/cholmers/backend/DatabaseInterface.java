@@ -11,9 +11,9 @@ import java.util.*;
 
 //todo: implement IDatabaseInterface
 
-public class newDatabaseInterface implements IDatabaseInterface, IAdminDatabaseInterface {
+public class DatabaseInterface implements IDatabaseInterface, IAdminDatabaseInterface {
 
-    private static newDatabaseInterface instance;
+    private static DatabaseInterface instance;
 
     private static final String DB_URL = "jdbc:postgresql:strecklista";
     private static final String DB_USER = "postgres";
@@ -21,7 +21,7 @@ public class newDatabaseInterface implements IDatabaseInterface, IAdminDatabaseI
 
     private Connection connection;
 
-    private newDatabaseInterface() {
+    private DatabaseInterface() {
         try {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
@@ -30,9 +30,9 @@ public class newDatabaseInterface implements IDatabaseInterface, IAdminDatabaseI
         }
     }
 
-    public static newDatabaseInterface getInstance() {
+    public static DatabaseInterface getInstance() {
         if (instance == null) {
-            instance = new newDatabaseInterface();
+            instance = new DatabaseInterface();
         }
         return instance;
     }

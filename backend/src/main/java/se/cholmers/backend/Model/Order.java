@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.cholmers.backend.RequestException;
-import se.cholmers.backend.newDatabaseInterface;
+import se.cholmers.backend.DatabaseInterface;
 // import se.cholmers.backend.DatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
 public class Order implements se.cholmers.backend.Model.Interfaces.IOrder{
     private LocalDateTime timeStamp;
     private List<IProduct> products = new ArrayList<>();
-    private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
+    private IDatabaseInterface dbi = DatabaseInterface.getInstance();
 
     //for testing
     public Order(List<IProduct> products){
