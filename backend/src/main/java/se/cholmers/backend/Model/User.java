@@ -11,7 +11,7 @@ import se.cholmers.backend.Model.Interfaces.IOrder;
 import se.cholmers.backend.Model.Interfaces.IProduct;
 import se.cholmers.backend.Model.Interfaces.IUserGroup;
 import se.cholmers.backend.RequestException;
-import se.cholmers.backend.newDatabaseInterface;
+import se.cholmers.backend.DatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
 /**
@@ -25,7 +25,7 @@ class User implements se.cholmers.backend.Model.Interfaces.IUser {
     private String phoneNumber;
     private Map<String, Float> saldo = new HashMap<>();
     private Set<IUserGroup> groups = new HashSet<>();
-    private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
+    private IDatabaseInterface dbi = DatabaseInterface.getInstance();
 
 
     /**

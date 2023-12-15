@@ -41,6 +41,6 @@ class AppConfig {
 
 	@Bean
 	public IDatabaseInterface databaseInterface() {
-		return newDatabaseInterface.getInstance();
+		return DatabaseInterface.getInstance();
 	}
 }
