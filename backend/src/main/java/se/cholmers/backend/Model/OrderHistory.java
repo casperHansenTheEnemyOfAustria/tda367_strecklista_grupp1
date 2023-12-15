@@ -13,16 +13,16 @@ import se.cholmers.backend.Interface.IDatabaseInterface;
 import se.cholmers.backend.Model.Interfaces.IOrderHistory;
 import se.cholmers.backend.Model.Interfaces.IProduct;
 
-class OrderHistory implements IOrderHistory{
-    private List<Order> orders;
+class OrderHistory implements IOrderHistory {
+    private List<IOrder> orders;
     private String groupID;
 
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
 
-
     /**
      * Constructor for creating a new orderhistory should never be used outside of
      * the UserGroup constructor.
+     * 
      * @throws RequestException
      */
     OrderHistory(String groupID, String userId) throws RequestException {
@@ -35,14 +35,13 @@ class OrderHistory implements IOrderHistory{
         this.orders = new ArrayList<>();
     }
 
-
     /**
      * Appends a order to the history.
      * 
      * @param order
      */
     @Override
-    public void addOrderToHistory(Order order) {
+    public void addOrderToHistory(IOrder order) {
         orders.add(order);
     }
 
@@ -53,27 +52,40 @@ class OrderHistory implements IOrderHistory{
     @Override
     public List<IOrder> getOrderHistory(String userId) throws RequestException {
         List<Map<LocalDateTime, String>> orderHistoryFromDB = dbi.getAllOrders(groupID, userId);
+        
+        orders = new ArrayList<>();
         for (Map<LocalDateTime, String> order : orderHistoryFromDB) {
-            for(LocalDateTime time : order.keySet())
-                addOrderToHistory(new Order(groupID, order.get(time), dbi.getOrder(groupID, userId, time), time));
+            for (LocalDateTime time : order.keySet()){
+                try {
+                        addOrderToHistory(new Order(groupID, userId, time));
+
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    throw new RequestException(e.getMessage());
+                }
+            }
         }
-        return null;
+        return orders;
     }
 
     @Override
-    public List<Order> getOrderHistory() throws RequestException {
+    public List<IOrder> getOrderHistory() throws RequestException {
         List<Map<LocalDateTime, String>> orderHistoryFromDB = dbi.getAllOrders(groupID);
+        orders = new ArrayList<>();
         for (Map<LocalDateTime, String> order : orderHistoryFromDB) {
-            for(LocalDateTime time : order.keySet())
-                for(String userId : dbi.getOrder(groupID,time).keySet())
-                    addOrderToHistory(new Order(groupID, userId, dbi.getOrder(groupID, userId, time), time));        }
+            for (LocalDateTime time : order.keySet()) {
+                for (String userId : dbi.getOrder(groupID, time).keySet()) {
+                    addOrderToHistory(new Order(groupID, userId, time));
+                }
+            }
+        }
         return orders;
     }
 
     @Override
     public List<String> toStringList() {
         List<String> stringList = new ArrayList<>();
-        for (Order order : orders) {
+        for (IOrder order : orders) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(order.getTimeString());
             stringBuilder.append(", ");

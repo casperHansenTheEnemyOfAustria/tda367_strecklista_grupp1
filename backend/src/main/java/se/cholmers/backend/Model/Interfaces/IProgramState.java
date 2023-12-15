@@ -86,4 +86,6 @@ public interface IProgramState {
 
     public boolean equals(Object o);
 
+    List<Map<String, String>> getOrderHistory() throws RequestException ;
+
 }

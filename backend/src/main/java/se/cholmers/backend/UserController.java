@@ -295,6 +295,20 @@ public class UserController {
         String name = stateManager.getName(sessionID);
         return new ResponseEntity<String>(name, HttpStatus.OK);
     }
+
+    @RequestMapping(value="/getOrderHistory", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<List<Map<String, String>>> getOrderHistory(@RequestBody LoggedInUserRequest freq) {
+        String sessionID = freq.getSessionID();
+        try{
+            List<Map<String, String>> orderHistory = stateManager.getOrderHistory(sessionID);
+            return new ResponseEntity<List<Map<String, String>>>(orderHistory, HttpStatus.OK);
+        }catch(RequestException e){
+            return new ResponseEntity<List<Map<String, String>>>(HttpStatus.BAD_REQUEST);
+        }finally{
+
+        }
+    }
 }
 
 

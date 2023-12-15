@@ -9,6 +9,7 @@ const apiUrl = "localhost:8080";
 String sessionID = "";
 
 final summaryOfThingsInCart = ValueNotifier<List<Map<String, String>>>(List.filled(1, {}));
+final transactions = ValueNotifier<Future<List<Map<String, String>>>>(getTransactions());
 
 Future<Map<String, String>> sendGetCartRequest() async {
     var content = {
@@ -57,6 +58,36 @@ Future<Map<String, String>> sendGetProductRequest(String productId) async {
     }else{
         return {"error": "error"};
     }
+  }
+
+  Future<List<Map<String,String>>> getTransactions() async{
+    var content = {
+      "sessionID": sessionID,
+    };
+    final response = await http.post(
+      Uri.http(apiUrl, '/getOrderHistory'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(content),
+    );
+    if(response.statusCode == 200){
+      var preMap = jsonDecode(response.body);
+      List<Map<String, String>> map = [{}];
+      preMap.forEach((element) {
+        Map<String, String> tempMap = {};
+        element.forEach((key, value) {
+          tempMap[key] = value;
+        });
+        map.add(tempMap);
+      });
+      return map;
+    }else{
+        return [{"error": "error"}];
+    }
+  }
+  updateTransactionList(){
+    transactions.value = getTransactions();
   }
 
  

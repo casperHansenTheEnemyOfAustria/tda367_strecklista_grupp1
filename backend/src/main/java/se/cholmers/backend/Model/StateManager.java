@@ -179,4 +179,9 @@ public class StateManager {
     private String getAuth(String stateID) {
         return "test";
     }
+
+    public List<Map<String, String>> getOrderHistory(String sessionID) throws RequestException {
+       
+        return states.get(sessionID).getOrderHistory();
+    }
 }

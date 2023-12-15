@@ -2,6 +2,8 @@ package se.cholmers.backend.Model.Interfaces;
 
 import se.cholmers.backend.RequestException;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface IUser {
@@ -52,4 +54,12 @@ public interface IUser {
      * @return the nick of the user
      */
     String getNick();
+
+    /**
+     * this returns the orders of the user in the form of lists of orders made
+     * this is all the order histories from all of its groups
+     * @return
+     * @throws RequestException
+     */
+    List<List<IOrder>>  getOrderHistory() throws RequestException;
 }

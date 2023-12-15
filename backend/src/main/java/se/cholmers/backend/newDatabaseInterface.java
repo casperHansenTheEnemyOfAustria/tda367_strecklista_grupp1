@@ -416,7 +416,7 @@ public class newDatabaseInterface implements IDatabaseInterface, IAdminDatabaseI
                 preparedStatement.setFloat(1, (Float) updatedColumnValuePair.getValue());
             }
             preparedStatement.setString(2, columnValuePair.getValue());
-            System.out.println(preparedStatement.toString());
+            // System.out.println(preparedStatement.toString());
             int numExecutes = preparedStatement.executeUpdate();
             if (numExecutes == 0) {
                 throw new SQLException("Update failed, no rows affected.");
@@ -496,7 +496,7 @@ public class newDatabaseInterface implements IDatabaseInterface, IAdminDatabaseI
     }
     private List<String> getTransactionProducts(String transactionID){
         List<String> rv = new ArrayList<>();
-        List<Object> transactionProducts = selectWhere("transaction", "transaction_id", transactionID).get("product_id");
+        List<Object> transactionProducts = selectWhere("transaction", "id", transactionID).get("product_id");
         for(Object product : transactionProducts){
             rv.add((String) product);
         }

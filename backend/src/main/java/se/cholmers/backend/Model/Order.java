@@ -11,9 +11,9 @@ import se.cholmers.backend.newDatabaseInterface;
 // import se.cholmers.backend.DatabaseInterface;
 import se.cholmers.backend.Interface.IDatabaseInterface;
 
-public class Order {
+public class Order implements se.cholmers.backend.Model.Interfaces.IOrder{
     private LocalDateTime timeStamp;
-    private List<IProduct> products;
+    private List<IProduct> products = new ArrayList<>();
     private IDatabaseInterface dbi = newDatabaseInterface.getInstance();
 
     //for testing
@@ -44,7 +44,7 @@ public class Order {
     this.timeStamp = timeStamp;
     List<String> productIds = dbi.getOrder(groupId, userId, timeStamp);
     for (String id: productIds) {
-        products.add(new Product(id, userId));
+        products.add(new Product(id, groupId));
     }
     }
 
@@ -80,6 +80,8 @@ public class Order {
         for (IProduct product : products) {
             productIDs.add(product.getID());
         }
+        System.out.println("adding order to database");
+        System.out.println(productIDs);
         try {
             dbi.addOrder(groupID, userId, timeStamp, productIDs);
         } catch (NullPointerException e) {

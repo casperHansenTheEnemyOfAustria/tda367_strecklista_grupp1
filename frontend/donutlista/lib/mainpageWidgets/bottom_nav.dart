@@ -60,6 +60,7 @@ class _PurchaseButtonsState extends State<PurchaseButtons> {
  
       Navigator.push(context,
           MaterialPageRoute(builder: (_) => HomeScreen(userID: globals.sessionID)));
+        globals.updateTransactionList();
     } else {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(naySnackBar);

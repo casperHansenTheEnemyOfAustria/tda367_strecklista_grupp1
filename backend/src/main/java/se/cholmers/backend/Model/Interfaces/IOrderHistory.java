@@ -11,9 +11,9 @@ public interface IOrderHistory {
      *
      * @param order
      */
-    void addOrderToHistory(Order order);
+    void addOrderToHistory(IOrder order);
 
-    List<Order> getOrderHistory() throws RequestException;
+    List<IOrder> getOrderHistory() throws RequestException;
 
     /**
      * @return a list of orders.

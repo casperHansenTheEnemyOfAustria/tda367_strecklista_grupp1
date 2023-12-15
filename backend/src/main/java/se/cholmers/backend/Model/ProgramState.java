@@ -3,6 +3,7 @@ package se.cholmers.backend.Model;
 import java.util.*;
 
 import se.cholmers.backend.Model.Interfaces.ICart;
+import se.cholmers.backend.Model.Interfaces.IOrder;
 import se.cholmers.backend.Model.Interfaces.IProduct;
 import se.cholmers.backend.Model.Interfaces.IUser;
 import se.cholmers.backend.RequestException;
@@ -123,5 +124,21 @@ class ProgramState implements IProgramState {
 
     public String getName(){
         return currentUser.getName();
+    }
+
+    @Override
+    public List<Map<String, String>> getOrderHistory() throws RequestException {
+        List<Map<String, String>> temp = new ArrayList<>();
+        for (List<IOrder> order : currentUser.getOrderHistory()) {
+            for (IOrder o : order) {
+                Map<String, String> tempMap = new HashMap<>();
+                for(IProduct product : o.getProducts()){
+                    tempMap.put(product.getName(), product.getAmount());
+                }
+                temp.add(tempMap);
+            }   
+        }
+        System.out.println(temp);
+        return temp;
     }
 }
