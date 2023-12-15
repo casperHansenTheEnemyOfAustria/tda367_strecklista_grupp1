@@ -25,10 +25,24 @@ running this program is best done on linux/wsl since we have scripts prepared fo
 - run "sudo createdb strecklista"
 - now navigate to the "backend" directory
 - type in "sudo ./initdb.sh" this will create a sample database
+- now you can run the backend
 ### backend
+for our backend we are using spring boot
+-you will need maven
 - navigate to the "backend" directory
 - run "./mvnw spring-boot:run"
+### flutter
+for out frontend were using flutter. it is still not fully compiled but runnable
+- install flutter
+- navigate to the "frontend" directory
+- install the flutter debugger extension for vs code
+- selecte google chrome as the debugger in the bottom right
+- run the debugger
+- for the best experiemce; use the mobile view in chrome
+- now you can run the frontend
+
 ### http requests
+there are for dorect access 
 - install the postman extension for vs code or use the postman app
 - now you can send http requests to the backend
 - the requests are sent to "http://localhost:8080"
@@ -122,6 +136,20 @@ running this program is best done on linux/wsl since we have scripts prepared fo
     }
 }
 ```
+- /getName
+- - example body:
+```json
+{
+    "sessionID": "sessionID"
+}
+```
+- /getOrderHistory
+- - example body:
+```json
+{
+    "sessionID": "sessionID"
+}
+```
 
 #### admin
 - /createProduct
@@ -194,8 +222,7 @@ running this program is best done on linux/wsl since we have scripts prepared fo
     }
 }
 ```
+### frontend
 
-
-
-
- if you run into any postgres problems please contact one of the group members
+- navigate to the "frontend" directory
+- 
