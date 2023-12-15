@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:donutlista/homescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
@@ -51,6 +53,13 @@ class _PurchaseButtonsState extends State<PurchaseButtons> {
   if (response.statusCode == 200) {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(yaySnackBar);
+      globals.summaryOfThingsInCart.value = List.filled(1, {});
+      var duration = const Duration(seconds: 1);
+      
+      await Future.delayed(const Duration(milliseconds: 250));
+ 
+      Navigator.push(context,
+          MaterialPageRoute(builder: (_) => HomeScreen(userID: globals.sessionID)));
     } else {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(naySnackBar);
