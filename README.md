@@ -19,6 +19,7 @@ Planned improvements are:
 running this program is best done on linux/wsl since we have scripts prepared for testing
 ### postgres
 - install postgres with the default settings and user "postgres"
+- set its ip to localhost:5432
 - set up a user called postgres with no password
 - go into the postgres directory and locate the "pg_hba.conf" file
 - got add trust as the authmethods for all users
@@ -28,7 +29,7 @@ running this program is best done on linux/wsl since we have scripts prepared fo
 - now you can run the backend
 ### backend
 for our backend we are using spring boot
--you will need maven
+- you will need maven
 - navigate to the "backend" directory
 - run "./mvnw spring-boot:run"
 ### flutter
