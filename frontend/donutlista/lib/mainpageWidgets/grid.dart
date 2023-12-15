@@ -154,9 +154,14 @@ class _ActiveItemTile extends State<ItemTile> {
   var counter = 0;
   _ActiveItemTile() {
     globals.sendGetCartRequest().then((value) {
-      setState(() {
-        counter = int.parse(value[widget.listItem["Id"]!].toString());
-      });
+      // setState(() {
+      //   if(value[widget.listItem["Id"]] != null){
+      //     counter = 0;
+      //   }else{
+      //     counter = int.parse(value[widget.listItem["Id"]!].toString());
+      //   }
+    
+      // });
     });
   }
 
@@ -164,12 +169,12 @@ class _ActiveItemTile extends State<ItemTile> {
     globals.sendGetCartRequest().then((value) => print(value));
 
     setState(() {
-      globals.sendGetCartRequest().then((value) =>
-          counter = int.parse(value[widget.listItem["Id"]!].toString()));
+      globals.sendGetCartRequest().then((value) {});
       counter++;
       widget.sendAddToCartRequest(widget.listItem["Id"]!).then((value) =>
-          globals.sendGetCartRequest().then((value) =>
-              counter = int.parse(value[widget.listItem["Id"]!].toString())));
+          globals.sendGetCartRequest().then((value) {}
+              // counter = int.parse(value[widget.listItem["Id"]!].toString()
+    ));
       notifyAndParseTotal();
     });
 
@@ -192,8 +197,7 @@ class _ActiveItemTile extends State<ItemTile> {
 
   int _decrementCounter() {
     setState(() {
-      globals.sendGetCartRequest().then((value) =>
-          counter = int.parse(value[widget.listItem["Id"]!].toString()));
+      globals.sendGetCartRequest();
 
       if (counter == 0) {
         widget.sendResetCartRequest(widget.listItem["Id"]!);
@@ -201,8 +205,7 @@ class _ActiveItemTile extends State<ItemTile> {
       } else {
         counter--;
         widget.sendRemoveFromCartRequest(widget.listItem["Id"]!).then((value) =>
-            globals.sendGetCartRequest().then((value) =>
-                counter = int.parse(value[widget.listItem["Id"]!].toString())));
+            globals.sendGetCartRequest().then((value) {}));
       }
       notifyAndParseTotal();
     });

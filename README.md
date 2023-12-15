@@ -41,6 +41,9 @@ for out frontend were using flutter. it is still not fully compiled but runnable
 - run the debugger
 - for the best experiemce; use the mobile view in chrome
 - now you can run the frontend
+- login with the following credentials:
+- - username: admin
+- - password: ADMIN
 
 ### http requests
 there are for dorect access 
