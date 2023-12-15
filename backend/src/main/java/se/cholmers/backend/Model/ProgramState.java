@@ -138,7 +138,7 @@ class ProgramState implements IProgramState {
                 temp.add(tempMap);
             }   
         }
-        System.out.println(temp);
+        // System.out.println(temp);
         return temp;
     }
 }
